@@ -71,17 +71,12 @@
 
 					<div class="text-center w-full p-t-42 p-b-22">
 						<span class="txt1">
-							Or login with
+							Activate your account with moodle
 						</span>
 					</div>
 
-					<a href="#" class="btn-google m-b-10">
-						<img src="./Login V11_files/icon-google.png" alt="GOOGLE">
-						Google
-					</a>
 
-
-					<div class="text-center w-full p-t-115">
+					<!-- <div class="text-center w-full p-t-115">
 						<span class="txt1">
 							Not a member?
 						</span>
@@ -89,7 +84,7 @@
 						<a class="txt1 bo1 hov1" href="https://colorlib.com/etc/lf/Login_v11/index.html#">
 							Sign up now
 						</a>
-					</div>
+					</div> -->
 				</form>
 			</div>
 		</div>
