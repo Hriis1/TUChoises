@@ -39,11 +39,13 @@
 						Login
 					</span>
 
+					<input type="hidden" name="action" value="loginUser">
 					<div class="wrap-input100 validate-input m-b-16">
 						<input class="input100" type="text" name="username" placeholder="Username">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
-							<i class="fa-regular fa-user" style="font-size: 22px; margin-top: 4px; margin-left: 1px"></i>
+							<i class="fa-regular fa-user"
+								style="font-size: 22px; margin-top: 4px; margin-left: 1px"></i>
 						</span>
 					</div>
 
@@ -70,7 +72,7 @@
 
 					<div class="text-center w-full p-t-42 p-b-22">
 						<span class="txt1">
-							Activate your account with moodle
+							You need an active moodle account
 						</span>
 					</div>
 
