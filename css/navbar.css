@@ -1,0 +1,13 @@
+.navbar-custom {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 1rem 1rem;
+  }
+  /* pink CTA */
+  .btn-pink {
+    background-color: #ff69b4;
+    color: #fff;
+  }
+  .btn-pink:hover {
+    background-color: #e0579e;
+  }
