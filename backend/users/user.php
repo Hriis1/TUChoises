@@ -77,6 +77,20 @@ class User
         return $this->role;
     }
 
+    public function getRoleName()
+    {
+        switch ($this->role) {
+            case 1:
+                return "student";
+            case 2:
+                return "teacher";
+            case 3:
+                return "admin";
+            default:
+                return "";
+        }
+    }
+
     public function getFn()
     {
         return $this->fn;
