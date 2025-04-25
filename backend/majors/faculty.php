@@ -1,20 +1,17 @@
 <?php
-
 class Faculty
 {
-    private $mysqli;
     private $id;
     private $name;
     private $short;
 
-    public function __construct(mysqli $mysqli, int $id)
+    public function __construct($id, mysqli $mysqli)
     {
-        $this->mysqli = $mysqli;
         $this->id = $id;
 
-        $stmt = $this->mysqli->prepare("SELECT name, short FROM faculties WHERE id = ?");
+        $stmt = $mysqli->prepare("SELECT name, short FROM faculties WHERE id = ?");
         if (!$stmt) {
-            throw new Exception('Failed to prepare statement: ' . $this->mysqli->error);
+            throw new Exception('Failed to prepare statement: ' . $mysqli->error);
         }
 
         $stmt->bind_param('i', $this->id);

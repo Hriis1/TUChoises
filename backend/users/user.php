@@ -1,5 +1,6 @@
 <?php
-class User {
+class User
+{
     private $id;
     private $username;
     private $names;
@@ -8,61 +9,91 @@ class User {
     private $fn;
     private $stream;
     private $majorId;
-    private $start_year;
+    private $startYear;
 
-    public function __construct(int $id, mysqli $mysqli) {
+    public function __construct($id, mysqli $mysqli)
+    {
         $this->id = $id;
-        if ($stmt = $mysqli->prepare("SELECT username, names, email, role, fn, stream, major, start_year FROM users WHERE id = ? LIMIT 1")) {
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($username, $names, $email, $role, $fn, $stream, $majorId, $start_year);
-            if ($stmt->fetch()) {
-                $this->username   = $username;
-                $this->names      = $names;
-                $this->email      = $email;
-                $this->role       = $role;
-                $this->fn         = $fn;
-                $this->stream     = $stream;
-                $this->majorId      = $majorId;
-                $this->start_year = $start_year;
-            }
-            $stmt->close();
+
+        $stmt = $mysqli->prepare(
+            "SELECT username, names, email, role, fn, stream, major, start_year
+             FROM users
+             WHERE id = ?
+             LIMIT 1"
+        );
+        if (!$stmt) {
+            throw new Exception('Failed to prepare statement: ' . $mysqli->error);
         }
+
+        $stmt->bind_param('i', $this->id);
+        $stmt->execute();
+        $stmt->bind_result(
+            $username,
+            $names,
+            $email,
+            $role,
+            $fn,
+            $stream,
+            $majorId,
+            $startYear
+        );
+        if (!$stmt->fetch()) {
+            throw new Exception('User not found for ID ' . $this->id);
+        }
+        $stmt->close();
+
+        $this->username = $username;
+        $this->names = $names;
+        $this->email = $email;
+        $this->role = $role;
+        $this->fn = $fn;
+        $this->stream = $stream;
+        $this->majorId = $majorId;
+        $this->startYear = $startYear;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
-    public function getNames() {
+    public function getNames()
+    {
         return $this->names;
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function getRole() {
+    public function getRole()
+    {
         return $this->role;
     }
 
-    public function getFn() {
+    public function getFn()
+    {
         return $this->fn;
     }
 
-    public function getStream() {
+    public function getStream()
+    {
         return $this->stream;
     }
 
-    public function getMajorId() {
+    public function getMajorId()
+    {
         return $this->majorId;
     }
 
-    public function getStartYear() {
-        return $this->start_year;
+    public function getStartYear()
+    {
+        return $this->startYear;
     }
 }
