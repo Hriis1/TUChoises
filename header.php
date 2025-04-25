@@ -1,3 +1,25 @@
+<?php
+//Config stuff
+require_once "backend/config/sessionConfig.php";
+require_once "backend/config/dbConfig.php";
+//require_once "backend/utils/dbUtils.php";
+
+//Classes
+require_once "backend/majors/Faculty.php";
+require_once "backend/majors/Major.php";
+require_once "backend/users/User.php";
+
+//if user is not logged in
+if (!isset($_SESSION["userID"])) {
+    header("Location: login.php");
+    exit;
+}
+
+//User is logged in
+$user = new User($_SESSION["userID"], $mysqli);
+echo $user->getNames();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
