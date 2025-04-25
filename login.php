@@ -1,3 +1,6 @@
+<?php
+require_once "backend/config/sessionConfig.php";
+?>
 <!DOCTYPE html>
 <!-- saved from url=(0048)https://colorlib.com/etc/lf/Login_v11/index.html -->
 <html lang="en">
@@ -129,8 +132,21 @@
 					url: "backend/users/authenticateLocal.php",
 					data: $(this).serialize(),
 					success: function (response) {
-						// handle success
+						if (response[0] === 0) {
+							const field = response[1] === "user" ? 'username' : 'pass';
+							const el = $('input[name="' + field + '"]');
+							el.parent().attr('data-validate', response[2]);
+							showValidate(el);
+						} else {
+							// authentication succeeded
+							console.log("Success");
+							window.location.href = 'index.php';
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("AJAX error:", status, error);
 					}
+
 				});
 			});
 
