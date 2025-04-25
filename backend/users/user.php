@@ -7,7 +7,7 @@ class User {
     private $role;
     private $fn;
     private $stream;
-    private $major;
+    private $majorId;
     private $start_year;
 
     public function __construct(int $id, mysqli $mysqli) {
@@ -15,7 +15,7 @@ class User {
         if ($stmt = $mysqli->prepare("SELECT username, names, email, role, fn, stream, major, start_year FROM users WHERE id = ? LIMIT 1")) {
             $stmt->bind_param("i", $id);
             $stmt->execute();
-            $stmt->bind_result($username, $names, $email, $role, $fn, $stream, $major, $start_year);
+            $stmt->bind_result($username, $names, $email, $role, $fn, $stream, $majorId, $start_year);
             if ($stmt->fetch()) {
                 $this->username   = $username;
                 $this->names      = $names;
@@ -23,7 +23,7 @@ class User {
                 $this->role       = $role;
                 $this->fn         = $fn;
                 $this->stream     = $stream;
-                $this->major      = $major;
+                $this->majorId      = $majorId;
                 $this->start_year = $start_year;
             }
             $stmt->close();
@@ -58,8 +58,8 @@ class User {
         return $this->stream;
     }
 
-    public function getMajor() {
-        return $this->major;
+    public function getMajorId() {
+        return $this->majorId;
     }
 
     public function getStartYear() {

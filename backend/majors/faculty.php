@@ -29,17 +29,17 @@ class Faculty
         $this->short = $short;
     }
 
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getShort(): string
+    public function getShort()
     {
         return $this->short;
     }
