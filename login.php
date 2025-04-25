@@ -34,13 +34,13 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-l-50 p-r-50 p-t-77 p-b-30">
-				<form method="POST" action="backend/users/authenticate.php" class="login100-form validate-form">
+				<form id="loginForm" method="POST" action="" class="login100-form validate-form">
 					<span class="login100-form-title p-b-55">
 						Login
 					</span>
 
 					<input type="hidden" name="action" value="loginUser">
-					<div class="wrap-input100 validate-input m-b-16">
+					<div class="wrap-input100 validate-input m-b-16" data-validate="Required">
 						<input class="input100" type="text" name="username" placeholder="Username">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
@@ -49,7 +49,7 @@
 						</span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-16" data-validate="Password is required">
+					<div class="wrap-input100 validate-input m-b-16" data-validate="Required">
 						<input class="input100" type="password" name="pass" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
@@ -72,7 +72,7 @@
 
 					<div class="text-center w-full p-t-42 p-b-22">
 						<span class="txt1">
-							You need an active moodle account
+							Students need active moodle accounts
 						</span>
 					</div>
 
@@ -100,14 +100,77 @@
 
 	<script src="./Login V11_files/select2.min.js.download"></script>
 
-	<script src="./Login V11_files/main.js.download"></script>
 	<script async="" src="./Login V11_files/js"></script>
 	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() { dataLayer.push(arguments); }
-		gtag('js', new Date());
+		$(document).ready(function () {
 
-		gtag('config', 'UA-23581568-13');
+			//Google Analytics
+			window.dataLayer = window.dataLayer || [];
+			function gtag() { dataLayer.push(arguments); }
+			gtag('js', new Date());
+			gtag('config', 'UA-23581568-13');
+			var input = $('.validate-input .input100');
+
+			//When form is submited
+			$('#loginForm').on('submit', function (e) {
+				e.preventDefault();
+
+				var check = true;
+				for (var i = 0; i < input.length; i++) { //check for each input
+					if (validate(input[i]) == false) { //if validation fails
+						showValidate(input[i]);
+						return;
+					}
+				}
+
+				//Post the form if validation is successful
+				/* $.ajax({
+					type: "POST",
+					url: "backend/users/authenticate.php",
+					data: $(this).serialize(),
+					success: function (response) {
+						// handle success
+					}
+				}); */
+			});
+
+
+			//Hide validation containers on focus
+			$('.validate-form .input100').each(function () {
+				$(this).focus(function () {
+					hideValidate(this);
+				});
+			});
+
+			//Validate function
+			function validate(input) {
+				if ($(input).attr('type') == 'email' || $(input).attr('name') == 'email') {
+					if ($(input).val().trim().match(/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/) == null) {
+						return false;
+					}
+				}
+				else {
+					if ($(input).val().trim() == '') {
+						return false;
+					}
+				}
+			}
+
+			//Show validate containers
+			function showValidate(input) {
+				var thisAlert = $(input).parent();
+
+				$(thisAlert).addClass('alert-validate');
+			}
+
+			//Hide validate containers
+			function hideValidate(input) {
+				var thisAlert = $(input).parent();
+
+				$(thisAlert).removeClass('alert-validate');
+			}
+
+		});
 	</script>
 </body>
 
