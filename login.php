@@ -124,14 +124,14 @@
 				}
 
 				//Post the form if validation is successful
-				/* $.ajax({
+				$.ajax({
 					type: "POST",
-					url: "backend/users/authenticate.php",
+					url: "backend/users/authenticateLocal.php",
 					data: $(this).serialize(),
 					success: function (response) {
 						// handle success
 					}
-				}); */
+				});
 			});
 
 
