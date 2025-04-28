@@ -86,7 +86,11 @@ $projectRoot = str_replace(
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <!-- USER IS ADMIN START -->
+                                <?php if ($user->getRole() == 3) { ?>
+                                    <li><a class="dropdown-item" href="users/adminPanel.php">Admin Panel</a></li>
+                                <?php } ?>
+                                <!-- USER IS ADMIN END -->
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
