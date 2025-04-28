@@ -36,7 +36,7 @@ if ($user['role'] == 1) { //check if user is student
 
 //Check the password
 if (!password_verify($pass, $user['pass'])) {
-    echo json_encode([0, 'pass', 'Invalid password']);
+    echo json_encode([0, 'pass', 'Incorrect password']);
     exit;
 }
 
