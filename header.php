@@ -17,7 +17,13 @@ if (!isset($_SESSION["userID"])) {
 
 //User is logged in
 $user = new User($_SESSION["userID"], $mysqli);
-echo $user->getNames();
+
+// calculate URL path to project root (the folder of this file)
+$projectRoot = str_replace(
+    realpath($_SERVER['DOCUMENT_ROOT']),
+    '',
+    realpath(__DIR__ . '/')
+);
 
 ?>
 <!DOCTYPE html>
@@ -32,6 +38,7 @@ echo $user->getNames();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 
+    <base href="<?= $projectRoot ?>\">
     <link rel="stylesheet" href="css/navbar.css">
 
     <style>
