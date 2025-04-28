@@ -42,7 +42,7 @@ echo $user->getNames();
 
         body {
             background-color: #E4E4E1;
-            background-image: radial-gradient(at top center, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.03) 100%), linear-gradient(to top, rgba(255, 255, 255, 0.1) 0%, rgba(143, 152, 157, 0.60) 100%);
+            background-image: linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%);
             background-blend-mode: normal, multiply;
             background-repeat: no-repeat;
             background-size: cover;
