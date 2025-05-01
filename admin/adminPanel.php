@@ -2,7 +2,7 @@
 require_once "../header.php"; 
 
 if ($user->getRole() != 3) {//if user is not admin 
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit;
 }
 ?>
@@ -57,9 +57,9 @@ if ($user->getRole() != 3) {//if user is not admin
                         <div class="card-body text-center">
                             <h5 class="card-title">Faculties</h5>
                             <div class="d-grid gap-2">
-                                <a href="../faculties/facultyList.php" class="btn btn-outline-primary">View
+                                <a href="../majors/facultyList.php" class="btn btn-outline-primary">View
                                     Faculties</a>
-                                <a href="../faculties/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
+                                <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
                                 <button class="btn btn-primary">Import Faculties</button>
                             </div>
                         </div>

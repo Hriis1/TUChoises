@@ -47,4 +47,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([0, "", "Error Adding Faculty"]);
         exit;
     }
+
+    if ($_POST['action'] === 'addMajor') {
+        $name = trim($_POST['name']);
+        $short = trim($_POST['short']);
+        $faculty_id = trim($_POST['faculty_id']);
+
+        if ($name === '') {
+            echo json_encode([0, 'name', 'Name required']);
+            exit;
+        }
+        if ($short === '') {
+            echo json_encode([0, 'short', 'Short required']);
+            exit;
+        }
+        if ($faculty_id === '') {
+            echo json_encode([0, 'faculty_id', 'Faculty required']);
+            exit;
+        }
+
+        $name = $mysqli->real_escape_string($name);
+        $short = $mysqli->real_escape_string($short);
+        $faculty_id = (int) $faculty_id;
+
+        $r1 = $mysqli->query("SELECT 1 FROM majors WHERE name='$name' LIMIT 1");
+        if ($r1->num_rows) {
+            echo json_encode([0, 'name', 'Name already exists']);
+            exit;
+        }
+        $r2 = $mysqli->query("SELECT 1 FROM majors WHERE short='$short' LIMIT 1");
+        if ($r2->num_rows) {
+            echo json_encode([0, 'short', 'Short already exists']);
+            exit;
+        }
+
+        $mysqli->query("INSERT INTO majors (name, short, faculty) VALUES ('$name', '$short', $faculty_id)");
+
+        if ($mysqli->affected_rows === 1) {
+            echo json_encode([1, "", ""]);
+            exit;
+        }
+
+        echo json_encode([0, "", "Error Adding Major"]);
+        exit;
+    }
+
 }
