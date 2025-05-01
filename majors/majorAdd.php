@@ -4,7 +4,7 @@ if ($user->getRole() != 3) {
     header("Location: ../index.php");
     exit;
 }
-$faculties = $mysqli->query("SELECT id, name FROM faculties");
+$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">

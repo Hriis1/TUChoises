@@ -85,7 +85,11 @@ $user = new User($_SESSION["userID"], $mysqli);
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
                                 <!-- USER IS ADMIN START -->
                                 <?php if ($user->getRole() == 3) { ?>
-                                    <li><a class="dropdown-item" href="admin/adminPanel.php">Admin Panel</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="<?= $projectRoot ?>/admin/adminPanel.php">
+                                            Admin Panel
+                                        </a>
+                                    </li>
                                 <?php } ?>
                                 <!-- USER IS ADMIN END -->
                                 <li>
