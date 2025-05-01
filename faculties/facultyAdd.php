@@ -1,27 +1,12 @@
 <?php
 require_once "../header.php";
 
-// if user is not admin
 if ($user->getRole() != 3) {
     header("Location: ../index.php");
     exit;
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'addFaculty') {
-    $name = $mysqli->real_escape_string($_POST['name']);
-    $short = $mysqli->real_escape_string($_POST['short']);
-    $mysqli->query("INSERT INTO faculties (name, short) VALUES ('$name', '$short')");
-
-    //Success
-    if ($mysqli->affected_rows === 1) {
-        echo json_encode([1, "", ""]);
-        exit;
-    }
-
-    //Fail
-    echo json_encode([0, "alert", "Error Adding Faculty"]);
-}
 ?>
+
 
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
@@ -32,11 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'addFaculty') 
                 <input type="hidden" name="action" value="addFaculty">
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <input type="text" class="form-control" id="name" name="name" required>
                 </div>
                 <div class="mb-3">
                     <label for="short" class="form-label">Short</label>
-                    <input type="text" class="form-control" id="short" name="short">
+                    <input type="text" class="form-control" id="short" name="short" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Faculty</button>
             </form>
@@ -50,3 +35,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'addFaculty') 
 <?php
 require_once "../footer.php";
 ?>
+
+<script>
+    $(function () {
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            $('.text-danger').remove();
+
+            $.ajax({
+                url: '../backend/ajax.php',
+                method: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (res) {
+                    if (res[0] == 1) {
+                        window.location = 'facultyList.php';
+                    } else if (res[1]) {
+                        $('[name="' + res[1] + '"]')
+                            .after('<div class="text-danger">' + res[2] + '</div>');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
+                    console.error("Raw response:", jqXHR.responseText);
+                }
+            });
+
+        });
+    });
+</script>
