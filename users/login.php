@@ -1,5 +1,5 @@
 <?php
-require_once "backend/config/sessionConfig.php";
+require_once "../backend/config/sessionConfig.php";
 ?>
 <!DOCTYPE html>
 <!-- saved from url=(0048)https://colorlib.com/etc/lf/Login_v11/index.html -->
@@ -10,13 +10,13 @@ require_once "backend/config/sessionConfig.php";
 	<title>Login V11</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/icon-font.min.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/animate.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/hamburgers.min.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/select2.min.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/util.css">
-	<link rel="stylesheet" type="text/css" href="./Login V11_files/main.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/icon-font.min.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/animate.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/util.css">
+	<link rel="stylesheet" type="text/css" href="../Login V11_files/main.css">
 	<script src="https://kit.fontawesome.com/c275ff90f1.js" crossorigin="anonymous"></script>
 
 	<meta name="robots" content="noindex, follow">
@@ -95,15 +95,15 @@ require_once "backend/config/sessionConfig.php";
 	</div>
 
 
-	<script type="text/javascript" async="" src="./Login V11_files/analytics.js.download"></script>
-	<script src="./Login V11_files/jquery-3.2.1.min.js.download"></script>
+	<script type="text/javascript" async="" src="../Login V11_files/analytics.js.download"></script>
+	<script src="../Login V11_files/jquery-3.2.1.min.js.download"></script>
 
-	<script src="./Login V11_files/popper.js.download"></script>
+	<script src="../Login V11_files/popper.js.download"></script>
 	<script src="./Login V11_files/bootstrap.min.js.download"></script>
 
-	<script src="./Login V11_files/select2.min.js.download"></script>
+	<script src="../Login V11_files/select2.min.js.download"></script>
 
-	<script async="" src="./Login V11_files/js"></script>
+	<script async="" src="../Login V11_files/js"></script>
 	<script>
 		$(document).ready(function () {
 
@@ -129,7 +129,7 @@ require_once "backend/config/sessionConfig.php";
 				//Post the form if validation is successful
 				$.ajax({
 					type: "POST",
-					url: "backend/users/authenticateLocal.php",
+					url: "../backend/users/authenticateLocal.php",
 					data: $(this).serialize(),
 					success: function (response) {
 						if (response[0] === 0) {
@@ -140,7 +140,7 @@ require_once "backend/config/sessionConfig.php";
 						} else {
 							// authentication succeeded
 							console.log("Success");
-							window.location.href = 'index.php';
+							window.location.href = '../index.php';
 						}
 					},
 					error: function (xhr, status, error) {
