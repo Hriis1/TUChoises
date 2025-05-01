@@ -1,11 +1,13 @@
-<?php require_once "../header.php"; //if user is not admin 
+<?php 
+require_once "../header.php"; 
 
-if ($user->getRole() != 3) {
-    header("Location: ../index.php");
+if ($user->getRole() != 3) {//if user is not admin 
+    header("Location: index.php");
     exit;
 }
 ?>
 
+<link rel="stylesheet" href="..//admin/zaza.css">
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5" style="height: 90vh;">
         <h1 class="text-center mb-4">Admin Panel</h1>
