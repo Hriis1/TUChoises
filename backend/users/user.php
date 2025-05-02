@@ -7,7 +7,6 @@ class User
     private $email;
     private $role;
     private $fn;
-    private $stream;
     private $majorId;
     private $startYear;
 
@@ -16,7 +15,7 @@ class User
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT username, names, email, role, fn, stream, major, start_year
+            "SELECT username, names, email, role, fn, major, start_year
              FROM users
              WHERE id = ?
              LIMIT 1"
@@ -33,7 +32,6 @@ class User
             $email,
             $role,
             $fn,
-            $stream,
             $majorId,
             $startYear
         );
@@ -47,7 +45,6 @@ class User
         $this->email = $email;
         $this->role = $role;
         $this->fn = $fn;
-        $this->stream = $stream;
         $this->majorId = $majorId;
         $this->startYear = $startYear;
     }
@@ -94,11 +91,6 @@ class User
     public function getFn()
     {
         return $this->fn;
-    }
-
-    public function getStream()
-    {
-        return $this->stream;
     }
 
     public function getMajorId()

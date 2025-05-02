@@ -147,5 +147,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] === 'addUser') {
+        $role = trim($_POST['role']);
+        $username = trim($_POST['username']);
+        $names = trim($_POST['names']);
+        $email = trim($_POST['email']);
+        $pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
+        $fn = isset($_POST['fn']) ? trim($_POST['fn']) : '';
+        $major = isset($_POST['major']) ? trim($_POST['major']) : '';
+        $start_year = isset($_POST['start_year']) ? trim($_POST['start_year']) : '';
+
+        if (!in_array($role, ['1', '2'])) {
+            echo json_encode([0, 'role', 'Invalid role']);
+            exit;
+        }
+        if ($username === '') {
+            echo json_encode([0, 'username', 'Username required']);
+            exit;
+        }
+        if ($names === '') {
+            echo json_encode([0, 'names', 'Names required']);
+            exit;
+        }
+        if ($email === '') {
+            echo json_encode([0, 'email', 'Email required']);
+            exit;
+        }
+
+        $rU = $mysqli->query("SELECT 1 FROM users WHERE username='" . $mysqli->real_escape_string($username) . "' LIMIT 1");
+        if ($rU->num_rows) {
+            echo json_encode([0, 'username', 'Username exists']);
+            exit;
+        }
+        $rE = $mysqli->query("SELECT 1 FROM users WHERE email='" . $mysqli->real_escape_string($email) . "' LIMIT 1");
+        if ($rE->num_rows) {
+            echo json_encode([0, 'email', 'Email exists']);
+            exit;
+        }
+
+        if ($role === '1') {
+            if ($fn === '') {
+                echo json_encode([0, 'fn', 'Faculty Number required']);
+                exit;
+            }
+            if ($major === '' || $start_year === '') {
+                $fld = $major === '' ? 'major' : 'start_year';
+                echo json_encode([0, $fld, 'Required for student']);
+                exit;
+            }
+            $fn = $mysqli->real_escape_string($fn);
+            $major = (int) $major;
+            $start_year = (int) $start_year;
+            $password = '';
+            $active = 0;
+        } else {
+            if ($pass === '') {
+                echo json_encode([0, 'pass', 'Password required']);
+                exit;
+            }
+            $password = password_hash($pass, PASSWORD_BCRYPT);
+            $fn = '';
+            $start_year = 'NULL';
+            $active = 1;
+        }
+
+        $uEsc = $mysqli->real_escape_string($username);
+        $nEsc = $mysqli->real_escape_string($names);
+        $eEsc = $mysqli->real_escape_string($email);
+
+        $mysqli->query("
+          INSERT INTO users 
+            (username,names,email,pass,role,fn,major,start_year,active) 
+          VALUES 
+            ('$uEsc','$nEsc','$eEsc','{$password}','{$role}','{$fn}',{$major},{$start_year},{$active})
+        ");
+
+        if ($mysqli->affected_rows === 1) {
+            echo json_encode([1, "", ""]);
+            exit;
+        }
+        echo json_encode([0, "", "Error Adding User"]);
+        exit;
+    }
+
+
+
 
 }
