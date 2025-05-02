@@ -22,9 +22,9 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
                     <input type="text" class="form-control" id="ident" name="ident" required>
                 </div>
                 <div class="mb-3">
-                    <label for="year_applicable" class="form-label">Year In University</label>
-                    <input type="number" class="form-control" id="year_applicable" name="year_applicable" required
-                        min="1" max="5">
+                    <label for="semester_applicable" class="form-label">Semester</label>
+                    <input type="number" class="form-control" id="semester_applicable" name="semester_applicable" required
+                        min="1" max="10">
                 </div>
                 <div class="mb-3">
                     <label for="major" class="form-label">Major</label>

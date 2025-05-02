@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['action'] === 'addDistribution') {
         $name = trim($_POST['name']);
         $ident = trim($_POST['ident']);
-        $year_applicable = trim($_POST['year_applicable']);
+        $semester_applicable = trim($_POST['semester_applicable']);
         $major = trim($_POST['major']);
         $type = trim($_POST['type']);
 
@@ -107,12 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([0, 'ident', 'Ident required']);
             exit;
         }
-        if ($year_applicable === '') {
-            echo json_encode([0, 'year_applicable', 'Year required']);
+        if ($semester_applicable === '') {
+            echo json_encode([0, 'semester_applicable', 'Year required']);
             exit;
         }
-        if (!ctype_digit($year_applicable) || (int) $year_applicable < 1 || (int) $year_applicable > 5) {
-            echo json_encode([0, 'year_applicable', 'Year must be an integer between 1 and 5']);
+        if (!ctype_digit($semester_applicable) || (int) $semester_applicable < 1 || (int) $semester_applicable > 10) {
+            echo json_encode([0, 'semester_applicable', 'Year must be an integer between 1 and 5']);
             exit;
         }
         if ($major === '') {
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $name = $mysqli->real_escape_string($name);
         $ident = $mysqli->real_escape_string($ident);
-        $year_applicable = (int) $year_applicable;
+        $semester_applicable = (int) $semester_applicable;
         $major = (int) $major;
         $type = (int) $type;
 
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $mysqli->query("INSERT INTO distributions (name, ident, year_applicable, major, type)  VALUES ('$name', '$ident', $year_applicable, $major, $type)");
+        $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $type)");
 
         if ($mysqli->affected_rows === 1) {
             echo json_encode([1, "", ""]);
