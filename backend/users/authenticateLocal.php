@@ -41,4 +41,4 @@ if (!password_verify($pass, $user['pass'])) {
 }
 
 //Authenticate
-authenticate(1);
+authenticate($user["id"]);

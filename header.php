@@ -24,6 +24,8 @@ if (!isset($_SESSION["userID"])) {
 
 //User is logged in
 $user = new User($_SESSION["userID"], $mysqli);
+
+echo $user->getUsername();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,13 +76,15 @@ $user = new User($_SESSION["userID"], $mysqli);
                 <div class="collapse navbar-collapse" id="mainNav">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.php">Home</a>
+                            <a class="nav-link active" href="<?= $projectRoot ?>/index.php">Home</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle fs-4"></i>
+                                <div class="ms-2"><?= $user->getUsername(); ?></div>
                             </a>
+
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item" href="#">Profile</a></li>
                                 <!-- USER IS ADMIN START -->
@@ -95,7 +99,8 @@ $user = new User($_SESSION["userID"], $mysqli);
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Logout</a></li>
+                                <li><a class="dropdown-item"
+                                        href="<?= $projectRoot ?>/backend/users/logOut.php">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
