@@ -14,8 +14,12 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
         <div class="bg-white bg-opacity-50 p-5 rounded-5 shadow" style="width: 70%;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0">Faculty List</h2>
-                <a href="facultyAdd.php" class="btn btn-primary px-4">Add Favulty</a>
+                <div>
+                    <a href="facultyAdd.php" class="btn btn-primary px-4 me-2">Add Faculty</a>
+                    <button onclick="importFaculties()" class="btn btn-success px-4">Import Faculties</button>
+                </div>
             </div>
+
             <hr>
             <table id="table" class="table table-striped">
                 <thead>
@@ -33,8 +37,8 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                             <td><?= $curr["name"]; ?></td>
                             <td><?= $curr["short"]; ?></td>
                             <td>
-                                <a href=""><i class="fa-solid fa-pen"></i></a>
-                                <a href=""><i class="fa-solid fa-trash"></i></a>
+                                <a href="facultyEdit.php"><i class="fa-solid fa-pen"></i></a>
+                                <a href="facultyDelete.php"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>

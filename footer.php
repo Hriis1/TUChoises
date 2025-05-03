@@ -17,6 +17,18 @@
 <!-- FontAwsome -->
 <script src="https://kit.fontawesome.com/c275ff90f1.js" crossorigin="anonymous"></script>
 
+<script>
+    //Import functions
+    function importFaculties() {
+        console.log("faculties imported");
+    } 
+
+    //Main
+    $(document).ready(function () {
+
+    });
+</script>
+
 </body>
 
 </html>
