@@ -24,8 +24,6 @@ if (!isset($_SESSION["userID"])) {
 
 //User is logged in
 $user = new User($_SESSION["userID"], $mysqli);
-
-echo $user->getUsername();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,10 +32,16 @@ echo $user->getUsername();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Header</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+    <!-- Data Tables -->
+     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
+
+    <!-- Custom -->
     <link rel="stylesheet" href="<?= $projectRoot ?>/css/navbar.css">
 
     <style>
