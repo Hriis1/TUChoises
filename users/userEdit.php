@@ -1,0 +1,106 @@
+<?php
+require_once "../header.php";
+
+if ($user->getRole() != 3) {
+    echo '<meta http-equiv="refresh" content="0;url=../index.php">';
+    exit;
+}
+
+// if no id
+if (!isset($_GET["id"])) {
+    echo '<meta http-equiv="refresh" content="0;url=../admin/adminPanel.php">';
+}
+
+$userObj = new User($_GET["id"], $mysqli);
+$majors = getNonDeletedFromDB("majors", $mysqli);
+?>
+
+<main>
+    <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height:90vh">
+        <div class="bg-white bg-opacity-50 p-5 rounded-5 shadow" style="width:70%">
+            <h2 class="mb-3">Edit User</h2>
+            <hr>
+            <form method="post" class="w-100">
+                <input type="hidden" name="action" value="editUser">
+                <input type="hidden" name="id" value="<?= $userObj->getId() ?>">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username"
+                        value="<?= $userObj->getUsername() ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="names" class="form-label">Names</label>
+                    <input type="text" class="form-control" id="names" name="names" value="<?= $userObj->getNames() ?>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="<?= $userObj->getEmail() ?>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="fn" class="form-label student-field-label">Faculty Number</label>
+                    <input type="text" class="form-control student-field" id="fn" name="fn"
+                        value="<?= $userObj->getFn() ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="start_year" class="form-label student-field-label">Start Year</label>
+                    <input type="number" class="form-control student-field" id="start_year" name="start_year"
+                        value="<?= $userObj->getStartYear() ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="major" class="form-label">Major</label>
+                    <select class="form-select" id="major" name="major" required>
+                        <?php foreach ($majors as $m): ?>
+                            <option value="<?= $m['id'] ?>" <?= $m['id'] == $userObj->getMajorId() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($m['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="1" <?= $userObj->getRole() == 1 ? 'selected' : '' ?>>student</option>
+                        <option value="2" <?= $userObj->getRole() == 2 ? 'selected' : '' ?>>teacher</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit User</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<?php require_once "../footer.php" ?>
+
+<script>
+    $(function () {
+        function toggle() {
+            if ($('#role').val() == '1') {
+                $('.student-field-label').show();
+                $('.student-field').show().attr('required', true);
+            } else {
+                $('.student-field-label').hide();
+                $('.student-field').hide().attr('required', false);
+            }
+        }
+        $('#role').on('change', toggle);
+        toggle();
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            $('.text-danger').remove();
+            $.ajax({
+                url: '../backend/ajax.php',
+                method: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (res) {
+                    if (res[0] == 1) window.location = 'userList.php';
+                    else if (res[1]) $('[name="' + res[1] + '"]').after('<div class="text-danger">' + res[2] + '</div>');
+                },
+                error: function (j, q, e) { console.error("AJAX error:", q, e); console.error("Raw:", j.responseText); }
+            });
+        });
+    });
+</script>

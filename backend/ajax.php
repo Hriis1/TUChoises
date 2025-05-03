@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Validate uniqueness for 'name' outide of current faculty
-        $r1 = $mysqli->query("SELECT 1 FROM faculties WHERE name = '$name' AND id != $id LIMIT 1");
+        $r1 = $mysqli->query("SELECT 1 FROM faculties WHERE name = '$name' AND id != $id AND deleted = 0 LIMIT 1");
         if ($r1->num_rows) {
             echo json_encode([0, 'name', 'Name already exists']);
             exit;
         }
 
         // Validate uniqueness for 'short' outide of current faculty
-        $r2 = $mysqli->query("SELECT 1 FROM faculties WHERE short = '$short' AND id != $id LIMIT 1");
+        $r2 = $mysqli->query("SELECT 1 FROM faculties WHERE short = '$short' AND id != $id AND deleted = 0 LIMIT 1");
         if ($r2->num_rows) {
             echo json_encode([0, 'short', 'Short already exists']);
             exit;
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Validate uniqueness for 'short' outside of current major
-        $r = $mysqli->query("SELECT 1 FROM majors WHERE short = '$short' AND id != $id LIMIT 1");
+        $r = $mysqli->query("SELECT 1 FROM majors WHERE short = '$short' AND id != $id AND deleted = 0 LIMIT 1");
         if ($r->num_rows) {
             echo json_encode([0, 'short', 'Short already exists']);
             exit;
@@ -385,7 +385,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Validate ident uniqueness outside current record
-        $r = $mysqli->query("SELECT 1 FROM distributions WHERE ident = '$ident' AND id != $id LIMIT 1");
+        $r = $mysqli->query("SELECT 1 FROM distributions WHERE ident = '$ident' AND id != $id AND deleted = 0 LIMIT 1");
         if ($r->num_rows) {
             echo json_encode([0, 'ident', 'Ident must be unique']);
             exit;
@@ -438,6 +438,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if ($email === '') {
             echo json_encode([0, 'email', 'Email required']);
+            exit;
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode([0, 'email', 'Invalid email format']);
             exit;
         }
 
@@ -511,4 +515,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([0, "", ""]);
         exit;
     }
+
+    // Edit user
+    if ($_POST['action'] === 'editUser') {
+        // get submitted
+        $id = trim($_POST['id']);
+        $role = trim($_POST['role']);
+        $username = trim($_POST['username']);
+        $names = trim($_POST['names']);
+        $email = trim($_POST['email']);
+        $fn = isset($_POST['fn']) ? trim($_POST['fn']) : '';
+        $major = trim($_POST['major']);
+        $start_year = isset($_POST['start_year']) ? trim($_POST['start_year']) : '';
+
+        // basic
+        if (!is_numeric($id)) {
+            echo json_encode([0, '', 'Invalid user ID']);
+            exit;
+        }
+        if (!in_array($role, ['1', '2'])) {
+            echo json_encode([0, 'role', 'Invalid role']);
+            exit;
+        }
+        if ($username === '') {
+            echo json_encode([0, 'username', 'Username required']);
+            exit;
+        }
+        if ($names === '') {
+            echo json_encode([0, 'names', 'Names required']);
+            exit;
+        }
+        if ($email === '') {
+            echo json_encode([0, 'email', 'Email required']);
+            exit;
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode([0, 'email', 'Invalid email format']);
+            exit;
+        }
+
+        // unique
+        $uQ = $mysqli->query("SELECT 1 FROM users WHERE username='" . $mysqli->real_escape_string($username) . "' AND id != $id AND deleted = 0");
+        if ($uQ->num_rows) {
+            echo json_encode([0, 'username', 'Username exists']);
+            exit;
+        }
+        $eQ = $mysqli->query("SELECT 1 FROM users WHERE email='" . $mysqli->real_escape_string($email) . "' AND id != $id AND deleted = 0");
+        if ($eQ->num_rows) {
+            echo json_encode([0, 'email', 'Email exists']);
+            exit;
+        }
+
+        // student requires fn & start_year
+        if ($role === '1') {
+            if ($fn === '') {
+                echo json_encode([0, 'fn', 'Faculty Number required']);
+                exit;
+            }
+            if ($start_year === '') {
+                echo json_encode([0, 'start_year', 'Start Year required']);
+                exit;
+            }
+            $fn = $mysqli->real_escape_string($fn);
+            $start_year = (int) $start_year;
+        } else {
+            // teacher: empty fn, start_year
+            $fn = '';
+            $start_year = 'NULL';
+        }
+
+        // preserve pass & active
+        $res = $mysqli->query("SELECT pass,active FROM users WHERE id=$id");
+        $row = $res->fetch_assoc();
+        $pass = $row['pass'];
+        $active = $row['active'];
+
+        // escape & cast
+        $uEsc = $mysqli->real_escape_string($username);
+        $nEsc = $mysqli->real_escape_string($names);
+        $eEsc = $mysqli->real_escape_string($email);
+        $majorInt = (int) $major;
+
+        // update
+        $mysqli->query("
+      UPDATE users SET
+        role = '$role',
+        username = '$uEsc',
+        names = '$nEsc',
+        email = '$eEsc',
+        fn = '$fn',
+        major = $majorInt,
+        start_year = $start_year,
+        pass = '$pass',
+        active = $active
+      WHERE id = $id
+    ");
+
+        if ($mysqli->affected_rows >= 0) {
+            $_SESSION['alert'] = ["type" => "success", "text" => "User edited successfully!"];
+            echo json_encode([1, '', '']);
+            exit;
+        }
+
+        $_SESSION['alert'] = ["type" => "danger", "text" => "Error Editing User!"];
+        echo json_encode([0, '', '']);
+        exit;
+    }
+
 }
