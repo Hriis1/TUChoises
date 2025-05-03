@@ -54,4 +54,21 @@ function getFromDBCondition($table_name, $condition, $mysqli, $searchableByID = 
     $stmt->close();
 
     return $arr;
+
+}
+
+function deleteFromDB($table_name, $id, $mysqli, $idRowName = 'id')
+{
+    $stmt = $mysqli->prepare("DELETE FROM " . $table_name . " WHERE " . $idRowName . " = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function setDeletedDB($table_name, $id, $mysqli, $idRowName = 'id')
+{
+    $stmt = $mysqli->prepare("UPDATE `$table_name` SET deleted = 1 WHERE `$idRowName` = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
 }

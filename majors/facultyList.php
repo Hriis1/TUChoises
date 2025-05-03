@@ -6,6 +6,22 @@ if ($user->getRole() != 3) {
     exit;
 }
 
+//If action is delete
+if (isset($_GET["action"]) && $_GET["action"] == "delete") {
+    //Delete from db
+    $currID = $_GET["id"];
+    setDeletedDB("faculties", $currID, $mysqli);
+
+    //Send an alert
+    $_SESSION["alert"] = [
+        "type" => "danger",
+        "text" => "Faculty deleted successfully!"
+    ];
+
+    //Refresh page
+    echo '<meta http-equiv="refresh" content="1;url=facultyList.php">';
+}
+
 $faculties = getNonDeletedFromDB("faculties", $mysqli);
 ?>
 
@@ -37,8 +53,9 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                             <td><?= $curr["name"]; ?></td>
                             <td><?= $curr["short"]; ?></td>
                             <td>
-                                <a href="facultyEdit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="facultyDelete.php"><i class="fa-solid fa-trash"></i></a>
+                                <a href="facultyEdit.php?id=<?= $curr["id"]; ?>"><i class="fa-solid fa-pen"></i></a>
+                                <a href="facultyList.php?action=delete&id=<?= $curr["id"]; ?>"><i
+                                        class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php } ?>
