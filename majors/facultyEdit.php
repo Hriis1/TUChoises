@@ -2,8 +2,13 @@
 require_once "../header.php";
 
 if ($user->getRole() != 3) {
-    header("Location: ../index.php");
+    echo '<meta http-equiv="refresh" content="0;url=../index.php">';
     exit;
+}
+
+//if there is no get id
+if (!isset($_GET["id"])) {
+    echo '<meta http-equiv="refresh" content="0;url=../admin/adminPanel.php">';
 }
 
 $faculty = new Faculty($_GET["id"], $mysqli);
@@ -17,6 +22,7 @@ $faculty = new Faculty($_GET["id"], $mysqli);
             <hr>
             <form method="post" class="w-100">
                 <input type="hidden" name="action" value="editFaculty">
+                <input type="hidden" name="id" value="<?= $faculty->getId(); ?>">
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="<?= $faculty->getName(); ?>"
@@ -32,9 +38,6 @@ $faculty = new Faculty($_GET["id"], $mysqli);
         </div>
     </div>
 </main>
-
-
-
 
 <?php
 require_once "../footer.php";

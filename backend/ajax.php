@@ -2,14 +2,23 @@
 require_once "config/sessionConfig.php";
 require_once "config/dbConfig.php";
 
+require_once "majors/Faculty.php";
+require_once "majors/Major.php";
+
+require_once "distributions/Distribution.php";
+require_once "distributions/DistributionChoise.php";
+
+require_once "users/User.php";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    //Add faculty
     if ($_POST['action'] === 'addFaculty') {
         //Get the submitted data
         $name = trim($_POST['name']);
         $short = trim($_POST['short']);
 
-        //Valiedate that they are not empty
+        //Validate that they are not empty
         if ($name === '') {
             echo json_encode([0, 'name', 'Name required']);
             exit;
@@ -53,10 +62,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         //Error
-        echo json_encode([0, "", "Error Adding Faculty"]);
+        //Send an alert
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Adding Faculty!"
+        ];
+        echo json_encode([0, "", ""]);
         exit;
     }
 
+    //Edit faculty
+    if ($_POST['action'] === 'editFaculty') {
+        //Get the submitted data
+        $id = trim($_POST["id"]);
+        $name = trim($_POST['name']);
+        $short = trim($_POST['short']);
+
+        //Validate that they are not empty
+        if ($name === '') {
+            echo json_encode([0, 'name', 'Name required']);
+            exit;
+        }
+        if ($short === '') {
+            echo json_encode([0, 'short', 'Short required']);
+            exit;
+        }
+
+        //Escape
+        $id = $mysqli->real_escape_string($id);
+        $name = $mysqli->real_escape_string($name);
+        $short = $mysqli->real_escape_string($short);
+
+        //Validate id
+        if (!is_numeric($id)) {
+            echo json_encode([0, '', 'Invalid faculty ID']);
+            exit;
+        }
+
+        // Validate uniqueness for 'name' outide of current faculty
+        $r1 = $mysqli->query("SELECT 1 FROM faculties WHERE name = '$name' AND id != $id LIMIT 1");
+        if ($r1->num_rows) {
+            echo json_encode([0, 'name', 'Name already exists']);
+            exit;
+        }
+
+        // Validate uniqueness for 'short' outide of current faculty
+        $r2 = $mysqli->query("SELECT 1 FROM faculties WHERE short = '$short' AND id != $id LIMIT 1");
+        if ($r2->num_rows) {
+            echo json_encode([0, 'short', 'Short already exists']);
+            exit;
+        }
+
+        //Submit to db
+        $mysqli->query("UPDATE faculties SET name = '$name', short = '$short' WHERE id = $id");
+
+        //Success
+        if ($mysqli->affected_rows >= 0) {
+
+            //Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Faculty edited successfully!"
+            ];
+
+            //Echo success
+            echo json_encode([1, "", ""]);
+            exit;
+        }
+
+        //Error
+        //Send an alert
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Editing Faculty!"
+        ];
+        echo json_encode([0, "", ""]);
+        exit;
+    }
+
+    //Add major
     if ($_POST['action'] === 'addMajor') {
         $name = trim($_POST['name']);
         $short = trim($_POST['short']);
@@ -105,10 +189,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        echo json_encode([0, "", "Error Adding Major"]);
+        //Error
+        //Send an alert
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Adding Major!"
+        ];
+        echo json_encode([0, "", ""]);
         exit;
     }
 
+    //Add distribution
     if ($_POST['action'] === 'addDistribution') {
         $name = trim($_POST['name']);
         $ident = trim($_POST['ident']);
@@ -156,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $type)");
 
         if ($mysqli->affected_rows === 1) {
-            
+
             //Send an alert
             $_SESSION['alert'] = [
                 "type" => "success",
@@ -168,10 +259,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        echo json_encode([0, "", "Error Adding Distribution"]);
+        //Error
+        //Send an alert
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Adding Distribution!"
+        ];
+        echo json_encode([0, "", ""]);
         exit;
     }
 
+    //Add user
     if ($_POST['action'] === 'addUser') {
         $role = trim($_POST['role']);
         $username = trim($_POST['username']);
@@ -248,7 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         if ($mysqli->affected_rows === 1) {
-            
+
             //Send an alert
             $_SESSION['alert'] = [
                 "type" => "success",
@@ -259,11 +357,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([1, "", ""]);
             exit;
         }
-        echo json_encode([0, "", "Error Adding User"]);
+
+        //Error
+        //Send an alert
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Adding User!"
+        ];
+        echo json_encode([0, "", ""]);
         exit;
     }
-
-
-
-
 }
