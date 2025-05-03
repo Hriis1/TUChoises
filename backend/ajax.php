@@ -1,6 +1,7 @@
 <?php
 require_once "config/sessionConfig.php";
 require_once "config/dbConfig.php";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST['action'] === 'addFaculty') {
@@ -39,6 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //Success
         if ($mysqli->affected_rows === 1) {
+
+            //Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Faculty added successfully!"
+            ];
+
+            //Echo success
             echo json_encode([1, "", ""]);
             exit;
         }
@@ -84,6 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mysqli->query("INSERT INTO majors (name, short, faculty) VALUES ('$name', '$short', $faculty_id)");
 
         if ($mysqli->affected_rows === 1) {
+
+            //Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Major added successfully!"
+            ];
+
+            //Echo success
             echo json_encode([1, "", ""]);
             exit;
         }
@@ -139,6 +156,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $type)");
 
         if ($mysqli->affected_rows === 1) {
+            
+            //Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Distribution added successfully!"
+            ];
+
+            //Echo success
             echo json_encode([1, "", ""]);
             exit;
         }
@@ -223,6 +248,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         if ($mysqli->affected_rows === 1) {
+            
+            //Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "User added successfully!"
+            ];
+
+            //Echo success
             echo json_encode([1, "", ""]);
             exit;
         }

@@ -39,7 +39,7 @@ $user = new User($_SESSION["userID"], $mysqli);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <!-- Data Tables -->
-     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
 
     <!-- Custom -->
     <link rel="stylesheet" href="<?= $projectRoot ?>/css/navbar.css">
@@ -113,3 +113,13 @@ $user = new User($_SESSION["userID"], $mysqli);
         </nav>
 
     </header>
+
+    <!-- Alerts -->
+    <?php if (isset($_SESSION['alert'])) { ?>
+        <div class="mx-5 mt-3 alert alert-<?= $_SESSION['alert']['type']; ?> alert-dismissible fade show d-flex justify-content-between align-items-center"
+            role="alert">
+            <div><?= $_SESSION['alert']['text']; ?></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['alert']); ?>
+    <?php } ?>
