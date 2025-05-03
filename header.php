@@ -2,7 +2,7 @@
 //Config stuff
 require_once "backend/config/sessionConfig.php";
 require_once "backend/config/dbConfig.php";
-//require_once "backend/utils/dbUtils.php";
+require_once "backend/utils/dbUtils.php";
 
 //Classes
 require_once "backend/majors/Faculty.php";

@@ -1,7 +1,4 @@
 <?php
-
-require_once __DIR__ . '/../config/config.php';
-/* require_once __DIR__ . '/../config/auth.php'; */
 function getFromDBByID($table_name, $id, $mysqli, $idRowName = 'id')
 {
     $stmt = $mysqli->prepare("SELECT * FROM " . $table_name . " WHERE " . $idRowName . " = ?");
