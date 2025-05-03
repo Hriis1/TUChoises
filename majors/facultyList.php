@@ -2,7 +2,7 @@
 require_once "../header.php";
 
 if ($user->getRole() != 3) {
-    header("Location: ../index.php");
+    echo '<meta http-equiv="refresh" content="0;url=../index.php">';
     exit;
 }
 
