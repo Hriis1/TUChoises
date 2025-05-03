@@ -7,6 +7,8 @@ require_once "backend/utils/dbUtils.php";
 //Classes
 require_once "backend/majors/Faculty.php";
 require_once "backend/majors/Major.php";
+require_once "backend/distributions/Distribution.php";
+require_once "backend/distributions/DistributionChoise.php";
 require_once "backend/users/User.php";
 
 // calculate URL path to project root (the folder of this file)

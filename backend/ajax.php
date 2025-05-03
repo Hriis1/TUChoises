@@ -334,6 +334,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Edit distribution
+    if ($_POST['action'] === 'editDistribution') {
+        // Get submitted data
+        $id = trim($_POST['id']);
+        $name = trim($_POST['name']);
+        $ident = trim($_POST['ident']);
+        $semester_applicable = trim($_POST['semester_applicable']);
+        $major = trim($_POST['major']);
+        $type = trim($_POST['type']);
+
+        // Validate not empty
+        if ($name === '') {
+            echo json_encode([0, 'name', 'Name required']);
+            exit;
+        }
+        if ($ident === '') {
+            echo json_encode([0, 'ident', 'Ident required']);
+            exit;
+        }
+        if ($semester_applicable === '') {
+            echo json_encode([0, 'semester_applicable', 'Semester required']);
+            exit;
+        }
+        if (!ctype_digit($semester_applicable) || (int) $semester_applicable < 1 || (int) $semester_applicable > 10) {
+            echo json_encode([0, 'semester_applicable', 'Semester must be between 1 and 10']);
+            exit;
+        }
+        if ($major === '') {
+            echo json_encode([0, 'major', 'Major required']);
+            exit;
+        }
+        if ($type === '') {
+            echo json_encode([0, 'type', 'Type required']);
+            exit;
+        }
+
+        // Escape and cast
+        $id = $mysqli->real_escape_string($id);
+        $name = $mysqli->real_escape_string($name);
+        $ident = $mysqli->real_escape_string($ident);
+        $semester_applicable = (int) $semester_applicable;
+        $major = (int) $major;
+        $type = (int) $type;
+
+        // Validate id
+        if (!is_numeric($id)) {
+            echo json_encode([0, '', 'Invalid distribution ID']);
+            exit;
+        }
+
+        // Validate ident uniqueness outside current record
+        $r = $mysqli->query("SELECT 1 FROM distributions WHERE ident = '$ident' AND id != $id LIMIT 1");
+        if ($r->num_rows) {
+            echo json_encode([0, 'ident', 'Ident must be unique']);
+            exit;
+        }
+
+        // Submit to db
+        $mysqli->query("UPDATE distributions SET name = '$name', ident = '$ident', semester_applicable = $semester_applicable, major = $major, type = $type WHERE id = $id");
+
+        // Success
+        if ($mysqli->affected_rows >= 0) {
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Distribution edited successfully!"
+            ];
+            echo json_encode([1, "", ""]);
+            exit;
+        }
+
+        // Error
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Editing Distribution!"
+        ];
+        echo json_encode([0, "", ""]);
+        exit;
+    }
+
     //Add user
     if ($_POST['action'] === 'addUser') {
         $role = trim($_POST['role']);
