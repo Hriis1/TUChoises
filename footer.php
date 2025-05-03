@@ -14,6 +14,9 @@
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
 
+<!-- FontAwsome -->
+<script src="https://kit.fontawesome.com/c275ff90f1.js" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
