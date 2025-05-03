@@ -9,7 +9,7 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
         <div class="bg-white bg-opacity-50 p-5 rounded-5 shadow" style="width: 70%;">
-            <h3 class="mb-3">Add Distribution</h3>
+            <h2 class="mb-3">Add Distribution</h2>
             <hr>
             <form method="post" class="w-100">
                 <input type="hidden" name="action" value="addDistribution">
