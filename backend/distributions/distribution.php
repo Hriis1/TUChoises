@@ -4,7 +4,7 @@ class Distribution
     private $id;
     private $name;
     private $ident;
-    private $yearApplicable;
+    private $semesterApplicable;
     private $majorId;
     private $type;
 
@@ -13,7 +13,7 @@ class Distribution
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT name, ident, year_applicable, major, type
+            "SELECT name, ident, semester_applicable, major, type
              FROM distributions
              WHERE id = ?"
         );
@@ -26,7 +26,7 @@ class Distribution
         $stmt->bind_result(
             $name,
             $ident,
-            $yearApplicable,
+            $semesterApplicable,
             $majorId,
             $type
         );
@@ -37,7 +37,7 @@ class Distribution
 
         $this->name = $name;
         $this->ident = $ident;
-        $this->yearApplicable = $yearApplicable;
+        $this->semesterApplicable = $semesterApplicable;
         $this->majorId = $majorId;
         $this->type = $type;
     }
@@ -57,9 +57,9 @@ class Distribution
         return $this->ident;
     }
 
-    public function getYearApplicable()
+    public function getSemesterApplicable()
     {
-        return $this->yearApplicable;
+        return $this->semesterApplicable;
     }
 
     public function getMajorId()
