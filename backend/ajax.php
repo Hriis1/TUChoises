@@ -199,6 +199,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Edit major
+    if ($_POST['action'] === 'editMajor') {
+        // Get submitted data
+        $id = trim($_POST['id']);
+        $name = trim($_POST['name']);
+        $short = trim($_POST['short']);
+        $faculty = trim($_POST['faculty']);
+
+        // Validate not empty
+        if ($name === '') {
+            echo json_encode([0, 'name', 'Name required']);
+            exit;
+        }
+        if ($short === '') {
+            echo json_encode([0, 'short', 'Short required']);
+            exit;
+        }
+        if ($faculty === '') {
+            echo json_encode([0, 'faculty', 'Faculty required']);
+            exit;
+        }
+
+        // Escape
+        $id = $mysqli->real_escape_string($id);
+        $name = $mysqli->real_escape_string($name);
+        $short = $mysqli->real_escape_string($short);
+        $faculty = (int) $faculty;
+
+        // Validate id
+        if (!is_numeric($id)) {
+            echo json_encode([0, '', 'Invalid major']);
+            exit;
+        }
+
+        // Validate uniqueness for 'short' outside of current major
+        $r = $mysqli->query("SELECT 1 FROM majors WHERE short = '$short' AND id != $id LIMIT 1");
+        if ($r->num_rows) {
+            echo json_encode([0, 'short', 'Short already exists']);
+            exit;
+        }
+
+        // Submit to db
+        $mysqli->query("UPDATE majors SET name = '$name', short = '$short', faculty = $faculty WHERE id = $id");
+
+        // Success
+        if ($mysqli->affected_rows >= 0) {
+            // Send an alert
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Major edited successfully!"
+            ];
+            echo json_encode([1, "", ""]);
+            exit;
+        }
+
+        // Error
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error Editing Major!"
+        ];
+        echo json_encode([0, "", ""]);
+        exit;
+    }
+
+
     //Add distribution
     if ($_POST['action'] === 'addDistribution') {
         $name = trim($_POST['name']);
