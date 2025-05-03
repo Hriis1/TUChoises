@@ -43,7 +43,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                         <th>Name</th>
                         <th>Ident</th>
                         <th>Semester</th>
-                        <th>Major ID</th>
+                        <th>Major</th>
                         <th>Type</th>
                         <th>#</th>
                     </tr>
@@ -67,6 +67,12 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                                 } ?>
                             </td>
                             <td>
+                                <a href="distributionView.php?id=<?= $d["id"] ?>;">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="distributionChoiseAdd.php?id=<?= $d["id"]; ?>">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
                                 <a href="distributionEdit.php?id=<?= $d["id"]; ?>">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
@@ -86,6 +92,11 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 
 <script>
     $(document).ready(function () {
-        let table = new DataTable("#table");
+        let table = new DataTable("#table", {
+            columnDefs: [
+                { targets: 6, width: "100px" }, //Actions
+            ]
+        });
     });
+
 </script>
