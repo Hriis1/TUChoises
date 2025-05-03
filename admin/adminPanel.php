@@ -21,7 +21,7 @@ if ($user->getRole() != 3) {//if user is not admin
                             <div class="d-grid gap-2">
                                 <a href="../users/userList.php" class="btn btn-outline-primary">View Users</a>
                                 <a href="../users/userAdd.php" class="btn btn-outline-primary">Add User</a>
-                                <button class="btn btn-primary">Import Users</button>
+                                <button class="btn btn-success">Import Users</button>
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@ if ($user->getRole() != 3) {//if user is not admin
                                     Distributions</a>
                                 <a href="../distributions/distributionAdd.php" class="btn btn-outline-primary">Add
                                     Distribution</a>
-                                <button class="btn btn-primary">Import Distributions</button>
+                                <button class="btn btn-success">Import Distributions</button>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@ if ($user->getRole() != 3) {//if user is not admin
                             <div class="d-grid gap-2">
                                 <a href="../majors/majorList.php" class="btn btn-outline-primary">View Majors</a>
                                 <a href="../majors/majorAdd.php" class="btn btn-outline-primary">Add Major</a>
-                                <button class="btn btn-primary">Import Majors</button>
+                                <button class="btn btn-success">Import Majors</button>
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@ if ($user->getRole() != 3) {//if user is not admin
                                 <a href="../majors/facultyList.php" class="btn btn-outline-primary">View
                                     Faculties</a>
                                 <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
-                                <button class="btn btn-primary">Import Faculties</button>
+                                <button class="btn btn-success">Import Faculties</button>
                             </div>
                         </div>
                     </div>
