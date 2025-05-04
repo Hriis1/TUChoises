@@ -70,7 +70,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                                 <a href="distributionView.php?id=<?= $d["id"] ?>;">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-                                <a href="distributionChoiseAdd.php?id=<?= $d["id"]; ?>">
+                                <a href="distributionChoiseAdd.php?dist_id=<?= $d["id"]; ?>">
                                     <i class="fa-solid fa-plus"></i>
                                 </a>
                                 <a href="distributionEdit.php?id=<?= $d["id"]; ?>">
