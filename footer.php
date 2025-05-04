@@ -20,11 +20,6 @@
 <script>
     //Import functions
     function importData(postUrl) {
-        if (typeof postUrl !== 'string' || !postUrl) {
-            console.error('importFaculties: you must pass a valid postUrl string.');
-            return;
-        }
-
         // 1. Create and insert a hidden file input restricted to .xls/.xlsx
         const $fileInput = $(
             '<input type="file" accept=".xls,.xlsx" style="display:none;" />'
@@ -35,7 +30,7 @@
         $fileInput.on('change', function () {
             const file = this.files[0];
             if (!file) {
-                // No file → cleanup
+                // No file - cleanup
                 $fileInput.remove();
                 return;
             }
@@ -51,7 +46,7 @@
 
             // 4. Build FormData
             const formData = new FormData();
-            formData.append(file);
+            formData.append("fileUpload", file);
 
             // 5. Send AJAX POST
             $.ajax({
@@ -61,15 +56,14 @@
                 processData: false,
                 contentType: false,
                 success(response) {
-                    alert('Import successful!');
-                    console.log('Server response:', response);
+                    location.reload();
                 },
                 error(jqXHR, textStatus, errorThrown) {
                     alert('Import failed: ' + (jqXHR.responseText || textStatus));
                     console.error('Error details:', errorThrown);
                 },
                 complete() {
-                    // Remove the input after we're done
+                    // Remove the input after we done
                     $fileInput.remove();
                 }
             });
