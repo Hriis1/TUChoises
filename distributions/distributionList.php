@@ -33,6 +33,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 <h2 class="mb-0">Distribution List</h2>
                 <div>
                     <a href="distributionAdd.php" class="btn btn-primary px-4 me-2">Add Distribution</a>
+                    <button onclick="importDistributions()" class="btn btn-success px-4">Import Distributions</button>
                 </div>
             </div>
 

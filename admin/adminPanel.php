@@ -1,5 +1,5 @@
-<?php 
-require_once "../header.php"; 
+<?php
+require_once "../header.php";
 
 if ($user->getRole() != 3) {//if user is not admin 
     header("Location: ../index.php");
@@ -60,7 +60,7 @@ if ($user->getRole() != 3) {//if user is not admin
                                 <a href="../majors/facultyList.php" class="btn btn-outline-primary">View
                                     Faculties</a>
                                 <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
-                                <button class="btn btn-success">Import Faculties</button>
+                                <button class="btn btn-success" onclick="">Import Faculties</button>
                             </div>
                         </div>
                     </div>

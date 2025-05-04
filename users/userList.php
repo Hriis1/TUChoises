@@ -32,6 +32,7 @@ $users = getNonDeletedFromDB("users", $mysqli);
                 <h2 class="mb-0">User List</h2>
                 <div>
                     <a href="userAdd.php" class="btn btn-primary px-4 me-2">Add User</a>
+                    <button onclick="importUsers()" class="btn btn-success px-4">Import Users</button>
                 </div>
             </div>
             <hr>
