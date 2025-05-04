@@ -19,9 +19,65 @@
 
 <script>
     //Import functions
-    function importFaculties() {
-        console.log("faculties imported");
-    } 
+    function importData(postUrl) {
+        if (typeof postUrl !== 'string' || !postUrl) {
+            console.error('importFaculties: you must pass a valid postUrl string.');
+            return;
+        }
+
+        // 1. Create and insert a hidden file input restricted to .xls/.xlsx
+        const $fileInput = $(
+            '<input type="file" accept=".xls,.xlsx" style="display:none;" />'
+        );
+        $('body').append($fileInput);
+
+        // 2. When the user selects a file...
+        $fileInput.on('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                // No file → cleanup
+                $fileInput.remove();
+                return;
+            }
+
+            // 3. Validate extension
+            const allowed = ['xls', 'xlsx'];
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!allowed.includes(ext)) {
+                alert('Please select a .xls or .xlsx file.');
+                $fileInput.remove();
+                return;
+            }
+
+            // 4. Build FormData
+            const formData = new FormData();
+            formData.append(file);
+
+            // 5. Send AJAX POST
+            $.ajax({
+                url: postUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success(response) {
+                    alert('Import successful!');
+                    console.log('Server response:', response);
+                },
+                error(jqXHR, textStatus, errorThrown) {
+                    alert('Import failed: ' + (jqXHR.responseText || textStatus));
+                    console.error('Error details:', errorThrown);
+                },
+                complete() {
+                    // Remove the input after we're done
+                    $fileInput.remove();
+                }
+            });
+        });
+
+        // 6. Kick off the file dialog
+        $fileInput.click();
+    }
 
     //Main
     $(document).ready(function () {

@@ -60,7 +60,7 @@ if ($user->getRole() != 3) {//if user is not admin
                                 <a href="../majors/facultyList.php" class="btn btn-outline-primary">View
                                     Faculties</a>
                                 <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
-                                <button class="btn btn-success" onclick="">Import Faculties</button>
+                                <button class="btn btn-success" onclick="importFaculties()">Import Faculties</button>
                             </div>
                         </div>
                     </div>
