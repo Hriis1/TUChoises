@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/sessionConfig.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+
 // 1) Only allow POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo 0;
@@ -75,7 +76,7 @@ if (strtolower($h1) !== 'name' || strtolower($h2) !== 'short') {
 
 // Prepare statements
 // Check short exists
-$chkStmt = $mysqli->prepare("SELECT COUNT(*) FROM faculties WHERE short = ?");
+$chkStmt = $mysqli->prepare("SELECT COUNT(*) FROM faculties WHERE short = ? AND deleted = 0");
 $insStmt = $mysqli->prepare("INSERT INTO faculties (`name`,`short`) VALUES (?,?)");
 
 if (!$chkStmt || !$insStmt) {

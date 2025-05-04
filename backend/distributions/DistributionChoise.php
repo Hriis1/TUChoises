@@ -4,7 +4,6 @@ class DistributionChoice
 {
     private $id;
     private $name;
-    private $ident;
     private $distributionId;
     private $instructorId;
     private $description;
@@ -14,7 +13,7 @@ class DistributionChoice
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT name, ident, distribution, instructor, description
+            "SELECT name, distribution, instructor, description
              FROM distribution_choices
              WHERE id = ?"
         );
@@ -26,7 +25,6 @@ class DistributionChoice
         $stmt->execute();
         $stmt->bind_result(
             $name,
-            $ident,
             $distributionId,
             $instructorId,
             $description
@@ -37,7 +35,6 @@ class DistributionChoice
         $stmt->close();
 
         $this->name           = $name;
-        $this->ident          = $ident;
         $this->distributionId = $distributionId;
         $this->instructorId   = $instructorId;
         $this->description    = $description;
@@ -51,11 +48,6 @@ class DistributionChoice
     public function getName()
     {
         return $this->name;
-    }
-
-    public function getIdent()
-    {
-        return $this->ident;
     }
 
     public function getDistributionId()
