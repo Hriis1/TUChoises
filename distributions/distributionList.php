@@ -20,6 +20,7 @@ if (isset($_GET["action"]) && $_GET["action"] == "delete") {
 
     // Refresh page without GET params
     echo '<meta http-equiv="refresh" content="1;url=distributionList.php">';
+    exit;
 }
 
 $distributions = getNonDeletedFromDB("distributions", $mysqli);
