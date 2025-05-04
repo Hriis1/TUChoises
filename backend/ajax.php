@@ -413,6 +413,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Add distribution choices
+    if ($_POST['action'] === 'addChoices') {
+        $distId = isset($_POST['distribution']) ? trim($_POST['distribution']) : '';
+        $distType = isset($_POST['distType']) ? trim($_POST['distType']) : '';
+        $count = isset($_POST['count']) ? trim($_POST['count']) : '';
+        $names = isset($_POST['name']) ? $_POST['name'] : [];
+        $instructors = isset($_POST['instructor']) ? $_POST['instructor'] : [];
+        $descs = isset($_POST['description']) ? $_POST['description'] : [];
+
+        // Validate distribution ID
+        if ($distId === '' || !ctype_digit($distId) || $distType === '' || !ctype_digit($distType)) {
+            echo json_encode([0, 'distribution', 'Invalid distribution']);
+            exit;
+        }
+        $distId = (int) $distId;
+        $distType = (int) $distType;
+
+        // Validate count
+        if ($count === '' || !ctype_digit($count) || (int) $count < 1 || (int) $count > 10) {
+            echo json_encode([0, 'count', 'You can add up to 10 choices at a time']);
+            exit;
+        }
+        $count = (int) $count;
+
+        // Validate arrays length
+        if (count($names) !== $count || count($instructors) !== $count || count($descs) !== $count) {
+            echo json_encode([0, 'count', 'Mismatch between count and submitted fields']);
+            exit;
+        }
+
+        // Prepare insert
+        $stmt = $mysqli->prepare("
+        INSERT INTO distribution_choices
+          (`name`, `distribution`, `instructor`, `description`, type)
+        VALUES (?, ?, ?, ?, ?)
+        ");
+
+        if (!$stmt) {
+            echo json_encode([0, '', 'DB prepare failed']);
+            exit;
+        }
+
+        // Loop and insert each choice
+        for ($i = 0; $i < $count; $i++) {
+            $n = trim($names[$i]);
+            $ins = (int) $instructors[$i];
+            $d = trim($descs[$i]);
+
+            if ($n === '') {
+                echo json_encode([0, "name[$i]", "Name required for choice " . ($i + 1)]);
+                exit;
+            }
+            if ($instructors[$i] === '' || !ctype_digit($instructors[$i])) {
+                echo json_encode([0, "instructor[$i]", "Instructor required for choice " . ($i + 1)]);
+                exit;
+            }
+            if ($d === '') {
+                echo json_encode([0, "description[$i]", "Description required for choice " . ($i + 1)]);
+                exit;
+            }
+
+            $stmt->bind_param('siisi', $n, $distId, $ins, $d, $distType);
+            if (!$stmt->execute()) {
+                // Error
+                $_SESSION['alert'] = [
+                    "type" => "danger",
+                    "text" => "Error inserting choice " . ($i + 1)
+                ];
+                echo json_encode([0, "", ""]);
+                exit;
+            }
+        }
+
+        $stmt->close();
+        $_SESSION['alert'] = [
+            "type" => "success",
+            "text" => "Distribution choices added successfully!"
+        ];
+        echo json_encode([1, '', '']);
+        exit;
+    }
+
+
     //Add user
     if ($_POST['action'] === 'addUser') {
         $role = trim($_POST['role']);

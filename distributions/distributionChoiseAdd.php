@@ -20,6 +20,10 @@ try {
     exit;
 }
 
+//Get teachers
+$distMajor = $distribution->getMajorId();
+$distType = $distribution->getType();
+$teachers = getFromDBCondition("users", "WHERE role = 2 AND major = $distMajor AND active = 1 AND deleted = 0", $mysqli);
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center py-5" style="min-height:90vh">
@@ -29,6 +33,7 @@ try {
             <form id="choicesForm" method="post" class="w-100">
                 <input type="hidden" name="action" value="addChoices">
                 <input type="hidden" name="distribution" value="<?= $dist_id ?>">
+                <input type="hidden" name="distType" value="<?= $distType ?>">
                 <div class="mb-3">
                     <label for="count" class="form-label">Number of Choices(max 10)</label>
                     <input type="number" id="count" name="count" class="form-control" min="1" max="10" required>
@@ -44,6 +49,7 @@ try {
 
 <script>
     $(function () {
+        //Get the fields for the choices
         $('#count').on('input', function () {
             const container = $('#choicesContainer').empty();
             const val = parseInt(this.value, 10);
@@ -51,23 +57,51 @@ try {
             const n = Math.min(10, val);
             for (let i = 1; i <= n; i++) {
                 container.append(`
-        <div class="border p-3 mb-3">
-          <h5>Choice ${i}</h5>
-          <div class="mb-3">
-            <label class="form-label" for="name_${i}">Name</label>
-            <input type="text" id="name_${i}" name="name[]" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="instructor_${i}">Instructor</label>
-            <input type="text" id="instructor_${i}" name="instructor[]" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="description_${i}">Description</label>
-            <textarea id="description_${i}" name="description[]" class="form-control" required></textarea>
-          </div>
-        </div>
-      `);
+                <div class="border p-3 mb-3">
+                    <h5>Choice ${i}</h5>
+                    <div class="mb-3">
+                    <label for="name_${i}" class="form-label">Name</label>
+                    <input type="text" id="name_${i}" name="name[]" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                    <label for="instructor_${i}" class="form-label">Instructor</label>
+                    <select id="instructor_${i}" name="instructor[]" class="form-select" required>
+                        <?php foreach ($teachers as $t): ?>
+                        <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['names']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    </div>
+                    <div class="mb-3">
+                    <label for="description_${i}" class="form-label">Description</label>
+                    <textarea id="description_${i}" name="description[]" class="form-control" required></textarea>
+                    </div>
+                </div>
+                `);
             }
         });
+
+        //Submit the form 
+        $('#choicesForm').on('submit', function (e) {
+            e.preventDefault();
+            $('.text-danger').remove();
+            $.ajax({
+                url: '../backend/ajax.php',
+                method: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (res) {
+                    if (res[0] == 1) {
+                        window.location = 'distributionView.php?id=<?= $distribution->getId(); ?>';
+                    } else if (res[1]) {
+                        $('[name="' + res[1] + '"]').after('<div class="text-danger">' + res[2] + '</div>');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
+                    console.error("Raw response:", jqXHR.responseText);
+                }
+            });
+        });
+
     });
 </script>
