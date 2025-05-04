@@ -10,10 +10,13 @@ if (!isset($_GET['dist_id']) || !ctype_digit($_GET['dist_id'])) {
 }
 $dist_id = (int) $_GET['dist_id'];
 $distribution = null;
+
+//Try getting the dist
 try {
     $distribution = new Distribution($dist_id, $mysqli);
 } catch (Exception $e) {
     echo $e->getMessage();
+    require_once "../footer.php";
     exit;
 }
 

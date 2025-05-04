@@ -11,7 +11,16 @@ if (!isset($_GET["id"])) {
     echo '<meta http-equiv="refresh" content="0;url=../admin/adminPanel.php">';
 }
 
-$maj = new Major($_GET["id"], $mysqli);
+//Try getting the major
+$maj = null;
+try {
+    $maj = new Major($_GET["id"], $mysqli);
+} catch (Exception $e) {
+    echo $e->getMessage();
+    require_once "../footer.php";
+    exit;
+}
+
 $faculties = getNonDeletedFromDB("faculties", $mysqli);
 ?>
 

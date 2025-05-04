@@ -11,7 +11,16 @@ if (!isset($_GET["id"])) {
     echo '<meta http-equiv="refresh" content="0;url=../admin/adminPanel.php">';
 }
 
-$dist = new Distribution($_GET["id"], $mysqli);
+//Try getting the dist
+$dist = null;
+try {
+    $dist = new Distribution($_GET["id"], $mysqli);
+} catch (Exception $e) {
+    echo $e->getMessage();
+    require_once "../footer.php";
+    exit;
+}
+
 $majors = getNonDeletedFromDB("majors", $mysqli);
 ?>
 

@@ -10,8 +10,15 @@ if ($user->getRole() != 3) {
 if (!isset($_GET["id"])) {
     echo '<meta http-equiv="refresh" content="0;url=../admin/adminPanel.php">';
 }
-
-$faculty = new Faculty($_GET["id"], $mysqli);
+//Try getting the faculty
+$faculty = null;
+try {
+    $faculty = new Faculty($_GET["id"], $mysqli);
+} catch (Exception $e) {
+    echo $e->getMessage();
+    require_once "../footer.php";
+    exit;
+}
 ?>
 
 
