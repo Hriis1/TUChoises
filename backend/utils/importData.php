@@ -85,17 +85,28 @@ function importExcel(
             for ($i = 0; $i < count($fields); $i++) {
                 $t = $types[$i] ?? 's';
                 $typesStr .= $t;
-                $params[] = $t === 'i' ? (int) $values[$i] : $values[$i];
+                switch ($t) {
+                    case 'i':
+                        $params[] = (int) $values[$i];
+                        break;
+                    case 'd':
+                        $params[] = (float) $values[$i];
+                        break;
+                    default:
+                        $params[] = $values[$i];
+                }
             }
             $bind = array_merge([$typesStr], $params);
             $refs = [];
-            foreach ($bind as $k => &$v)
+            foreach ($bind as $k => &$v) {
                 $refs[$k] = &$bind[$k];
+            }
             call_user_func_array([$insertStmt, 'bind_param'], $refs);
 
             if ($insertStmt->execute()) {
                 $inserted++;
             }
+
         }
 
         $mysqli->commit();
@@ -143,6 +154,15 @@ if ($_POST["action"] == "importFaculties") {
         ['name', 'short'],
         [1],
         'ss'
+    );
+} else if ($_POST["action"] == "importMajors") {
+    $res = importExcel(
+        $mysqli,
+        $_FILES['fileUpload']['tmp_name'],
+        'majors',
+        ['name', 'short', 'faculty'],
+        [1],
+        'ssi'
     );
 }
 
