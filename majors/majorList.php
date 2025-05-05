@@ -32,7 +32,8 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
                 <h2 class="mb-0">Major List</h2>
                 <div>
                     <a href="majorAdd.php" class="btn btn-primary px-4 me-2">Add Major</a>
-                    <button onclick="importMajors()" class="btn btn-success px-4">Import Majors</button>
+                    <button onclick="importData('../backend/utils/importData.php', 'importMajors')"
+                        class="btn btn-success px-4">Import Majors</button>
                 </div>
             </div>
 

@@ -32,7 +32,8 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                 <h2 class="mb-0">Faculty List</h2>
                 <div>
                     <a href="facultyAdd.php" class="btn btn-primary px-4 me-2">Add Faculty</a>
-                    <button onclick="importFaculties()" class="btn btn-success px-4">Import Faculties</button>
+                    <button onclick="importData('../backend/utils/importData.php', 'importFaculties')"
+                        class="btn btn-success px-4">Import Faculties</button>
                 </div>
             </div>
 
