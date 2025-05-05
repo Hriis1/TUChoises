@@ -19,7 +19,7 @@
 
 <script>
     //Import functions
-    function importData(postUrl) {
+    function importData(postUrl, action) {
         // 1. Create and insert a hidden file input restricted to .xls/.xlsx
         const $fileInput = $(
             '<input type="file" accept=".xls,.xlsx" style="display:none;" />'
@@ -47,6 +47,7 @@
             // 4. Build FormData
             const formData = new FormData();
             formData.append("fileUpload", file);
+            formData.append("action", action);
 
             // 5. Send AJAX POST
             $.ajax({
