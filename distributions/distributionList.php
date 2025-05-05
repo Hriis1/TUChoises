@@ -48,6 +48,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                         <th>Semester</th>
                         <th>Major</th>
                         <th>Type</th>
+                        <th>Active</th>
                         <th>#</th>
                     </tr>
                 </thead>
@@ -68,6 +69,14 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                                 } else if ($d["type"] == 2) {
                                     echo "Дипломен ръководител";
                                 } ?>
+                            </td>
+                            <td>
+                                <?php if ($d["active"]) { ?>
+                                    <span class="badge bg-success">Active</span>
+                                <?php } else { ?>
+                                    <span class="badge bg-danger" style="cursor: pointer;" title="Activate distribution"
+                                        onclick="activateDistriution(<?= $d['id'] ?>)">Inactive</span>
+                                <?php } ?>
                             </td>
                             <td>
                                 <a href="distributionView.php?id=<?= $d["id"] ?>;">
@@ -94,10 +103,30 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 <?php require_once "../footer.php"; ?>
 
 <script>
+    //Activate a distribution
+    function activateDistriution(id) {
+        $.ajax({
+            type: 'POST',
+            url: '../backend/ajax.php',
+            data: {
+                action: 'activateDistribution',
+                id: id
+            },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX error:", textStatus, errorThrown);
+                console.error("Raw response:", jqXHR.responseText);
+            }
+        });
+    }
+
+
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 6, width: "100px" }, //Actions
+                { targets: 7, width: "100px" }, //Actions
             ]
         });
     });

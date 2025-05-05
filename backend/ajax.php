@@ -413,6 +413,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] == 'activateDistribution') {
+        $dist_id = isset($_POST['id']) ? trim($_POST['id']) : '';
+
+        //Validate id
+        if ($dist_id === '' || !is_numeric($dist_id)) {
+            $_SESSION['alert'] = [
+                "type" => "danger",
+                "text" => "Invalid distribution!"
+            ];
+            echo 0;
+            exit;
+        }
+
+        $dist_id = (int) $dist_id;
+
+        // Submit to db
+        $mysqli->query("UPDATE distributions SET active = 1 WHERE id = $dist_id");
+
+        // Success
+        if ($mysqli->affected_rows == 1) {
+            $_SESSION['alert'] = [
+                "type" => "success",
+                "text" => "Distribution activate successfully!"
+            ];
+            echo 1;
+            exit;
+        }
+
+        // Error
+        $_SESSION['alert'] = [
+            "type" => "danger",
+            "text" => "Error activating distribution!"
+        ];
+        echo 0;
+        exit;
+    }
+
     // Add distribution choices
     if ($_POST['action'] === 'addChoices') {
         $distId = isset($_POST['distribution']) ? trim($_POST['distribution']) : '';
