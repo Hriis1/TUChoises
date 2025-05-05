@@ -47,7 +47,10 @@ if ($user->getRole() != 3) {//if user is not admin
                             <div class="d-grid gap-2">
                                 <a href="../majors/majorList.php" class="btn btn-outline-primary">View Majors</a>
                                 <a href="../majors/majorAdd.php" class="btn btn-outline-primary">Add Major</a>
-                                <button class="btn btn-success">Import Majors</button>
+                                <button class="btn btn-success"
+                                    onclick="importData('../backend/utils/importData.php', 'importMajors')">Import
+                                    Majors
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -62,7 +65,8 @@ if ($user->getRole() != 3) {//if user is not admin
                                 <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
                                 <button class="btn btn-success"
                                     onclick="importData('../backend/utils/importData.php', 'importFaculties')">Import
-                                    Faculties</button>
+                                    Faculties
+                                </button>
                             </div>
                         </div>
                     </div>
