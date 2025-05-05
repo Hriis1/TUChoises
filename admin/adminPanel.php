@@ -35,7 +35,10 @@ if ($user->getRole() != 3) {//if user is not admin
                                     Distributions</a>
                                 <a href="../distributions/distributionAdd.php" class="btn btn-outline-primary">Add
                                     Distribution</a>
-                                <button class="btn btn-success">Import Distributions</button>
+                                <button class="btn btn-success"
+                                    onclick="importData('../backend/utils/importData.php', 'importDistributions')">
+                                    Import Distributions
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -48,8 +51,8 @@ if ($user->getRole() != 3) {//if user is not admin
                                 <a href="../majors/majorList.php" class="btn btn-outline-primary">View Majors</a>
                                 <a href="../majors/majorAdd.php" class="btn btn-outline-primary">Add Major</a>
                                 <button class="btn btn-success"
-                                    onclick="importData('../backend/utils/importData.php', 'importMajors')">Import
-                                    Majors
+                                    onclick="importData('../backend/utils/importData.php', 'importMajors')">
+                                    Import Majors
                                 </button>
                             </div>
                         </div>
@@ -64,8 +67,8 @@ if ($user->getRole() != 3) {//if user is not admin
                                     Faculties</a>
                                 <a href="../majors/facultyAdd.php" class="btn btn-outline-primary">Add Faculty</a>
                                 <button class="btn btn-success"
-                                    onclick="importData('../backend/utils/importData.php', 'importFaculties')">Import
-                                    Faculties
+                                    onclick="importData('../backend/utils/importData.php', 'importFaculties')">
+                                    Import Faculties
                                 </button>
                             </div>
                         </div>

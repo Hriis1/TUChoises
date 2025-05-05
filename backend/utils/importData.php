@@ -164,6 +164,15 @@ if ($_POST["action"] == "importFaculties") {
         [1],
         'ssi'
     );
+} else if ($_POST["action"] == "importDistributions") {
+    $res = importExcel(
+        $mysqli,
+        $_FILES['fileUpload']['tmp_name'],
+        'distributions',
+        ['name', 'ident', 'semester_applicable', 'major', 'type'],
+        [1],
+        'ssiii'
+    );
 }
 
 //If it recognized the action
