@@ -169,7 +169,7 @@ if ($_POST["action"] == "importFaculties") {
         $mysqli,
         $_FILES['fileUpload']['tmp_name'],
         'distributions',
-        ['name', 'ident', 'semester_applicable', 'major', 'type'],
+        ['name', 'ident', 'semester_applicable', 'major', 'faculty', 'type'],
         [1],
         'ssiii'
     );

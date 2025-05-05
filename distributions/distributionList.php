@@ -47,6 +47,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                         <th>Ident</th>
                         <th>Semester</th>
                         <th>Major</th>
+                        <th>Faculty</th>
                         <th>Type</th>
                         <th>Active</th>
                         <th>#</th>
@@ -54,14 +55,29 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 </thead>
                 <tbody>
                     <?php foreach ($distributions as $d) {
-                        $currMajor = new Major($d["major"], $mysqli);
+                        $majorName = "";
+                        $facultyName = "";
+                        //Try getting major
+                        try {
+                            $currMajor = new Major($d["major"], $mysqli);
+                            $majorName = $currMajor->getName();
+                        } catch (\Exception $th) {
+                        }
+
+                        //Try getting faculty
+                        try {
+                            $currFaculty = new Faculty($d["faculty"], $mysqli);
+                            $facultyName = $currFaculty->getName();
+                        } catch (\Exception $th) {
+                        }
                         ?>
                         <tr>
                             <td><?= $d["id"]; ?></td>
                             <td><?= $d["name"]; ?></td>
                             <td><?= $d["ident"]; ?></td>
                             <td><?= $d["semester_applicable"]; ?></td>
-                            <td><?= $currMajor->getName(); ?></td>
+                            <td><?= $majorName; ?></td>
+                            <td><?= $facultyName; ?></td>
                             <td>
                                 <?php
                                 if ($d["type"] == 1) {
@@ -126,7 +142,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 7, width: "100px" }, //Actions
+                { targets: 8, width: "100px" }, //Actions
             ]
         });
     });

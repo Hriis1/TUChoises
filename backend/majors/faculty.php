@@ -1,4 +1,6 @@
 <?php
+
+require_once "Major.php";
 class Faculty
 {
     private $id;
@@ -39,5 +41,25 @@ class Faculty
     public function getShort()
     {
         return $this->short;
+    }
+
+    public function getMajors(mysqli $mysqli)
+    {
+        $stmt = $mysqli->prepare("SELECT id FROM majors WHERE faculty = ?");
+        if (!$stmt) {
+            throw new Exception('Failed to prepare statement: ' . $mysqli->error);
+        }
+        
+        $stmt->bind_param('i', $this->id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $majors = [];
+        while ($row = $result->fetch_assoc()) {
+            $majors[] = new Major($row['id'], $mysqli);
+        }
+        
+        $stmt->close();
+        return $majors;
     }
 }

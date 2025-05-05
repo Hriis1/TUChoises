@@ -263,14 +263,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    //Get majors of faculty
+    if ($_POST['action'] === 'getMajorsOfFaculty') {
+        $faculty = new Faculty($_POST["id"], $mysqli);
+
+        $majors = $faculty->getMajors($mysqli);
+        $response = [];
+        foreach ($majors as $major) {
+            $response[] = [
+                'id' => $major->getId(),
+                'name' => $major->getName(),
+                'short' => $major->getShort(),
+                'facultyId' => $major->getFacultyId(),
+            ];
+        }
+        echo json_encode($response);
+        exit;
+
+    }
 
     //Add distribution
     if ($_POST['action'] === 'addDistribution') {
         $name = trim($_POST['name']);
         $ident = trim($_POST['ident']);
         $semester_applicable = trim($_POST['semester_applicable']);
-        $major = trim($_POST['major']);
+        $faculty = trim($_POST['faculty']);
         $type = trim($_POST['type']);
+        $major = $type == "1" ? trim($_POST['major']) : 0;
 
         if ($name === '') {
             echo json_encode([0, 'name', 'Name required']);
@@ -288,8 +307,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([0, 'semester_applicable', 'Year must be an integer between 1 and 5']);
             exit;
         }
-        if ($major === '') {
-            echo json_encode([0, 'major', 'Major required']);
+        if ($major === '' && $type == '1') {
+            echo json_encode([0, 'major', 'Major required for subjects']);
+            exit;
+        }
+        if ($faculty === '') {
+            echo json_encode([0, 'faculty', 'Faculty required']);
             exit;
         }
         if ($type === '') {
@@ -301,6 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ident = $mysqli->real_escape_string($ident);
         $semester_applicable = (int) $semester_applicable;
         $major = (int) $major;
+        $faculty = (int) $faculty;
         $type = (int) $type;
 
         $rIdent = $mysqli->query("SELECT 1 FROM distributions WHERE ident='$ident' LIMIT 1");
@@ -309,7 +333,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $type)");
+        $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, faculty, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $faculty, $type)");
 
         if ($mysqli->affected_rows === 1) {
 
@@ -341,8 +365,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = trim($_POST['name']);
         $ident = trim($_POST['ident']);
         $semester_applicable = trim($_POST['semester_applicable']);
-        $major = trim($_POST['major']);
+        $faculty = trim($_POST['faculty']);
         $type = trim($_POST['type']);
+        $major = $type == "1" ? trim($_POST['major']) : 0;
 
         // Validate not empty
         if ($name === '') {
@@ -361,8 +386,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([0, 'semester_applicable', 'Semester must be between 1 and 10']);
             exit;
         }
-        if ($major === '') {
-            echo json_encode([0, 'major', 'Major required']);
+        if ($major === '' && $type == '1') {
+            echo json_encode([0, 'major', 'Major required for subjects']);
+            exit;
+        }
+        if ($faculty === '') {
+            echo json_encode([0, 'faculty', 'Faculty required']);
             exit;
         }
         if ($type === '') {
@@ -376,6 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ident = $mysqli->real_escape_string($ident);
         $semester_applicable = (int) $semester_applicable;
         $major = (int) $major;
+        $faculty = (int) $faculty;
         $type = (int) $type;
 
         // Validate id
@@ -392,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Submit to db
-        $mysqli->query("UPDATE distributions SET name = '$name', ident = '$ident', semester_applicable = $semester_applicable, major = $major, type = $type WHERE id = $id");
+        $mysqli->query("UPDATE distributions SET name = '$name', ident = '$ident', semester_applicable = $semester_applicable, major = $major, faculty = $faculty, type = $type WHERE id = $id");
 
         // Success
         if ($mysqli->affected_rows >= 0) {

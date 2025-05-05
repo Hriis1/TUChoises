@@ -6,6 +6,8 @@ class Distribution
     private $ident;
     private $semesterApplicable;
     private $majorId;
+
+    private $facultyId;
     private $type;
 
     public function __construct(int $id, mysqli $mysqli)
@@ -13,7 +15,7 @@ class Distribution
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT name, ident, semester_applicable, major, type
+            "SELECT name, ident, semester_applicable, major, faculty, type
              FROM distributions
              WHERE id = ?"
         );
@@ -28,6 +30,7 @@ class Distribution
             $ident,
             $semesterApplicable,
             $majorId,
+            $facultyId,
             $type
         );
         if (!$stmt->fetch()) {
@@ -39,6 +42,7 @@ class Distribution
         $this->ident = $ident;
         $this->semesterApplicable = $semesterApplicable;
         $this->majorId = $majorId;
+        $this->facultyId = $facultyId;
         $this->type = $type;
     }
 
@@ -65,6 +69,11 @@ class Distribution
     public function getMajorId()
     {
         return $this->majorId;
+    }
+
+    public function getFacultyId()
+    {
+        return $this->facultyId;
     }
 
     public function getType()

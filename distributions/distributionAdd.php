@@ -4,7 +4,8 @@ if ($user->getRole() != 3) {
     header("Location: ../index.php");
     exit;
 }
-$majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
+
+$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
@@ -23,14 +24,19 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
                 </div>
                 <div class="mb-3">
                     <label for="semester_applicable" class="form-label">Semester</label>
-                    <input type="number" class="form-control" id="semester_applicable" name="semester_applicable" required
-                        min="1" max="10">
+                    <input type="number" class="form-control" id="semester_applicable" name="semester_applicable"
+                        required min="1" max="10">
                 </div>
                 <div class="mb-3">
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
-                        <?php while ($m = $majors->fetch_assoc()): ?>
-                            <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['name']) ?></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="faculty" class="form-label">Faculty</label>
+                    <select class="form-select" id="faculty" name="faculty" required>
+                        <?php while ($f = $faculties->fetch_assoc()): ?>
+                            <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['name']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
@@ -51,6 +57,43 @@ require_once "../footer.php";
 ?>
 <script>
     $(function () {
+
+        //Toggle major on change of type
+        function toggleMajor() {
+            if ($('#type').val() == 2) {
+                $('#major').closest('.mb-3').hide().find('select').prop('required', false);
+                $('#major').val(0);
+            } else {
+                $('#major').closest('.mb-3').show().find('select').prop('required', true);
+            }
+        }
+        toggleMajor();
+        $('#type').on('change', toggleMajor);
+
+        //Get majors when faculty changes
+        $("#faculty").on('change', function () {
+            //Only get them if type is избираема дисциплина
+            if ($('#type').val() == 1) {
+                const facultyId = $(this).val();
+                $.ajax({
+                    url: '../backend/ajax.php',
+                    method: 'POST',
+                    data: {
+                        action: "getMajorsOfFaculty",
+                        id: facultyId
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        const $maj = $('#major').empty();
+                        $.each(res, function (i, m) {
+                            $maj.append($('<option>', { value: m.id, text: m.name }));
+                        });
+                    }
+                });
+            }
+        }).trigger('change');
+
+
         $('form').on('submit', function (e) {
             e.preventDefault();
             $('.text-danger').remove();
@@ -66,6 +109,10 @@ require_once "../footer.php";
                         $('[name="' + res[1] + '"]')
                             .after('<div class="text-danger">' + res[2] + '</div>');
                     }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
+                    console.error("Raw response:", jqXHR.responseText);
                 }
             });
         });
