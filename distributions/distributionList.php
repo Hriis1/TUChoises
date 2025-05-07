@@ -122,6 +122,13 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 <script>
     //Activate a distribution
     function switchDistribution(id, active) {
+
+        //Prompt the user
+        const confirmText = active != 0 ? "activate" : "deactivate";
+        if (!confirm(`Are you sure you want to ${confirmText} this distribution?`))
+            return;
+
+        //Activate/deactivate
         $.ajax({
             type: 'POST',
             url: '../backend/ajax.php',
@@ -131,6 +138,10 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 active: active
             },
             success: function (response) {
+
+                //
+
+
                 location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
