@@ -88,14 +88,15 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                             </td>
                             <td>
                                 <?php if ($d["active"]) { ?>
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success" style="cursor: pointer;" title="Deactivate distribution"
+                                        onclick="switchDistribution(<?= $d['id'] ?>, 0)">Active</span>
                                 <?php } else { ?>
                                     <span class="badge bg-danger" style="cursor: pointer;" title="Activate distribution"
-                                        onclick="activateDistriution(<?= $d['id'] ?>)">Inactive</span>
+                                        onclick="switchDistribution(<?= $d['id'] ?>, 1)">Inactive</span>
                                 <?php } ?>
                             </td>
                             <td>
-                                <a href="distributionView.php?id=<?= $d["id"] ?>;">
+                                <a href="distributionView.php?id=<?= $d["id"] ?>">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <a href="distributionChoiseAdd.php?dist_id=<?= $d["id"]; ?>">
@@ -120,13 +121,14 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 
 <script>
     //Activate a distribution
-    function activateDistriution(id) {
+    function switchDistribution(id, active) {
         $.ajax({
             type: 'POST',
             url: '../backend/ajax.php',
             data: {
-                action: 'activateDistribution',
-                id: id
+                action: 'toggleDistribution',
+                id: id,
+                active: active
             },
             success: function (response) {
                 location.reload();

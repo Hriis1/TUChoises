@@ -443,8 +443,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($_POST['action'] == 'activateDistribution') {
+    if ($_POST['action'] == 'toggleDistribution') {
         $dist_id = isset($_POST['id']) ? trim($_POST['id']) : '';
+        $active = $_POST["active"] != 0 ? 1 : 0;
 
         //Validate id
         if ($dist_id === '' || !is_numeric($dist_id)) {
@@ -459,13 +460,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dist_id = (int) $dist_id;
 
         // Submit to db
-        $mysqli->query("UPDATE distributions SET active = 1 WHERE id = $dist_id");
+        $mysqli->query("UPDATE distributions SET active = $active WHERE id = $dist_id");
 
         // Success
+        $response = $active == 1 ? "activated" : "deactivated";
         if ($mysqli->affected_rows == 1) {
             $_SESSION['alert'] = [
                 "type" => "success",
-                "text" => "Distribution activate successfully!"
+                "text" => "Distribution {$response} successfully!"
             ];
             echo 1;
             exit;
