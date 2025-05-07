@@ -46,6 +46,7 @@ $users = getNonDeletedFromDB("users", $mysqli);
                         <th>Role</th>
                         <th>FN</th>
                         <th>Major</th>
+                        <th>Faculty</th>
                         <th>Start Year</th>
                         <th>Active</th>
                         <th>#</th>
@@ -53,7 +54,21 @@ $users = getNonDeletedFromDB("users", $mysqli);
                 </thead>
                 <tbody>
                     <?php foreach ($users as $u) {
-                        $currMajor = new Major($u["major"], $mysqli);
+                        $majorName = "";
+                        $facultyName = "";
+                        //Try getting major
+                        try {
+                            $currMajor = new Major($u["major"], $mysqli);
+                            $majorName = $currMajor->getName();
+                        } catch (\Exception $th) {
+                        }
+
+                        //Try getting faculty
+                        try {
+                            $currFaculty = new Faculty($u["faculty"], $mysqli);
+                            $facultyName = $currFaculty->getName();
+                        } catch (\Exception $th) {
+                        }
                         ?>
                         <tr>
                             <td><?= $u["id"] ?></td>
@@ -78,9 +93,16 @@ $users = getNonDeletedFromDB("users", $mysqli);
                                 ?>
                             </td>
                             <td><?= $u["fn"] ?></td>
-                            <td><?= $currMajor->getName(); ?></td>
+                            <td><?= $majorName; ?></td>
+                            <td><?= $facultyName; ?></td>
                             <td><?= $u["start_year"] ?></td>
-                            <td><?= $u["active"] ?></td>
+                            <td>
+                                <?php if ($u["active"]) { ?>
+                                    <span class="badge bg-success">Active</span>
+                                <?php } else { ?>
+                                    <span class="badge bg-danger">Inactive</span>
+                                <?php } ?>
+                            </td>
                             <td>
                                 <?php if ($u["role"] != 3) { //Admins should not be able to change/delete other admin acc ?>
                                     <a href="userEdit.php?id=<?= $u["id"] ?>"><i class="fa-solid fa-pen"></i></a>
@@ -102,7 +124,7 @@ $users = getNonDeletedFromDB("users", $mysqli);
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 9, width: "100px" }, //Actions
+                { targets: 10, width: "100px" }, //Actions
             ]
         });
     });

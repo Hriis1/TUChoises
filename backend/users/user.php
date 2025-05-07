@@ -8,6 +8,7 @@ class User
     private $role;
     private $fn;
     private $majorId;
+    private $facultyId;
     private $startYear;
 
     public function __construct($id, mysqli $mysqli)
@@ -15,7 +16,7 @@ class User
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT username, names, email, role, fn, major, start_year
+            "SELECT username, names, email, role, fn, major, faculty, start_year
              FROM users
              WHERE id = ?
              LIMIT 1"
@@ -33,6 +34,7 @@ class User
             $role,
             $fn,
             $majorId,
+            $facultyId,
             $startYear
         );
         if (!$stmt->fetch()) {
@@ -46,6 +48,7 @@ class User
         $this->role = $role;
         $this->fn = $fn;
         $this->majorId = $majorId;
+        $this->facultyId = $facultyId;
         $this->startYear = $startYear;
     }
 
@@ -96,6 +99,11 @@ class User
     public function getMajorId()
     {
         return $this->majorId;
+    }
+
+    public function getFacultyId()
+    {
+        return $this->facultyId;
     }
 
     public function getStartYear()

@@ -5,6 +5,7 @@ if ($user->getRole() != 3) {
     exit;
 }
 $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
+$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height:90vh">
@@ -25,7 +26,7 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
-                <div class="mb-3 teacher-field" style="display:none">
+                <div class="mb-3 teacher-field" style="display: none;">
                     <label for="pass" class="form-label">Password</label>
                     <input type="password" class="form-control" id="pass" name="pass">
                 </div>
@@ -37,7 +38,7 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
                     <label for="start_year" class="form-label">Start Year</label>
                     <input type="number" class="form-control" id="start_year" name="start_year" required>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 student-field">
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
                         <?php while ($m = $majors->fetch_assoc()): ?>
@@ -45,6 +46,15 @@ $majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
                         <?php endwhile; ?>
                     </select>
                 </div>
+                <div class="mb-3 teacher-field" style="display: none;">
+                    <label for="major" class="form-label">Faculty</label>
+                    <select class="form-select" id="faculty" name="faculty" required>
+                        <?php while ($f = $faculties->fetch_assoc()): ?>
+                            <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['name']) ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label for="role" class="form-label">Role</label>
                     <select class="form-select" id="role" name="role" required>

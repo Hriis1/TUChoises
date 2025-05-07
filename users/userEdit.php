@@ -22,6 +22,7 @@ try {
 }
 
 $majors = getNonDeletedFromDB("majors", $mysqli);
+$faculties = getNonDeletedFromDB("faculties", $mysqli);
 ?>
 
 <main>
@@ -47,17 +48,17 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
                     <input type="email" class="form-control" id="email" name="email" value="<?= $userObj->getEmail() ?>"
                         required>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 student-field">
                     <label for="fn" class="form-label student-field-label">Faculty Number</label>
                     <input type="text" class="form-control student-field" id="fn" name="fn"
                         value="<?= $userObj->getFn() ?>">
                 </div>
-                <div class="mb-3">
-                    <label for="start_year" class="form-label student-field-label">Start Year</label>
-                    <input type="number" class="form-control student-field" id="start_year" name="start_year"
+                <div class="mb-3 student-field">
+                    <label for="start_year" class="form-label">Start Year</label>
+                    <input type="number" class="form-control" id="start_year" name="start_year"
                         value="<?= $userObj->getStartYear() ?>">
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 student-field">
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
                         <?php foreach ($majors as $m): ?>
@@ -67,12 +68,20 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="mb-3 teacher-field" style="display: none;">
+                    <label for="major" class="form-label">Faculty</label>
+                    <select class="form-select" id="faculty" name="faculty" required>
+                        <?php foreach ($faculties as $f): ?>
+                            <option value="<?= $f['id'] ?>" <?= $f['id'] == $userObj->getFacultyId() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($f['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
                 <div class="mb-3">
                     <label for="role" class="form-label">Role</label>
-                    <select class="form-select" id="role" name="role" required>
-                        <option value="1" <?= $userObj->getRole() == 1 ? 'selected' : '' ?>>student</option>
-                        <option value="2" <?= $userObj->getRole() == 2 ? 'selected' : '' ?>>teacher</option>
-                    </select>
+                    <input type="text" class="form-control" id="type" name="type"
+                        value="<?= $userObj->getRole() == 1 ? 'Student' : 'Teacher' ?>" readonly>
                 </div>
                 <button type="submit" class="btn btn-primary">Edit User</button>
             </form>
@@ -84,17 +93,16 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
 
 <script>
     $(function () {
-        function toggle() {
-            if ($('#role').val() == '1') {
-                $('.student-field-label').show();
-                $('.student-field').show().attr('required', true);
+        function toggleFields() {
+            if (<?= $userObj->getRole(); ?> == '2') {
+                $('.teacher-field').show().find('input').attr('required', true);
+                $('.student-field').hide().find('input, select').attr('required', false);
             } else {
-                $('.student-field-label').hide();
-                $('.student-field').hide().attr('required', false);
+                $('.student-field').show().find('input, select').attr('required', true);
+                $('.teacher-field').hide().find('input').attr('required', false);
             }
         }
-        $('#role').on('change', toggle);
-        toggle();
+        toggleFields();
 
         $('form').on('submit', function (e) {
             e.preventDefault();
