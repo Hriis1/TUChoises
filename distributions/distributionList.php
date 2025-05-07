@@ -139,8 +139,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
             },
             success: function (response) {
 
-                //
-
+                //TODO: Calculate which students are distriuted where here
 
                 location.reload();
             },

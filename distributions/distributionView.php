@@ -60,12 +60,28 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                         <th>Distribution</th>
                         <th>Description</th>
                         <th>Major</th>
+                        <th>Faculty</th>
                         <th>#</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($distChoices as $dc) {
-                        $currMajor = new Major($dist->getMajorId(), $mysqli);
+                        $majorName = "";
+                        $facultyName = "";
+                        //Try getting major
+                        try {
+                            $currMajor = new Major($dist->getMajorId(), $mysqli);
+                            $majorName = $currMajor->getName();
+                        } catch (\Exception $th) {
+                        }
+
+                        //Try getting faculty
+                        try {
+                            $currFaculty = new Faculty($dist->getFacultyId(), $mysqli);
+                            $facultyName = $currFaculty->getName();
+                        } catch (\Exception $th) {
+                        }
+
                         $currTeacher = new User($dc["instructor"], $mysqli);
                         ?>
                         <tr>
@@ -74,7 +90,8 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                             <td><?= $currTeacher->getNames(); ?></td>
                             <td><?= $dist->getName(); ?></td>
                             <td><?= $dc["description"]; ?></td>
-                            <td><?= $currMajor->getName(); ?></td>
+                            <td><?= $majorName; ?></td>
+                            <td><?= $facultyName; ?></td>
                             <td>
                                 <a
                                     href="distributionView.php?action=delete&dist_id=<?= $dist->getId(); ?>&choice_id=<?= $dc["id"]; ?>">
