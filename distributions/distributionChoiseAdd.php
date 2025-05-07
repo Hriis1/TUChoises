@@ -21,8 +21,12 @@ try {
 }
 
 //Get teachers
-$distMajor = $distribution->getMajorId();
+$teachers = null;
 $distType = $distribution->getType();
+$distMajor = $distribution->getMajorId();
+if($distType == 1) { //if type is disciplina
+//$teachers = getFromDBCondition("users", "WHERE role = 2 AND ");
+}
 $teachers = getFromDBCondition("users", "WHERE role = 2 AND major = $distMajor AND active = 1 AND deleted = 0", $mysqli);
 ?>
 <main>

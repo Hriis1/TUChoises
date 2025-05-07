@@ -93,6 +93,9 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                             <td><?= $majorName; ?></td>
                             <td><?= $facultyName; ?></td>
                             <td>
+                                <a href="distributionChoiceEdit.php?id=<?= $dc["id"]; ?>">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
                                 <a
                                     href="distributionView.php?action=delete&dist_id=<?= $dist->getId(); ?>&choice_id=<?= $dc["id"]; ?>">
                                     <i class="fa-solid fa-trash"></i>
@@ -112,7 +115,7 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                //{ targets: 6, width: "100px" }, //Actions
+                { targets: 7, width: "100px" }, //Actions
             ]
         });
     });
