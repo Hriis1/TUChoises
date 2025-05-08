@@ -26,10 +26,6 @@ if ($user->getRole() != 3) { //if user is not an admin
         exit;
     }
 }
-
-$facultyID = $dist->getFacultyId();
-$majors = getFromDBCondition("majors", "WHERE faculty = $facultyID AND deleted = 0", $mysqli);
-$faculties = getNonDeletedFromDB("faculties", $mysqli);
 ?>
 
 <main>
@@ -38,7 +34,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
             <h2 class="mb-3">Edit Distribution Choice(<?= $dc->getName(); ?>) for <?= $dist->getIdent() ?></h2>
             <hr>
             <form method="post" class="w-100">
-                <input type="hidden" name="action" value="editDistributionChoice">
+                <input type="hidden" name="action" value="editChoice">
                 <input type="hidden" name="id" value="<?= $dc->getId(); ?>">
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
@@ -47,8 +43,12 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                 </div>
                 <div class="mb-3">
                     <label for="name" class="form-label">Instructor</label>
-                    <input type="text" class="form-control" id="name" name="name"
-                        value="<?= $instructor->getNames(); ?>" readonly>
+                    <input type="text" class="form-control" value="<?= $instructor->getNames(); ?>" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-control" required><?= $dc->getDescription(); ?>
+                    </textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Edit Distribution</button>
             </form>
@@ -72,7 +72,12 @@ require_once "../footer.php";
                 dataType: 'json',
                 success: function (res) {
                     if (res[0] == 1) {
-                        window.location = 'distributionList.php';
+                        <?php if ($user->getRole() == 3) {//if user is admin ?>
+                            window.location = 'distributionView.php?id=<?= $dist->getId(); ?>';
+                        <?php } else { //if user is teacher ?>
+                            //TODO
+                            window.location = '../index.php';
+                        <?php } ?>
                     } else if (res[1]) {
                         $('[name="' + res[1] + '"]').after('<div class="text-danger">' + res[2] + '</div>');
                     }

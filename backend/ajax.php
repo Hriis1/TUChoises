@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         //Validate id
         if (!is_numeric($id)) {
-            echo json_encode([0, '', 'Invalid faculty ID']);
+            echo json_encode([0, 'name', 'Invalid faculty']);
             exit;
         }
 
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate id
         if (!is_numeric($id)) {
-            echo json_encode([0, '', 'Invalid major']);
+            echo json_encode([0, 'name', 'Invalid major']);
             exit;
         }
 
@@ -410,7 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validate id
         if (!is_numeric($id)) {
-            echo json_encode([0, '', 'Invalid distribution ID']);
+            echo json_encode([0, 'name', 'Invalid distribution']);
             exit;
         }
 
@@ -564,6 +564,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    //Edit choice
+    if ($_POST['action'] == 'editChoice') {
+        $id = (int) $_POST['id'];
+        $name = trim($_POST['name']);
+        $description = trim($_POST['description']);
+
+        $choiceObj = null;
+        try {
+            $choiceObj = new DistributionChoice($id, $mysqli);
+        } catch (\Exception $e) {
+            echo json_encode([0, 'name', 'Invalid distribution choice']);
+            exit;
+        }
+
+        if (!$name) {
+            echo json_encode([0, 'name', 'Name required']);
+            exit;
+        }
+        if (!$description) {
+            echo json_encode([0, 'description', 'Description required']);
+            exit;
+        }
+
+        // update
+        $stmt = $mysqli->prepare(" UPDATE distribution_choices SET name = ?, description = ? WHERE id = ?");
+        $stmt->bind_param("ssi", $name, $description, $id);
+        $stmt->execute();
+        $rows = $stmt->affected_rows;
+        $stmt->close();
+
+        if ($rows > 0) {
+            $_SESSION['alert'] = ["type" => "success", "text" => "Distribution choice edited successfully!"];
+            echo json_encode([1, '', '']);
+            exit;
+        }
+
+        $_SESSION['alert'] = ["type" => "danger", "text" => "Error editing Distribution choice!"];
+        echo json_encode([0, '', '']);
+        exit;
+    }
+
 
     //Add user
     if ($_POST['action'] === 'addUser') {
@@ -701,7 +742,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // basic
         if (!is_numeric($id)) {
-            echo json_encode([0, '', 'Invalid user']);
+            echo json_encode([0, 'name', 'Invalid user']);
             exit;
         }
 
@@ -709,7 +750,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $userObj = new User($id, $mysqli);
         } catch (\Exception $e) {
-            echo json_encode([0, '', 'Invalid user']);
+            echo json_encode([0, 'name', 'Invalid user']);
         }
         $role = $userObj->getRole();
 
@@ -797,7 +838,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // update
         $mysqli->query("
-      UPDATE users SET
+        UPDATE users SET
         role = '$role',
         username = '$uEsc',
         names = '$nEsc',
@@ -808,8 +849,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         start_year = $start_year,
         pass = '$pass',
         active = $active
-      WHERE id = $id
-    ");
+        WHERE id = $id
+        ");
 
         if ($mysqli->affected_rows >= 0) {
             $_SESSION['alert'] = ["type" => "success", "text" => "User edited successfully!"];
