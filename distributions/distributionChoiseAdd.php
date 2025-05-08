@@ -23,11 +23,14 @@ try {
 //Get teachers
 $teachers = null;
 $distType = $distribution->getType();
-$distMajor = $distribution->getMajorId();
-if($distType == 1) { //if type is disciplina
-//$teachers = getFromDBCondition("users", "WHERE role = 2 AND ");
+if ($distType == 1 || $distType == 2) { //if type is valid
+    $distFac = $distribution->getFacultyId();
+    $teachers = getFromDBCondition("users", "WHERE role = 2 AND faculty = $distFac AND active = 1 AND deleted = 0", $mysqli);
+} else {
+    echo "Error: Invalid distribution type";
+    require_once "../footer.php";
+    exit;
 }
-$teachers = getFromDBCondition("users", "WHERE role = 2 AND major = $distMajor AND active = 1 AND deleted = 0", $mysqli);
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center py-5" style="min-height:90vh">

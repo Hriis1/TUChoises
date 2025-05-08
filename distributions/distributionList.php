@@ -139,7 +139,9 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
             },
             success: function (response) {
 
-                //TODO: Calculate which students are distriuted where here
+                if(active == 0) { //if distribution is being deactivated
+                    //TODO: Calculate which students are distriuted where here
+                }
 
                 location.reload();
             },
