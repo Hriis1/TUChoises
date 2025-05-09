@@ -49,9 +49,9 @@ $user = new User($_SESSION["userID"], $mysqli);
     <style>
         html,
         body {
+            overflow-x: hidden;
             height: 100%;
             margin: 0;
-            padding-top: 3rem;
         }
 
         body {
@@ -61,6 +61,10 @@ $user = new User($_SESSION["userID"], $mysqli);
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
+        }
+
+        main {
+            margin-top: 6rem;
         }
     </style>
 </head>
