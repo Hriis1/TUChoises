@@ -71,10 +71,10 @@ $user = new User($_SESSION["userID"], $mysqli);
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-custom fixed-top px-3">
             <div class="container-fluid">
                 <!-- logo on the left -->
-                <a class="navbar-brand fw-bold" href="<?= $projectRoot ?>/index.php">MyBrand</a>
+                <a class="navbar-brand fw-bold" href="<?= $projectRoot ?>/index.php">TU Choices</a>
 
                 <!-- mobile toggler -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
@@ -85,9 +85,6 @@ $user = new User($_SESSION["userID"], $mysqli);
                 <!-- links + CTA on the right -->
                 <div class="collapse navbar-collapse" id="mainNav">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="<?= $projectRoot ?>/index.php">Home</a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
