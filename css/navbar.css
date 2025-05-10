@@ -1,5 +1,5 @@
 .navbar-custom {
-  background-color: rgb(146 205 253 / 39%) !important;
+  background-image: linear-gradient(to top, rgb(250, 208, 196, 70%) 0%, rgb(255, 209, 255, 70%) 100%);
   backdrop-filter: blur(10px);
   border-radius: 0 0 1rem 1rem;
   margin-bottom: 2rem;

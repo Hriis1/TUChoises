@@ -5,13 +5,19 @@
         width: 280px;
         height: 93vh;
 
-        background-color: rgb(255 255 255 / 60%) !important;
+        background-color: rgb(255 255 255 / 50%) !important;
+    }
+
+    #sidebar-custom .nav-link:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: #000;
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 </style>
 <div id="sidebar-custom" class="d-flex flex-column flex-shrink-0 p-3 bg-light position-fixed" style="">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+    <div href="" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
         <span class="fs-4">Sidebar</span>
-    </a>
+    </div>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">

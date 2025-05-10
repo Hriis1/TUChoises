@@ -74,7 +74,7 @@ $user = new User($_SESSION["userID"], $mysqli);
         <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
             <div class="container-fluid">
                 <!-- logo on the left -->
-                <a class="navbar-brand fw-bold" href="#">MyBrand</a>
+                <a class="navbar-brand fw-bold" href="<?= $projectRoot ?>/index.php">MyBrand</a>
 
                 <!-- mobile toggler -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
