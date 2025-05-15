@@ -668,14 +668,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             $fn = $mysqli->real_escape_string($fn);
-            $major = (int) $major;
             $majorObj = null;
             try {
-                $majorObj = new Major($major, $mysqli);
+                $majorArr = getFromDBByID("majors", $major, $mysqli, "short");
+                $majorObj = new Major($majorArr["id"], $mysqli);
             } catch (\Exception $e) {
                 echo json_encode([0, 'major', 'Invalid major']);
             }
-            $faculty = $majorObj->getFacultyId($mysqli);
+            $faculty = $majorObj->getFacultyShort();
             $start_year = (int) $start_year;
             $password = '';
             $active = 0;
@@ -689,7 +689,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             $major = 0;
-            $faculty = (int) $faculty;
             $password = password_hash($pass, PASSWORD_BCRYPT);
             $fn = '';
             $start_year = 'NULL';
@@ -704,7 +703,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           INSERT INTO users 
             (username,names,email,pass,role,fn,major,faculty,start_year,active) 
           VALUES 
-            ('$uEsc','$nEsc','$eEsc','{$password}','{$role}','{$fn}',{$major},{$faculty},{$start_year},{$active})
+            ('$uEsc','$nEsc','$eEsc','{$password}','{$role}','{$fn}','{$major}','{$faculty}',{$start_year},{$active})
         ");
 
         if ($mysqli->affected_rows === 1) {
@@ -803,15 +802,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fn = $mysqli->real_escape_string($fn);
             $start_year = (int) $start_year;
 
-            $major = (int) $major;
             $majorObj = null;
             try {
-                $majorObj = new Major($major, $mysqli);
+                $majorArr = getFromDBByID("majors", $major, $mysqli, "short");
+                $majorObj = new Major($majorArr["id"], $mysqli);
             } catch (\Exception $e) {
                 echo json_encode([0, 'major', 'Invalid major']);
-                exit;
             }
-            $faculty = $majorObj->getFacultyId($mysqli);
+            $faculty = $majorObj->getFacultyShort();
         } else {
             // teacher: empty fn, start_year
             $fn = '';
@@ -822,8 +820,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $major = 0;
-            $faculty = (int) $faculty;
+            $major = "0";
         }
 
         // preserve pass & active
@@ -836,7 +833,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uEsc = $mysqli->real_escape_string($username);
         $nEsc = $mysqli->real_escape_string($names);
         $eEsc = $mysqli->real_escape_string($email);
-        $majorInt = (int) $major;
+        $major = $mysqli->real_escape_string($major);
+        $faculty = $mysqli->real_escape_string($faculty);
 
         // update
         $mysqli->query("
@@ -846,8 +844,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         names = '$nEsc',
         email = '$eEsc',
         fn = '$fn',
-        major = $majorInt,
-        faculty = $faculty,
+        major = '$major',
+        faculty = '$faculty',
         start_year = $start_year,
         pass = '$pass',
         active = $active

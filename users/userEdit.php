@@ -62,7 +62,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
                         <?php foreach ($majors as $m): ?>
-                            <option value="<?= $m['id'] ?>" <?= $m['id'] == $userObj->getMajorId() ? 'selected' : '' ?>>
+                            <option value="<?= $m['short'] ?>" <?= $m['short'] == $userObj->getMajorShort() ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($m['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -72,7 +72,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                     <label for="major" class="form-label">Faculty</label>
                     <select class="form-select" id="faculty" name="faculty" required>
                         <?php foreach ($faculties as $f): ?>
-                            <option value="<?= $f['id'] ?>" <?= $f['id'] == $userObj->getFacultyId() ? 'selected' : '' ?>>
+                            <option value="<?= $f['short'] ?>" <?= $f['short'] == $userObj->getFacultyShort() ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($f['name']) ?>
                             </option>
                         <?php endforeach; ?>

@@ -7,8 +7,8 @@ class User
     private $email;
     private $role;
     private $fn;
-    private $majorId;
-    private $facultyId;
+    private $majorShort;
+    private $facultyShort;
     private $startYear;
 
     public function __construct($id, mysqli $mysqli)
@@ -33,8 +33,8 @@ class User
             $email,
             $role,
             $fn,
-            $majorId,
-            $facultyId,
+            $majorShort,
+            $facultyShort,
             $startYear
         );
         if (!$stmt->fetch()) {
@@ -47,8 +47,8 @@ class User
         $this->email = $email;
         $this->role = $role;
         $this->fn = $fn;
-        $this->majorId = $majorId;
-        $this->facultyId = $facultyId;
+        $this->majorShort = $majorShort;
+        $this->facultyShort = $facultyShort;
         $this->startYear = $startYear;
     }
 
@@ -96,14 +96,34 @@ class User
         return $this->fn;
     }
 
-    public function getMajorId()
+    public function getMajorShort()
     {
-        return $this->majorId;
+        return $this->majorShort;
     }
 
-    public function getFacultyId()
+    public function getMajorID($mysqli)
     {
-        return $this->facultyId;
+        $stmt = $mysqli->prepare("SELECT id FROM majors WHERE short = ?");
+        $stmt->bind_param("s", $this->majorShort);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['id'] ?? 0;
+    }
+
+    public function getFacultyShort()
+    {
+        return $this->facultyShort;
+    }
+
+    public function getFacultyID($mysqli)
+    {
+        $stmt = $mysqli->prepare("SELECT id FROM faculties WHERE short = ?");
+        $stmt->bind_param("s", $this->facultyShort);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['id'] ?? 0;
     }
 
     public function getStartYear()

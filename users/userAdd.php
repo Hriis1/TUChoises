@@ -4,8 +4,8 @@ if ($user->getRole() != 3) {
     header("Location: ../index.php");
     exit;
 }
-$majors = $mysqli->query("SELECT id, name FROM majors WHERE deleted = 0");
-$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
+$majors = $mysqli->query("SELECT * FROM majors WHERE deleted = 0");
+$faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height:90vh">
@@ -42,7 +42,7 @@ $faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
                         <?php while ($m = $majors->fetch_assoc()): ?>
-                            <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['name']) ?></option>
+                            <option value="<?= $m['short'] ?>"><?= htmlspecialchars($m['name']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
@@ -50,7 +50,7 @@ $faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
                     <label for="major" class="form-label">Faculty</label>
                     <select class="form-select" id="faculty" name="faculty" required>
                         <?php while ($f = $faculties->fetch_assoc()): ?>
-                            <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['name']) ?></option>
+                            <option value="<?= $f['short'] ?>"><?= htmlspecialchars($f['name']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>

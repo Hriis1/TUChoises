@@ -56,16 +56,17 @@ $users = getNonDeletedFromDB("users", $mysqli);
                     <?php foreach ($users as $u) {
                         $majorName = "";
                         $facultyName = "";
+                        $userObj = new User($u["id"], $mysqli);
                         //Try getting major
                         try {
-                            $currMajor = new Major($u["major"], $mysqli);
+                            $currMajor = new Major($userObj->getMajorID($mysqli), $mysqli);
                             $majorName = $currMajor->getName();
                         } catch (\Exception $th) {
                         }
 
                         //Try getting faculty
                         try {
-                            $currFaculty = new Faculty($u["faculty"], $mysqli);
+                            $currFaculty = new Faculty($userObj->getFacultyID($mysqli), $mysqli);
                             $facultyName = $currFaculty->getName();
                         } catch (\Exception $th) {
                         }
