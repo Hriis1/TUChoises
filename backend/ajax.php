@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['action'] === 'addMajor') {
         $name = trim($_POST['name']);
         $short = trim($_POST['short']);
-        $faculty_id = trim($_POST['faculty_id']);
+        $faculty = trim($_POST['faculty']);
 
         if ($name === '') {
             echo json_encode([0, 'name', 'Name required']);
@@ -154,14 +154,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([0, 'short', 'Short required']);
             exit;
         }
-        if ($faculty_id === '') {
-            echo json_encode([0, 'faculty_id', 'Faculty required']);
+        if ($faculty === '') {
+            echo json_encode([0, 'faculty', 'Faculty required']);
             exit;
         }
 
         $name = $mysqli->real_escape_string($name);
         $short = $mysqli->real_escape_string($short);
-        $faculty_id = (int) $faculty_id;
 
         $r1 = $mysqli->query("SELECT 1 FROM majors WHERE name='$name' LIMIT 1");
         if ($r1->num_rows) {
@@ -174,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $mysqli->query("INSERT INTO majors (name, short, faculty) VALUES ('$name', '$short', $faculty_id)");
+        $mysqli->query("INSERT INTO majors (name, short, faculty) VALUES ('$name', '$short', '$faculty')");
 
         if ($mysqli->affected_rows === 1) {
 
@@ -225,7 +224,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $mysqli->real_escape_string($id);
         $name = $mysqli->real_escape_string($name);
         $short = $mysqli->real_escape_string($short);
-        $faculty = (int) $faculty;
 
         // Validate id
         if (!is_numeric($id)) {
@@ -241,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Submit to db
-        $mysqli->query("UPDATE majors SET name = '$name', short = '$short', faculty = $faculty WHERE id = $id");
+        $mysqli->query("UPDATE majors SET name = '$name', short = '$short', faculty = '$faculty' WHERE id = $id");
 
         // Success
         if ($mysqli->affected_rows >= 0) {
@@ -274,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $major->getId(),
                 'name' => $major->getName(),
                 'short' => $major->getShort(),
-                'facultyId' => $major->getFacultyId(),
+                'facultyId' => $major->getFacultyId($mysqli),
             ];
         }
         echo json_encode($response);

@@ -4,7 +4,7 @@ if ($user->getRole() != 3) {
     header("Location: ../index.php");
     exit;
 }
-$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
+$faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
@@ -22,11 +22,12 @@ $faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
                     <input type="text" class="form-control" id="short" name="short" required>
                 </div>
                 <div class="mb-3">
-                    <label for="faculty_id" class="form-label">Faculty</label>
-                    <select class="form-select" id="faculty_id" name="faculty_id" required>
-                        <?php while ($f = $faculties->fetch_assoc()): ?>
-                            <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['name']) ?></option>
-                        <?php endwhile; ?>
+                    <label for="faculty" class="form-label">Faculty</label>
+                    <select class="form-select" id="faculty" name="faculty" required>
+                        <?php while ($f = $faculties->fetch_assoc()) { ?>
+                            <option value="<?= htmlspecialchars($f['short']); ?>"><?= htmlspecialchars($f['name']); ?>
+                            </option>
+                        <?php } ?>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Major</button>

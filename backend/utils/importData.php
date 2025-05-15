@@ -162,7 +162,7 @@ if ($_POST["action"] == "importFaculties") {
         'majors',
         ['name', 'short', 'faculty'],
         [1],
-        'ssi'
+        'sss'
     );
 } else if ($_POST["action"] == "importDistributions") {
     $res = importExcel(

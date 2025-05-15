@@ -50,13 +50,13 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
                 </thead>
                 <tbody>
                     <?php foreach ($majors as $curr) {
-                        $currFaculty = new Faculty($curr["faculty"], $mysqli);
+                        $currFaculty = getFromDBByID("faculties", $curr["faculty"], $mysqli, "short");
                         ?>
                         <tr>
                             <td><?= $curr["id"]; ?></td>
                             <td><?= $curr["name"]; ?></td>
                             <td><?= $curr["short"]; ?></td>
-                            <td><?= $currFaculty->getName(); ?></td>
+                            <td><?= $currFaculty["name"]; ?></td>
                             <td>
                                 <a href="majorEdit.php?id=<?= $curr["id"]; ?>"><i class="fa-solid fa-pen"></i></a>
                                 <a href="majorList.php?action=delete&id=<?= $curr["id"]; ?>"><i

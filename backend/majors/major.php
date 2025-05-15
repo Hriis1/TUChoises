@@ -1,10 +1,10 @@
-<?php 
+<?php
 class Major
 {
     private $id;
     private $name;
     private $short;
-    private $facultyId;
+    private $facultyShort;
 
     public function __construct($id, mysqli $mysqli)
     {
@@ -17,7 +17,7 @@ class Major
 
         $stmt->bind_param('i', $this->id);
         $stmt->execute();
-        $stmt->bind_result($name, $short, $facultyId);
+        $stmt->bind_result($name, $short, $facultyShort);
         if (!$stmt->fetch()) {
             throw new Exception('Major not found for ID ' . $this->id);
         }
@@ -25,7 +25,7 @@ class Major
 
         $this->name = $name;
         $this->short = $short;
-        $this->facultyId = $facultyId;
+        $this->facultyShort = $facultyShort;
     }
 
     public function getId()
@@ -43,8 +43,19 @@ class Major
         return $this->short;
     }
 
-    public function getFacultyId()
+    public function getFacultyShort()
     {
-        return $this->facultyId;
+        return $this->facultyShort;
     }
+
+    public function getFacultyID($mysqli)
+    {
+        $stmt = $mysqli->prepare("SELECT id FROM faculties WHERE short = ?");
+        $stmt->bind_param("s", $this->facultyShort);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['id'] ?? 0;
+    }
+
 }

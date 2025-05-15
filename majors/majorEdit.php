@@ -46,7 +46,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                     <label for="faculty" class="form-label">Faculty</label>
                     <select class="form-select" id="faculty" name="faculty" required>
                         <?php foreach ($faculties as $f): ?>
-                            <option value="<?= $f['id'] ?>" <?= $f['id'] == $maj->getFacultyId() ? 'selected' : '' ?>>
+                            <option value="<?= $f['short'] ?>" <?= $f['short'] == $maj->getFacultyShort() ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($f['name']) ?>
                             </option>
                         <?php endforeach; ?>
