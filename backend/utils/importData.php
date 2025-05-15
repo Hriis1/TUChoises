@@ -171,7 +171,7 @@ if ($_POST["action"] == "importFaculties") {
         'distributions',
         ['name', 'ident', 'semester_applicable', 'major', 'faculty', 'type'],
         [1],
-        'ssiii'
+        'sssssi'
     );
 }
 

@@ -55,18 +55,19 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 </thead>
                 <tbody>
                     <?php foreach ($distributions as $d) {
+                        $currDist = new Distribution($d["id"], $mysqli);
                         $majorName = "";
                         $facultyName = "";
                         //Try getting major
                         try {
-                            $currMajor = new Major($d["major"], $mysqli);
+                            $currMajor = new Major($currDist->getMajorID($mysqli), $mysqli);
                             $majorName = $currMajor->getName();
                         } catch (\Exception $th) {
                         }
 
                         //Try getting faculty
                         try {
-                            $currFaculty = new Faculty($d["faculty"], $mysqli);
+                            $currFaculty = new Faculty($currDist->getFacultyID($mysqli), $mysqli);
                             $facultyName = $currFaculty->getName();
                         } catch (\Exception $th) {
                         }
@@ -139,7 +140,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
             },
             success: function (response) {
 
-                if(active == 0) { //if distribution is being deactivated
+                if (active == 0) { //if distribution is being deactivated
                     //TODO: Calculate which students are distriuted where here
                 }
 

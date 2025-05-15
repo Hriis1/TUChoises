@@ -45,12 +45,12 @@ class Faculty
 
     public function getMajors(mysqli $mysqli)
     {
-        $stmt = $mysqli->prepare("SELECT id FROM majors WHERE faculty = ?");
+        $stmt = $mysqli->prepare("SELECT id FROM majors WHERE faculty = ? AND deleted = 0");
         if (!$stmt) {
             throw new Exception('Failed to prepare statement: ' . $mysqli->error);
         }
         
-        $stmt->bind_param('i', $this->id);
+        $stmt->bind_param('s', $this->short);
         $stmt->execute();
         $result = $stmt->get_result();
         

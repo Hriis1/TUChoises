@@ -1,4 +1,6 @@
 <?php
+require_once "utils/dbUtils.php";
+
 require_once "config/sessionConfig.php";
 require_once "config/dbConfig.php";
 
@@ -224,6 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $mysqli->real_escape_string($id);
         $name = $mysqli->real_escape_string($name);
         $short = $mysqli->real_escape_string($short);
+        $faculty = $mysqli->real_escape_string($faculty);
 
         // Validate id
         if (!is_numeric($id)) {
@@ -263,7 +266,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Get majors of faculty
     if ($_POST['action'] === 'getMajorsOfFaculty') {
-        $faculty = new Faculty($_POST["id"], $mysqli);
+        $dbfac = getFromDBByID("faculties", $_POST["facultyShort"], $mysqli, "short");
+        $faculty = new Faculty($dbfac["id"], $mysqli);
 
         $majors = $faculty->getMajors($mysqli);
         $response = [];
@@ -320,9 +324,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $name = $mysqli->real_escape_string($name);
         $ident = $mysqli->real_escape_string($ident);
+        $faculty = $mysqli->real_escape_string($faculty);
+        $major = $mysqli->real_escape_string($major);
         $semester_applicable = (int) $semester_applicable;
-        $major = (int) $major;
-        $faculty = (int) $faculty;
         $type = (int) $type;
 
         $rIdent = $mysqli->query("SELECT 1 FROM distributions WHERE ident='$ident' LIMIT 1");
@@ -331,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, faculty, type)  VALUES ('$name', '$ident', $semester_applicable, $major, $faculty, $type)");
+        $mysqli->query("INSERT INTO distributions (name, ident, semester_applicable, major, faculty, type)  VALUES ('$name', '$ident', $semester_applicable, '$major', '$faculty', $type)");
 
         if ($mysqli->affected_rows === 1) {
 
@@ -402,8 +406,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = $mysqli->real_escape_string($name);
         $ident = $mysqli->real_escape_string($ident);
         $semester_applicable = (int) $semester_applicable;
-        $major = (int) $major;
-        $faculty = (int) $faculty;
+        $major = $mysqli->real_escape_string($major);
+        $faculty = $mysqli->real_escape_string($faculty);
         $type = (int) $type;
 
         // Validate id
@@ -420,7 +424,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Submit to db
-        $mysqli->query("UPDATE distributions SET name = '$name', ident = '$ident', semester_applicable = $semester_applicable, major = $major, faculty = $faculty, type = $type WHERE id = $id");
+        $mysqli->query("UPDATE distributions SET name = '$name', ident = '$ident', semester_applicable = $semester_applicable, major = '$major', faculty = '$faculty', type = $type WHERE id = $id");
 
         // Success
         if ($mysqli->affected_rows >= 0) {
@@ -671,7 +675,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } catch (\Exception $e) {
                 echo json_encode([0, 'major', 'Invalid major']);
             }
-            $faculty = $majorObj->getFacultyId();
+            $faculty = $majorObj->getFacultyId($mysqli);
             $start_year = (int) $start_year;
             $password = '';
             $active = 0;
@@ -807,7 +811,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode([0, 'major', 'Invalid major']);
                 exit;
             }
-            $faculty = $majorObj->getFacultyId();
+            $faculty = $majorObj->getFacultyId($mysqli);
         } else {
             // teacher: empty fn, start_year
             $fn = '';

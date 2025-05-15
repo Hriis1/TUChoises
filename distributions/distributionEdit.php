@@ -21,7 +21,7 @@ try {
     exit;
 }
 
-$facultyID = $dist->getFacultyId();
+$facultyID = $dist->getFacultyId($mysqli);
 $majors = getFromDBCondition("majors", "WHERE faculty = $facultyID AND deleted = 0", $mysqli);
 $faculties = getNonDeletedFromDB("faculties", $mysqli);
 ?>
@@ -53,7 +53,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                     <label for="major" class="form-label">Major</label>
                     <select class="form-select" id="major" name="major" required>
                         <?php foreach ($majors as $m): ?>
-                            <option value="<?= $m['id'] ?>" <?= $m['id'] == $dist->getMajorId() ? 'selected' : '' ?>>
+                            <option value="<?= $m['short'] ?>" <?= $m['short'] == $dist->getMajorShort() ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($m['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -63,7 +63,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                     <label for="major" class="form-label">Faculty</label>
                     <select class="form-select" id="faculty" name="faculty" required>
                         <?php foreach ($faculties as $f): ?>
-                            <option value="<?= $f['id'] ?>" <?= $f['id'] == $dist->getFacultyId() ? 'selected' : '' ?>>
+                            <option value="<?= $f['short'] ?>" <?= $f['short'] == $dist->getFacultyShort() ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($f['name']) ?>
                             </option>
                         <?php endforeach; ?>
@@ -95,6 +95,7 @@ require_once "../footer.php";
                 $('#major').val(0);
             } else {
                 $('#major').closest('.mb-3').show().find('select').prop('required', true);
+                $("#faculty").trigger('change');
             }
         }
         toggleMajor();
@@ -104,19 +105,19 @@ require_once "../footer.php";
         $("#faculty").on('change', function () {
             //Only get them if type is избираема дисциплина
             if ($('#type').val() == 1) {
-                const facultyId = $(this).val();
+                const facultyShort = $(this).val();
                 $.ajax({
                     url: '../backend/ajax.php',
                     method: 'POST',
                     data: {
                         action: "getMajorsOfFaculty",
-                        id: facultyId
+                        facultyShort: facultyShort
                     },
                     dataType: 'json',
                     success: function (res) {
                         const $maj = $('#major').empty();
                         $.each(res, function (i, m) {
-                            $maj.append($('<option>', { value: m.id, text: m.name }));
+                            $maj.append($('<option>', { value: m.short, text: m.name }));
                         });
                     }
                 });

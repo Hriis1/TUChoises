@@ -5,7 +5,7 @@ if ($user->getRole() != 3) {
     exit;
 }
 
-$faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
+$faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
@@ -36,7 +36,7 @@ $faculties = $mysqli->query("SELECT id, name FROM faculties WHERE deleted = 0");
                     <label for="faculty" class="form-label">Faculty</label>
                     <select class="form-select" id="faculty" name="faculty" required>
                         <?php while ($f = $faculties->fetch_assoc()): ?>
-                            <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['name']) ?></option>
+                            <option value="<?= $f['short'] ?>"><?= htmlspecialchars($f['name']) ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
@@ -65,6 +65,7 @@ require_once "../footer.php";
                 $('#major').val(0);
             } else {
                 $('#major').closest('.mb-3').show().find('select').prop('required', true);
+                $("#faculty").trigger('change');
             }
         }
         toggleMajor();
@@ -74,20 +75,24 @@ require_once "../footer.php";
         $("#faculty").on('change', function () {
             //Only get them if type is избираема дисциплина
             if ($('#type').val() == 1) {
-                const facultyId = $(this).val();
+                const facultyShort = $(this).val();
                 $.ajax({
                     url: '../backend/ajax.php',
                     method: 'POST',
                     data: {
                         action: "getMajorsOfFaculty",
-                        id: facultyId
+                        facultyShort: facultyShort
                     },
                     dataType: 'json',
                     success: function (res) {
                         const $maj = $('#major').empty();
                         $.each(res, function (i, m) {
-                            $maj.append($('<option>', { value: m.id, text: m.name }));
+                            $maj.append($('<option>', { value: m.short, text: m.name }));
                         });
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX error:", textStatus, errorThrown);
+                        console.error("Raw response:", jqXHR.responseText);
                     }
                 });
             }

@@ -70,14 +70,14 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                         $facultyName = "";
                         //Try getting major
                         try {
-                            $currMajor = new Major($dist->getMajorId(), $mysqli);
+                            $currMajor = new Major($dist->getMajorId($mysqli), $mysqli);
                             $majorName = $currMajor->getName();
                         } catch (\Exception $th) {
                         }
 
                         //Try getting faculty
                         try {
-                            $currFaculty = new Faculty($dist->getFacultyId(), $mysqli);
+                            $currFaculty = new Faculty($dist->getFacultyId($mysqli), $mysqli);
                             $facultyName = $currFaculty->getName();
                         } catch (\Exception $th) {
                         }

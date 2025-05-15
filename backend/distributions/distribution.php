@@ -5,9 +5,9 @@ class Distribution
     private $name;
     private $ident;
     private $semesterApplicable;
-    private $majorId;
+    private $majorShort;
 
-    private $facultyId;
+    private $facultyShort;
     private $type;
 
     public function __construct(int $id, mysqli $mysqli)
@@ -29,8 +29,8 @@ class Distribution
             $name,
             $ident,
             $semesterApplicable,
-            $majorId,
-            $facultyId,
+            $majorShort,
+            $facultyShort,
             $type
         );
         if (!$stmt->fetch()) {
@@ -41,8 +41,8 @@ class Distribution
         $this->name = $name;
         $this->ident = $ident;
         $this->semesterApplicable = $semesterApplicable;
-        $this->majorId = $majorId;
-        $this->facultyId = $facultyId;
+        $this->majorShort = $majorShort;
+        $this->facultyShort = $facultyShort;
         $this->type = $type;
     }
 
@@ -66,14 +66,34 @@ class Distribution
         return $this->semesterApplicable;
     }
 
-    public function getMajorId()
+    public function getMajorShort()
     {
-        return $this->majorId;
+        return $this->majorShort;
     }
 
-    public function getFacultyId()
+    public function getMajorID($mysqli)
     {
-        return $this->facultyId;
+        $stmt = $mysqli->prepare("SELECT id FROM majors WHERE short = ?");
+        $stmt->bind_param("s", $this->majorShort);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['id'] ?? 0;
+    }
+
+    public function getFacultyShort()
+    {
+        return $this->facultyShort;
+    }
+
+    public function getFacultyID($mysqli)
+    {
+        $stmt = $mysqli->prepare("SELECT id FROM faculties WHERE short = ?");
+        $stmt->bind_param("s", $this->facultyShort);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['id'] ?? 0;
     }
 
     public function getType()

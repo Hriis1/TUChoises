@@ -1,8 +1,11 @@
 <?php
 function getFromDBByID($table_name, $id, $mysqli, $idRowName = 'id')
 {
+    // Determine the type: 'i' for integers, 's' for strings
+    $type = is_numeric($id) ? "i" : "s";
+
     $stmt = $mysqli->prepare("SELECT * FROM " . $table_name . " WHERE " . $idRowName . " = ?");
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param($type, $id);
 
     $stmt->execute();
 
@@ -12,6 +15,7 @@ function getFromDBByID($table_name, $id, $mysqli, $idRowName = 'id')
 
     return !empty($arr) ? $arr[0] : null;
 }
+
 
 function getNonDeletedFromDB($table_name, $mysqli, $hasDeleted = true, $searchableByID = false)
 {

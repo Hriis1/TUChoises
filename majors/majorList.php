@@ -56,7 +56,7 @@ $majors = getNonDeletedFromDB("majors", $mysqli);
                             <td><?= $curr["id"]; ?></td>
                             <td><?= $curr["name"]; ?></td>
                             <td><?= $curr["short"]; ?></td>
-                            <td><?= $currFaculty["name"]; ?></td>
+                            <td><?= $currFaculty["name"] ?? "Unknown"; ?></td>
                             <td>
                                 <a href="majorEdit.php?id=<?= $curr["id"]; ?>"><i class="fa-solid fa-pen"></i></a>
                                 <a href="majorList.php?action=delete&id=<?= $curr["id"]; ?>"><i
