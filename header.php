@@ -119,10 +119,11 @@ $user = new User($_SESSION["userID"], $mysqli);
 
     <!-- Alerts -->
     <?php if (isset($_SESSION['alert'])) { ?>
-        <div class="mx-5 mt-3 alert alert-<?= $_SESSION['alert']['type']; ?> alert-dismissible fade show d-flex justify-content-between align-items-center"
-            role="alert">
+        <div class="mx-5 alert alert-<?= $_SESSION['alert']['type']; ?> alert-dismissible fade show d-flex justify-content-between align-items-center position-fixed w-75"
+            style="top: 80px; transform: translateX(14%); z-index: 1050;" role="alert">
             <div><?= $_SESSION['alert']['text']; ?></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+
         <?php unset($_SESSION['alert']); ?>
     <?php } ?>
