@@ -137,7 +137,7 @@ class User
         if ($this->role != 1) {
             return 0;
         }
-        
+
         $userSemester = 1;
         $year = (int) date('Y');
         $month = (int) date('n');

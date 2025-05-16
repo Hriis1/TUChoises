@@ -47,7 +47,7 @@
     </li>
     <?php if ($user->getRole() == 1 || $user->getRole() == 2) { ?>
     <li class="nav-item">
-      <a href="<?= $projectRoot ?>/distributions/myDistributions.php" class="nav-link link-dark">My distributions</a>
+      <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=all" class="nav-link link-dark">My distributions</a>
     </li>
     <?php } ?>
     <?php if ($user->getRole() == 3) { ?>
