@@ -3,6 +3,7 @@ require_once "../header.php";
 
 $userID = $user->getId();
 $role = $user->getRole();
+$semester = $user->getSemester();
 
 //If user is hot user or teacher or condition is not set
 if (($role != 1 && $role != 2) || !isset($_GET["condition"])) {
@@ -13,6 +14,10 @@ if (($role != 1 && $role != 2) || !isset($_GET["condition"])) {
 //Base condition
 $condition = "WHERE deleted = 0 AND ";
 if ($role == 1) { //student
+    $majorShort = $user->getMajorShort();
+    $facultyShort = $user->getFacultyShort();
+    $condition .= " ($semester - semester_applicable) >= -1"; //semester check
+    $condition .= " AND ((type = 1 AND major = '$majorShort') OR (type = 2 AND faculty = '$facultyShort'))"; //major/faculty check
 } else { //teacher
     $condition .= "id IN (SELECT distribution FROM distribution_choices WHERE instructor = $userID)";
 }
@@ -30,12 +35,13 @@ if ($_GET["condition"] == "all") {
 } else if ($_GET["condition"] == "to_make") {
     $headerText = "Choice needed";
     if ($role == 1) {
+        $condition .= " AND ($semester - semester_applicable) IN (-1 , 0)"; //semester check, if user can make a choice
         $condition .= " AND active = 1 AND NOT EXISTS (SELECT 1 FROM s_d_choices WHERE user_id = $userID AND distribution_id = distributions.id)";
     }
 } else if ($_GET["condition"] == "chosen") {
     $headerText = "Choice made";
     if ($role == 1) {
-        $condition .= " AND EXISTS (SELECT 1 FROM s_d_choices  WHERE user_id = $userID  AND distribution_id = distributions.id)";
+        $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_choices  WHERE user_id = $userID  AND distribution_id = distributions.id)";
     }
 }
 
