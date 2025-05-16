@@ -9,8 +9,14 @@ if (!isset($_GET["id"])) { //if id is not set
 
 //Try getting the dist
 $dist = null;
+$faculty = null;
+$major = null;
 try {
     $dist = new Distribution($_GET["id"], $mysqli);
+    $faculty = new Faculty($dist->getFacultyID($mysqli), $mysqli);
+    if ($dist->getType() == 1) { //if dist is izbiraema disciplina
+        $major = new Major($dist->getMajorID($mysqli), $mysqli);
+    }
 } catch (Exception $e) {
     echo '<meta http-equiv="refresh" content="0;url=../index.php">';
     exit;
@@ -29,20 +35,22 @@ $choices = $dist->getChoices($mysqli);
         <div class="basic-container bg-white bg-opacity-50 p-5 rounded-5 shadow">
             <h2 class="mb-3"><?= htmlspecialchars($dist->getName()) ?></h2>
             <p class="mb-4 text-secondary">
-                <?= htmlspecialchars($dist->getFacultyShort()) ?>
-                <?php if ($dist->getMajorShort() !== '0') { ?>
-                    &bull; <?= htmlspecialchars($dist->getMajorShort()) ?>
+                <?= htmlspecialchars($faculty->getName()) ?>
+                <?php if ($major) { ?>
+                    &bull; <?= htmlspecialchars($major->getName()) ?>
                 <?php } ?>
                 &bull; <?= htmlspecialchars($dist->getTypeText()) ?>
             </p>
             <hr>
             <h3 class="mb-3">Избори</h3>
-            <?php foreach ($choices as $choice) { ?>
+            <?php foreach ($choices as $choice) {
+                $currInstructor = new User($choice->getInstructorId(), $mysqli);
+                ?>
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($choice->getName()) ?></h5>
                         <h6 class="card-subtitle mb-2 text-muted">Instructor ID:
-                            <?= htmlspecialchars($choice->getInstructorId()) ?>
+                            <?= htmlspecialchars($currInstructor->getNames()) ?>
                         </h6>
                         <p class="card-text"><?= nl2br(htmlspecialchars($choice->getDescription())) ?></p>
                     </div>
