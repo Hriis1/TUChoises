@@ -49,13 +49,23 @@ require_once "../sidebar.php";
 <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5">
     <div class="user-container bg-white bg-opacity-50 p-5 rounded-5 shadow">
         <h1 class="text-center mb-4"><?= $headerText ?></h1>
-        <!-- <div class="row">
-            <div class="col-6">zaza</div>
-            <div class="col-6">waza</div>
+        <div class="row">
+            <?php foreach ($distributions as $dist) { ?>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card shadow-sm rounded-4" style="height: 230px;">
+                        <div class="card-body d-flex flex-column p-3">
+                            <div class="flex-grow-1 d-flex justify-content-center align-items-center text-center">
+                                <h5 class="card-title mb-0"><?= htmlspecialchars($dist['name']) ?></h5>
+                            </div>
+                            <a href="distributionPublic.php?id=<?= $dist['id'] ?>" class="btn btn-primary w-100 mt-auto">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
-        <div class="row text-center">
-            <div class="col">111</div>
-        </div> -->
+
     </div>
 </div>
 </main>
