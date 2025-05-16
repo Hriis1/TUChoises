@@ -130,4 +130,29 @@ class User
     {
         return $this->startYear;
     }
+
+    public function getSemester()
+    {
+        $userSemester = 1;
+        $year = (int) date('Y');
+        $month = (int) date('n');
+
+        if ($month == 1) {
+            $year--;
+        }
+
+        //User has not started yet
+        if ($year < $this->startYear) {
+            return 0;
+        }
+
+        $userSemester += ($year - $this->startYear) * 2;
+        if ($month >= 2 && $month < 9) {
+            $userSemester--;
+        }
+
+        return $userSemester;
+    }
+
+
 }
