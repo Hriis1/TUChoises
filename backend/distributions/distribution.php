@@ -1,8 +1,9 @@
 <?php
 
-require_once "../utils/dbUtils.php";
-require_once "../users/User.php";
-require_once "DistributionChoise.php";
+require_once __DIR__ . "/../utils/dbUtils.php";
+require_once __DIR__ . "/../users/User.php";
+require_once __DIR__ . "/DistributionChoise.php";
+
 class Distribution
 {
     private $id;
@@ -105,11 +106,22 @@ class Distribution
         return $this->type;
     }
 
+    public function getTypeText()
+    {
+        if ($this->type == 1) {
+            return "Избираема дисциплина";
+        } else if ($this->type == 2) {
+            return "Дипломен ръководител";
+        }
+
+        return "";
+    }
+
     public function getChoices(mysqli $mysqli)
     {
         $id = $this->id;
         $choices = [];
-        $choicesDB = getFromDBCondition("distribution_choices", "WHERE id = $id AND deleted = 0", $mysqli);
+        $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0", $mysqli);
         foreach ($choicesDB as $curr) {
             $choices[] = new DistributionChoice($curr["id"], $mysqli);
         }
