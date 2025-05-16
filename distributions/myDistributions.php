@@ -12,7 +12,11 @@ if ($user->getRole() != 1 || $user->getRole() != 2 || !isset($_GET["condition"])
 $condition = "WHERE deleted = 0 AND ";
 
 if ($_GET["condition"] == "all") {
-
+    if ($user->getRole() == 1) { //student
+        
+    } else { //teacher
+        
+    }
 }
 
 

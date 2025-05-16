@@ -133,6 +133,11 @@ class User
 
     public function getSemester()
     {
+        //If user is not a student
+        if ($this->role != 1) {
+            return 0;
+        }
+        
         $userSemester = 1;
         $year = (int) date('Y');
         $month = (int) date('n');
