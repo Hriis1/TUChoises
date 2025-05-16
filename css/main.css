@@ -1,0 +1,15 @@
+.user-container {
+    margin-top: 60px;
+    margin-left: 250px;
+    width: 75%;
+    min-height: 80vh;
+}
+
+@media only screen and (max-width: 768px) {
+    .user-container {
+        width: 90%;
+        margin-top: 0px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

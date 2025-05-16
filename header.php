@@ -44,6 +44,7 @@ $user = new User($_SESSION["userID"], $mysqli);
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.bootstrap5.css">
 
     <!-- Custom -->
+         <link rel="stylesheet" href="<?= $projectRoot ?>/css/main.css">
     <link rel="stylesheet" href="<?= $projectRoot ?>/css/navbar.css">
 
     <style>
