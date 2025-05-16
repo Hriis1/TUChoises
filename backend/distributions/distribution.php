@@ -1,4 +1,8 @@
 <?php
+
+require_once "../utils/dbUtils.php";
+require_once "../users/User.php";
+require_once "DistributionChoise.php";
 class Distribution
 {
     private $id;
@@ -86,7 +90,7 @@ class Distribution
         return $this->facultyShort;
     }
 
-    public function getFacultyID($mysqli)
+    public function getFacultyID(mysqli $mysqli)
     {
         $stmt = $mysqli->prepare("SELECT id FROM faculties WHERE short = ?");
         $stmt->bind_param("s", $this->facultyShort);
@@ -99,5 +103,38 @@ class Distribution
     public function getType()
     {
         return $this->type;
+    }
+
+    public function getChoices(mysqli $mysqli)
+    {
+        $id = $this->id;
+        $choices = [];
+        $choicesDB = getFromDBCondition("distribution_choices", "WHERE id = $id AND deleted = 0", $mysqli);
+        foreach ($choicesDB as $curr) {
+            $choices[] = new DistributionChoice($curr["id"], $mysqli);
+        }
+
+        return $choices;
+    }
+
+    public function canView(User $user, mysqli $mysqli)
+    {
+        $role = $user->getRole();
+        if ($role == 1) { //student
+            //return true if student has access
+            return $this->majorShort == $user->getMajorShort() && $user->getSemester() - $this->semesterApplicable >= -1;
+        } else if ($role == 2) { //teacher
+            //return true if teacher is in the choices
+            $choices = $this->getChoices($mysqli);
+            foreach ($choices as $curr) {
+                if ($curr->getInstructorId() == $user->getId())
+                    return true;
+            }
+            return false;
+        } else if ($role == 3) { //admin
+            return true;
+        }
+
+        return false;
     }
 }
