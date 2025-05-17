@@ -35,6 +35,8 @@ $choices = $dist->getChoices($mysqli);
         display: flex;
     }
 
+    .choices-container {}
+
     @media only screen and (max-width: 768px) {
         .distribution-head-container {
             display: block;
@@ -48,7 +50,8 @@ $choices = $dist->getChoices($mysqli);
 </style>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5">
-        <div class="basic-container bg-white bg-opacity-50 p-5 rounded-5 shadow">
+        <div class="basic-container relative bg-white bg-opacity-50 p-5 rounded-5 shadow"
+            style="padding-bottom: 75px !important;">
             <div class="distribution-head-container">
                 <h2 class="mb-3"><?= htmlspecialchars($dist->getName()) ?></h2> &nbsp; &nbsp;
                 <?php if ($dist->isActive()) { ?>
@@ -66,19 +69,24 @@ $choices = $dist->getChoices($mysqli);
             </p>
             <hr>
             <h3 class="mb-3">Избори</h3>
-            <?php foreach ($choices as $choice) {
-                $currInstructor = new User($choice->getInstructorId(), $mysqli);
-                ?>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= htmlspecialchars($choice->getName()) ?></h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Instructor ID:
-                            <?= htmlspecialchars($currInstructor->getNames()) ?>
-                        </h6>
-                        <p class="card-text"><?= nl2br(htmlspecialchars($choice->getDescription())) ?></p>
+            <div class="choices-container">
+                <?php foreach ($choices as $choice) {
+                    $currInstructor = new User($choice->getInstructorId(), $mysqli);
+                    ?>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($choice->getName()) ?></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Instructor:
+                                <?= htmlspecialchars($currInstructor->getNames()) ?>
+                            </h6>
+                            <p class="card-text"><?= nl2br(htmlspecialchars($choice->getDescription())) ?></p>
+                        </div>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
+            </div>
+            <div class="position-absolute bottom-0 start-0 w-100 p-4 text-end">
+                <button class="btn btn-success">Action</button>
+            </div>
         </div>
     </div>
 </main>
