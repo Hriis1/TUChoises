@@ -27,33 +27,29 @@ $headerText = "";
 if ($_GET["condition"] == "all") {
     $headerText = "All distributions";
 } else if ($_GET["condition"] == "active") {
+    $headerText = "All distributions";
     if ($role == 2) {
         $headerText = "Active distributions";
         $condition .= " AND active = 1";
-    } else {
-        $headerText = "All distributions";
     }
 } else if ($_GET["condition"] == "inactive") {
+    $headerText = "All distributions";
     if ($role == 2) {
         $headerText = "Inactive distributions";
         $condition .= " AND active = 0";
-    } else {
-        $headerText = "All distributions";
     }
 } else if ($_GET["condition"] == "to_make") {
-    $headerText = "Choice needed";
+    $headerText = "All distributions";
     if ($role == 1) {
+        $headerText = "Choice needed";
         $condition .= " AND ($semester - semester_applicable) IN (-1 , 0)"; //semester check, if user can make a choice
         $condition .= " AND active = 1 AND NOT EXISTS (SELECT 1 FROM s_d_choices WHERE user_id = $userID AND distribution_id = distributions.id)";
-    } else {
-        $headerText = "All distributions";
     }
 } else if ($_GET["condition"] == "chosen") {
-    $headerText = "Choice made";
+    $headerText = "All distributions";
     if ($role == 1) {
+        $headerText = "Choice made";
         $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_choices  WHERE user_id = $userID  AND distribution_id = distributions.id)";
-    } else {
-        $headerText = "All distributions";
     }
 }
 
