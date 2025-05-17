@@ -137,6 +137,19 @@ class Distribution
         return $choices;
     }
 
+    public function getScores(mysqli $mysqli, User $user = null)
+    {
+        $id = $this->id;
+        $condition = "WHERE deleted = 0 AND distribution_id = $id";
+
+        if ($user) {
+            $userID = $user->getId();
+            $condition .= " AND user_id = $userID";
+        }
+
+        return getFromDBCondition("s_d_scores", $condition, $mysqli);
+    }
+
     public function canView(User $user, mysqli $mysqli)
     {
         $role = $user->getRole();
@@ -167,7 +180,45 @@ class Distribution
         return false;
     }
 
-    public function canChoose(User $user)
+    public function canEditChoice(User $user, mysqli $mysqli)
+    {
+        if ($user->getRole() != 2) //if user is not teacher
+            return false;
+
+        $choices = $this->getChoices($mysqli);
+
+        foreach ($choices as $curr) {
+            if ($curr->getInstructorId() == $user->getId())
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *   - 0 if the student cannot interact.
+     *   - 1 if the student can choose (no previous choice made).
+     *   - 2 if the student has already chosen (can only view).
+     */
+    public function getStudentPermisions(User $user, mysqli $mysqli)
+    {
+        $canInteract = $this->canStudentInteract($user);
+
+        if (!$canInteract) //if user cant interact
+            return 0;
+
+        $studentChoices = $this->getScores($mysqli, $user);
+
+        if ($studentChoices) { //if user already chose return 2 - can view
+            return 2;
+        } else { //if user hasnt chosen return 1 - can choose
+            return 1;
+        }
+    }
+
+
+    //Private
+    private function canStudentInteract(User $user)
     {
         if ($user->getRole() != 1) //if user is not student
             return false;
@@ -183,21 +234,6 @@ class Distribution
             $condition = $condition && $this->facultyShort == $user->getFacultyShort();
         }
 
-        return $condition;
-    }
-
-    public function canEditChoice(User $user, mysqli $mysqli)
-    {
-        if ($user->getRole() != 2) //if user is not teacher
-            return false;
-
-        $choices = $this->getChoices($mysqli);
-
-        foreach ($choices as $curr) {
-            if ($curr->getInstructorId() == $user->getId())
-                return true;
-        }
-
-        return false;
+        return true;
     }
 }
