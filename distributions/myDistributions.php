@@ -41,13 +41,13 @@ if ($_GET["condition"] == "active") {
     if ($role == 1) {
         $headerText = "Choice needed";
         $condition .= " AND ($semester - semester_applicable) IN (-1 , 0)"; //semester check, if user can make a choice
-        $condition .= " AND active = 1 AND NOT EXISTS (SELECT 1 FROM s_d_choices WHERE user_id = $userID AND distribution_id = distributions.id)";
+        $condition .= " AND active = 1 AND NOT EXISTS (SELECT 1 FROM s_d_scores WHERE user_id = $userID AND distribution_id = distributions.id)";
     }
 } else if ($_GET["condition"] == "chosen") {
     $headerText = "All distributions";
     if ($role == 1) {
         $headerText = "Choice made";
-        $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_choices  WHERE user_id = $userID  AND distribution_id = distributions.id)";
+        $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_scores  WHERE user_id = $userID  AND distribution_id = distributions.id)";
     }
 } else {
     $headerText = "All distributions";

@@ -180,7 +180,7 @@ class Distribution
         return false;
     }
 
-    public function canEditChoice(User $user, mysqli $mysqli)
+    public function canTeacherEditChoice(User $user, mysqli $mysqli)
     {
         if ($user->getRole() != 2) //if user is not teacher
             return false;
@@ -211,9 +211,11 @@ class Distribution
 
         if ($studentChoices) { //if user already chose return 2 - can view
             return 2;
-        } else { //if user hasnt chosen return 1 - can choose
+        } else if ($this->active == 1) { //if user hasnt chosen and distribution is active return 1 - can choose
             return 1;
         }
+
+        return 0;
     }
 
 
