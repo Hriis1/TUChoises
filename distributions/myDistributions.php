@@ -24,9 +24,7 @@ if ($role == 1) { //student
 
 //Based on get param
 $headerText = "";
-if ($_GET["condition"] == "all") {
-    $headerText = "All distributions";
-} else if ($_GET["condition"] == "active") {
+if ($_GET["condition"] == "active") {
     $headerText = "All distributions";
     if ($role == 2) {
         $headerText = "Active distributions";
@@ -51,6 +49,8 @@ if ($_GET["condition"] == "all") {
         $headerText = "Choice made";
         $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_choices  WHERE user_id = $userID  AND distribution_id = distributions.id)";
     }
+} else {
+    $headerText = "All distributions";
 }
 
 //Build the final query
