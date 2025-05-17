@@ -134,7 +134,16 @@ class Distribution
         $role = $user->getRole();
         if ($role == 1) { //student
             //return true if student has access
-            return $this->majorShort == $user->getMajorShort() && $user->getSemester() - $this->semesterApplicable >= -1;
+            //if user is a high enogh semester to view
+            $condition = $user->getSemester() - $this->semesterApplicable >= -1;
+            //if users faculty or major matches the distributions based on its type
+            if ($this->type == 1) {//izbiraema disciplina
+                $condition = $condition && $this->majorShort == $user->getMajorShort() && $user->getSemester() - $this->semesterApplicable >= -1;
+            } else if ($this->type == 2) { //diplom
+                $condition = $condition && $this->facultyShort == $user->getFacultyShort();
+            }
+
+            return $condition;
         } else if ($role == 2) { //teacher
             //return true if teacher is in the choices
             $choices = $this->getChoices($mysqli);
