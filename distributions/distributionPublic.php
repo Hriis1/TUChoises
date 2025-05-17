@@ -30,10 +30,33 @@ if (!$dist->canView($user, $mysqli)) { //if user cannot view the distribution
 $choices = $dist->getChoices($mysqli);
 ?>
 
+<style>
+    .distribution-head-container {
+        display: flex;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .distribution-head-container {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .public-badge {
+            margin-left: -20px;
+        }
+    }
+</style>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5">
         <div class="basic-container bg-white bg-opacity-50 p-5 rounded-5 shadow">
-            <h2 class="mb-3"><?= htmlspecialchars($dist->getName()) ?></h2>
+            <div class="distribution-head-container">
+                <h2 class="mb-3"><?= htmlspecialchars($dist->getName()) ?></h2> &nbsp; &nbsp;
+                <?php if ($dist->isActive()) { ?>
+                    <span style="height: 25px;" class="badge bg-success mt-2 public-badge">Active</span>
+                <?php } else { ?>
+                    <span style="height: 25px;" class="badge bg-danger mt-2 public-badge">Inactive</span>
+                <?php } ?>
+            </div>
             <p class="mb-4 text-secondary">
                 <?= htmlspecialchars($faculty->getName()) ?>
                 <?php if ($major) { ?>

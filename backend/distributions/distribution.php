@@ -14,13 +14,14 @@ class Distribution
 
     private $facultyShort;
     private $type;
+    private $active;
 
     public function __construct(int $id, mysqli $mysqli)
     {
         $this->id = $id;
 
         $stmt = $mysqli->prepare(
-            "SELECT name, ident, semester_applicable, major, faculty, type
+            "SELECT name, ident, semester_applicable, major, faculty, type, active
              FROM distributions
              WHERE id = ?"
         );
@@ -36,7 +37,8 @@ class Distribution
             $semesterApplicable,
             $majorShort,
             $facultyShort,
-            $type
+            $type,
+            $active
         );
         if (!$stmt->fetch()) {
             throw new Exception('Distribution not found for ID ' . $this->id);
@@ -49,6 +51,7 @@ class Distribution
         $this->majorShort = $majorShort;
         $this->facultyShort = $facultyShort;
         $this->type = $type;
+        $this->active = $active;
     }
 
     public function getId()
@@ -115,6 +118,11 @@ class Distribution
         }
 
         return "";
+    }
+
+    public function isActive()
+    {
+        return $this->active == 1;
     }
 
     public function getChoices(mysqli $mysqli)

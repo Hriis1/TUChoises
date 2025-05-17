@@ -10,6 +10,10 @@
     min-height: 80vh;
 }
 
+.distribution-head-container {
+    display: flex;
+}
+
 @media only screen and (max-width: 768px) {
     .user-container {
         width: 90%;
@@ -23,5 +27,10 @@
         margin-top: 0px;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    .distribution-head-container {
+        display: block;
+        margin-bottom: 10px;
     }
 }
