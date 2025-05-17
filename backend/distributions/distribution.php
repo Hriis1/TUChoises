@@ -146,7 +146,7 @@ class Distribution
             $condition = $user->getSemester() - $this->semesterApplicable >= -1;
             //if users faculty or major matches the distributions based on its type
             if ($this->type == 1) {//izbiraema disciplina
-                $condition = $condition && $this->majorShort == $user->getMajorShort() && $user->getSemester() - $this->semesterApplicable >= -1;
+                $condition = $condition && $this->majorShort == $user->getMajorShort();
             } else if ($this->type == 2) { //diplom
                 $condition = $condition && $this->facultyShort == $user->getFacultyShort();
             }
@@ -162,6 +162,40 @@ class Distribution
             return false;
         } else if ($role == 3) { //admin
             return true;
+        }
+
+        return false;
+    }
+
+    public function canChoose(User $user)
+    {
+        if ($user->getRole() != 1) //if user is not student
+            return false;
+
+        //if user is this or the prev semester of the dist
+        $semesterDif = $user->getSemester() - $this->semesterApplicable;
+        $condition = $semesterDif >= -1 && $semesterDif <= 0;
+
+        //if users faculty or major matches the distributions based on its type
+        if ($this->type == 1) {//izbiraema disciplina
+            $condition = $condition && $this->majorShort == $user->getMajorShort();
+        } else if ($this->type == 2) { //diplom
+            $condition = $condition && $this->facultyShort == $user->getFacultyShort();
+        }
+
+        return $condition;
+    }
+
+    public function canEditChoice(User $user, mysqli $mysqli)
+    {
+        if ($user->getRole() != 2) //if user is not teacher
+            return false;
+
+        $choices = $this->getChoices($mysqli);
+
+        foreach ($choices as $curr) {
+            if ($curr->getInstructorId() == $user->getId())
+                return true;
         }
 
         return false;
