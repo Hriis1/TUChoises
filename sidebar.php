@@ -1,7 +1,8 @@
 <!-- Toggle button (visible only on small screens) -->
 <nav class="navbar mt-5 d-md-none">
   <div class="container-fluid">
-    <button class="btn btn-light btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+    <button class="btn btn-light btn-outline-secondary" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
       <span class="navbar-toggler-icon"></span> Dashboard
     </button>
   </div>
@@ -19,14 +20,14 @@
         <a href="<?= $projectRoot ?>/index.php" class="nav-link link-dark">Home</a>
       </li>
       <?php if ($user->getRole() == 1 || $user->getRole() == 2) { ?>
-      <li class="nav-item">
-        <a href="<?= $projectRoot ?>/distributions/myDistributions.php" class="nav-link link-dark">My distributions</a>
-      </li>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php" class="nav-link link-dark">My distributions</a>
+        </li>
       <?php } ?>
       <?php if ($user->getRole() == 3) { ?>
-      <li class="nav-item">
-        <a href="<?= $projectRoot ?>/admin/adminPanel.php" class="nav-link link-dark">Admin Panel</a>
-      </li>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/admin/adminPanel.php" class="nav-link link-dark">Admin Panel</a>
+        </li>
       <?php } ?>
     </ul>
     <hr>
@@ -34,9 +35,8 @@
 </div>
 
 <!-- Permanent sidebar for md+ screens -->
-<div id="sidebar-custom"
-     class="d-none d-md-flex flex-column flex-shrink-0 p-3 bg-light position-fixed"
-     style="top: 7vh; left: 0; width: 280px; height: 93vh; background-color: rgb(255 255 255 / 50%) !important;">
+<div id="sidebar-custom" class="d-none d-md-flex flex-column flex-shrink-0 p-3 bg-light position-fixed"
+  style="top: 7vh; left: 0; width: 280px; height: 93vh; background-color: rgb(255 255 255 / 50%) !important;">
   <div class="d-flex align-items-center mb-3 me-md-auto link-dark text-decoration-none">
     <span class="fs-4 fw-bold"><?= ucfirst($user->getRoleName()) . " dashboard"; ?></span>
   </div>
@@ -46,14 +46,37 @@
       <a href="<?= $projectRoot ?>/index.php" class="nav-link link-dark">Home</a>
     </li>
     <?php if ($user->getRole() == 1 || $user->getRole() == 2) { ?>
-    <li class="nav-item">
-      <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=all" class="nav-link link-dark">My distributions</a>
-    </li>
+      <hr>
+      <h5>Distributions</h5>
+      <li class="nav-item">
+        <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=all" class="nav-link link-dark">All
+          distributions</a>
+      </li>
+      <?php if ($user->getRole() == 1) { //student ?>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=to_make"
+            class="nav-link link-dark">Choice needed</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen"
+            class="nav-link link-dark">Choice made</a>
+        </li>
+      <?php } else { //teacher ?>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=active" class="nav-link link-dark">Active
+            distributions</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=inactive"
+            class="nav-link link-dark">Inactive
+            distributions</a>
+        </li>
+      <?php } ?>
     <?php } ?>
-    <?php if ($user->getRole() == 3) { ?>
-    <li class="nav-item">
-      <a href="<?= $projectRoot ?>/admin/adminPanel.php" class="nav-link link-dark">Admin Panel</a>
-    </li>
+    <?php if ($user->getRole() == 3) { //admin ?>
+      <li class="nav-item">
+        <a href="<?= $projectRoot ?>/admin/adminPanel.php" class="nav-link link-dark">Admin Panel</a>
+      </li>
     <?php } ?>
   </ul>
   <hr>

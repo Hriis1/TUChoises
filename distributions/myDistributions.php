@@ -27,11 +27,15 @@ $headerText = "";
 if ($_GET["condition"] == "all") {
     $headerText = "All distributions";
 } else if ($_GET["condition"] == "active") {
-    $headerText = "Active distributions";
-    $condition .= " AND active = 1";
+    if ($role == 2) {
+        $headerText = "Active distributions";
+        $condition .= " AND active = 1";
+    }
 } else if ($_GET["condition"] == "inactive") {
-    $headerText = "Inactive distributions";
-    $condition .= " AND active = 0";
+    if ($role == 2) {
+        $headerText = "Inactive distributions";
+        $condition .= " AND active = 0";
+    }
 } else if ($_GET["condition"] == "to_make") {
     $headerText = "Choice needed";
     if ($role == 1) {
