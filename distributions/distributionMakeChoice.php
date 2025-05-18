@@ -90,7 +90,7 @@ $choices = $dist->getChoices($mysqli);
             </p>
             <hr>
             <h3 class="mb-3">Избори</h3>
-            <form method="POST" action="submit_ratings.php">
+            <form novalidate method="POST" action="submit_ratings.php">
                 <div class="choices-container">
                     <?php foreach ($choices as $choice):
                         $cid = $choice->getId();
@@ -129,3 +129,27 @@ $choices = $dist->getChoices($mysqli);
 <?php
 require_once "../footer.php";
 ?>
+
+<script>
+    $(function () {
+        $('form').on('submit', function (e) {
+            e.preventDefault(); // always intercept
+
+            let allRated = true;
+            $('.star-rating').each(function () {
+                if ($(this).find('input:checked').length === 0) {
+                    allRated = false;
+                    return false;
+                }
+            });
+
+            if (!allRated) {
+                alert('Please, rate each choice!');
+            } else {
+                // remove the novalidate to let HTML5 required run
+                this.removeAttribute('novalidate');
+                this.submit();
+            }
+        });
+    });
+</script>
