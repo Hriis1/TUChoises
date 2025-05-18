@@ -218,6 +218,21 @@ class Distribution
         return 0;
     }
 
+    public function getStudentRatings(int $userID, mysqli $mysqli)
+    {
+        $user = null;
+        try {
+            $user = new User($userID, $mysqli);
+        } catch (\Exception $e) { //if user could not be inited
+            return [];
+        }
+        if ($user->getRole() != 1) //if user is not a student
+            return [];
+
+        //Return the scores of the user --- will return an empty arr if user hasnt chosen yet
+        return $this->getScores($mysqli, $user);
+    }
+
 
     //Private
     private function canStudentInteract(User $user)

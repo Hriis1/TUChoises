@@ -94,7 +94,8 @@ require_once "../sidebar.php";
                 if ($studentPermisions == 1) { //can choose ?>
                     <a href="distributionMakeChoice.php?id=<?= $distID ?>" class="btn btn-success">Make Choice</a>
                 <?php } else if ($studentPermisions == 2) { //can view choice made ?>
-                        <a href="distributionViewChoice.php?id=<?= $distID ?>" class="btn btn-success">View Choice</a>
+                        <a href="distributionViewChoice.php?id=<?= $distID ?>&userID=<?= $user->getId(); ?>"
+                            class="btn btn-success">View My Choice</a>
                 <?php } else if ($dist->canTeacherEditChoice($user, $mysqli)) { //teacher can edit their choice
                     $choiceID = 0;
                     foreach ($choices as $curr) {
