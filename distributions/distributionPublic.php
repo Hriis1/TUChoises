@@ -48,6 +48,9 @@ $choices = $dist->getChoices($mysqli);
         }
     }
 </style>
+<?php
+require_once "../sidebar.php";
+?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5">
         <div class="basic-container relative bg-white bg-opacity-50 p-5 rounded-5 shadow"

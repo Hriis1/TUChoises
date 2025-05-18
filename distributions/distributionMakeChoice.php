@@ -88,6 +88,9 @@ $choices = $dist->getChoices($mysqli);
         }
     }
 </style>
+<?php
+require_once "../sidebar.php";
+?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5">
         <div class="basic-container relative bg-white bg-opacity-50 p-5 rounded-5 shadow"
@@ -104,8 +107,10 @@ $choices = $dist->getChoices($mysqli);
             </p>
             <hr>
             <h3 class="mb-3">Избори</h3>
-            <form novalidate method="POST" action="submit_ratings.php">
+            <form novalidate method="POST" action="../backend/distributions/makeChoiceBE.php">
+                <input type="hidden" name="action" value="makeChoice">
                 <input type="hidden" name="userID" value="<?= $user->getId(); ?>">
+                <input type="hidden" name="distID" value="<?= $dist->getId(); ?>">
                 <div class="choices-container">
                     <?php foreach ($choices as $choice):
                         $cid = $choice->getId();

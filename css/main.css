@@ -6,6 +6,7 @@
 }
 
 .basic-container {
+    margin-left: 250px;
     width: 75%;
     min-height: 80vh;
 }

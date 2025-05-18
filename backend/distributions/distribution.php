@@ -129,7 +129,7 @@ class Distribution
     {
         $id = $this->id;
         $choices = [];
-        $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0", $mysqli);
+        $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0 ORDER BY id", $mysqli);
         foreach ($choicesDB as $curr) {
             $choices[] = new DistributionChoice($curr["id"], $mysqli);
         }
@@ -236,6 +236,6 @@ class Distribution
             $condition = $condition && $this->facultyShort == $user->getFacultyShort();
         }
 
-        return true;
+        return $condition;
     }
 }
