@@ -72,6 +72,20 @@ $choices = $dist->getChoices($mysqli);
             display: block;
             margin-bottom: 10px;
         }
+
+        .card-body {
+            flex-direction: row;
+        }
+
+        .star-rating {
+            flex-direction: column-reverse !important;
+            margin-left: 1rem;
+        }
+
+        .star-rating label {
+            display: block;
+            padding: 0.2rem 0 !important;
+        }
     }
 </style>
 <main>
@@ -91,6 +105,7 @@ $choices = $dist->getChoices($mysqli);
             <hr>
             <h3 class="mb-3">Избори</h3>
             <form novalidate method="POST" action="submit_ratings.php">
+                <input type="hidden" name="userID" value="<?= $user->getId(); ?>">
                 <div class="choices-container">
                     <?php foreach ($choices as $choice):
                         $cid = $choice->getId();
