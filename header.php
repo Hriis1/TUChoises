@@ -90,7 +90,7 @@ $user = new User($_SESSION["userID"], $mysqli);
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle fs-4"></i>
-                                <div class="ms-2"><?= $user->getUsername(); ?></div>
+                                <div class="ms-2"><?= $user->getNames(); ?></div>
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
