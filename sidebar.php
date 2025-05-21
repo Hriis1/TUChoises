@@ -20,11 +20,34 @@
         <a href="<?= $projectRoot ?>/index.php" class="nav-link link-dark">Home</a>
       </li>
       <?php if ($user->getRole() == 1 || $user->getRole() == 2) { ?>
+        <hr>
+        <h5 class="px-3">Distributions</h5>
         <li class="nav-item">
-          <a href="<?= $projectRoot ?>/distributions/myDistributions.php" class="nav-link link-dark">My distributions</a>
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=all" class="nav-link link-dark">All
+            distributions</a>
         </li>
+        <?php if ($user->getRole() == 1) { ?>
+          <li class="nav-item">
+            <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=to_make"
+              class="nav-link link-dark">Choice needed</a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen"
+              class="nav-link link-dark">Choice made</a>
+          </li>
+        <?php } else { ?>
+          <li class="nav-item">
+            <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=active"
+              class="nav-link link-dark">Active distributions</a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=inactive"
+              class="nav-link link-dark">Inactive distributions</a>
+          </li>
+        <?php } ?>
       <?php } ?>
       <?php if ($user->getRole() == 3) { ?>
+        <hr>
         <li class="nav-item">
           <a href="<?= $projectRoot ?>/admin/adminPanel.php" class="nav-link link-dark">Admin Panel</a>
         </li>
@@ -58,8 +81,8 @@
             class="nav-link link-dark">Choice needed</a>
         </li>
         <li class="nav-item">
-          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen"
-            class="nav-link link-dark">Choice made</a>
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen" class="nav-link link-dark">Choice
+            made</a>
         </li>
       <?php } else { //teacher ?>
         <li class="nav-item">
