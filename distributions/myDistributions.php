@@ -5,7 +5,7 @@ $userID = $user->getId();
 $role = $user->getRole();
 $semester = $user->getSemester();
 
-//If user is hot user or teacher or condition is not set
+//If user is not student or teacher or condition is not set
 if (($role != 1 && $role != 2) || !isset($_GET["condition"])) {
     header("Location: ../index.php");
     exit;
