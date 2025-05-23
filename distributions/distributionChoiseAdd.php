@@ -67,20 +67,32 @@ if ($distType == 1 || $distType == 2) { //if type is valid
                 <div class="border p-3 mb-3">
                     <h5>Choice ${i}</h5>
                     <div class="mb-3">
-                    <label for="name_${i}" class="form-label">Name</label>
-                    <input type="text" id="name_${i}" name="name[]" class="form-control" required>
+                        <label for="name_${i}" class="form-label">Name</label>
+                        <input type="text" id="name_${i}" name="name[]" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                    <label for="instructor_${i}" class="form-label">Instructor</label>
-                    <select id="instructor_${i}" name="instructor[]" class="form-select" required>
-                        <?php foreach ($teachers as $t): ?>
-                        <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['names']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                        <label for="instructor_${i}" class="form-label">Instructor</label>
+                        <select id="instructor_${i}" name="instructor[]" class="form-select" required>
+                            <?php foreach ($teachers as $t): ?>
+                            <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['names']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
-                    <label for="description_${i}" class="form-label">Description</label>
-                    <textarea id="description_${i}" name="description[]" class="form-control" required></textarea>
+                        <label for="description_${i}" class="form-label">Description</label>
+                        <textarea id="description_${i}" name="description[]" class="form-control" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="min_${i}" class="form-label">Min</label>
+                        <input type="number" id="min_${i}" name="min[]" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="max_${i}" class="form-label">Max</label>
+                        <input type="number" id="max_${i}" name="max[]" class="form-control" required>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" id="min_max_editble_${i}" name="min_max_editble[]" class="form-check-input" checked>
+                        <label for="min_max_editble_${i}" class="form-check-label">Min/Max editable by instructors</label>
                     </div>
                 </div>
                 `);

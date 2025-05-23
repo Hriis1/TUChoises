@@ -482,6 +482,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $names = isset($_POST['name']) ? $_POST['name'] : [];
         $instructors = isset($_POST['instructor']) ? $_POST['instructor'] : [];
         $descs = isset($_POST['description']) ? $_POST['description'] : [];
+        $mins = isset($_POST['min']) ? $_POST['min'] : [];
+        $maxs = isset($_POST['max']) ? $_POST['max'] : [];
+        $editable = isset($_POST['min_max_editble']) ? $_POST['min_max_editble'] : [];
 
         // Validate distribution ID
         if ($distId === '' || !ctype_digit($distId) || $distType === '' || !ctype_digit($distType)) {
@@ -499,17 +502,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $count = (int) $count;
 
         // Validate arrays length
-        if (count($names) !== $count || count($instructors) !== $count || count($descs) !== $count) {
+        if (
+            count($names) !== $count || count($instructors) !== $count || count($descs) !== $count
+            || count($mins) !== $count || count($maxs) !== $count
+        ) {
             echo json_encode([0, 'count', 'Mismatch between count and submitted fields']);
             exit;
         }
 
         // Prepare insert
-        $stmt = $mysqli->prepare("
-        INSERT INTO distribution_choices
-          (`name`, `distribution`, `instructor`, `description`, type)
-        VALUES (?, ?, ?, ?, ?)
-        ");
+        $stmt = $mysqli->prepare("INSERT INTO distribution_choices
+          (`name`, `distribution`, `instructor`, `description`, `type`, `min`, `max`, `min_max_editble`)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
             echo json_encode([0, '', 'DB prepare failed']);
@@ -521,6 +525,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $n = trim($names[$i]);
             $ins = (int) $instructors[$i];
             $d = trim($descs[$i]);
+            $min = (int) trim($mins[$i]);
+            $max = (int) trim($maxs[$i]);
+            $edit = isset($editable[$i]) ? 1 : 0;
 
             if ($n === '') {
                 echo json_encode([0, "name[$i]", "Name required for choice " . ($i + 1)]);
@@ -535,7 +542,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $stmt->bind_param('siisi', $n, $distId, $ins, $d, $distType);
+            if ($max == 0) {
+                echo json_encode([0, "max[$i]", "Max cannot be 0"]);
+                exit;
+            }
+
+            $stmt->bind_param('siisiiii', $n, $distId, $ins, $d, $distType, $min, $max, $edit);
             if (!$stmt->execute()) {
                 // Error
                 $_SESSION['alert'] = [
