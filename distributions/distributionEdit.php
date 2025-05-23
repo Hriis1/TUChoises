@@ -47,7 +47,7 @@ $faculties = getNonDeletedFromDB("faculties", $mysqli);
                 <div class="mb-3">
                     <label for="semester_applicable" class="form-label">Semester Applicable</label>
                     <input type="number" class="form-control" id="semester_applicable" name="semester_applicable"
-                        value="<?= $dist->getSemesterApplicable(); ?>" required min="1" max="10">
+                        value="<?= $dist->getSemesterApplicable(); ?>" required min="1" max="10" disabled>
                 </div>
                 <div class="mb-3">
                     <label for="major" class="form-label">Major</label>
