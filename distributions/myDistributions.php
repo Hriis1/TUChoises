@@ -47,7 +47,7 @@ if ($_GET["condition"] == "active") {
     $headerText = "All distributions";
     if ($role == 1) {
         $headerText = "Choice made";
-        $condition .= " AND active = 1 AND EXISTS (SELECT 1 FROM s_d_scores  WHERE user_id = $userID  AND distribution_id = distributions.id)";
+        $condition .= " AND EXISTS (SELECT 1 FROM s_d_scores  WHERE user_id = $userID  AND distribution_id = distributions.id)";
     }
 } else {
     $headerText = "All distributions";
