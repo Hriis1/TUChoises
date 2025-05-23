@@ -573,6 +573,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int) $_POST['id'];
         $name = trim($_POST['name']);
         $description = trim($_POST['description']);
+        $min = (int) $_POST["min"];
+        $max = (int) $_POST["max"];
+        $min_max_editble = (int) $_POST["min_max_editble"];
 
         $choiceObj = null;
         try {
@@ -590,10 +593,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([0, 'description', 'Description required']);
             exit;
         }
+        if (!$min) {
+            echo json_encode([0, 'min', 'Min required']);
+            exit;
+        }
+        if (!$max) {
+            echo json_encode([0, 'max', 'Max required']);
+            exit;
+        }
+        if (!isset($_POST["min_max_editble"])) {
+            echo json_encode([0, 'min_max_editble', 'Min/Max editable required']);
+            exit;
+        }
 
         // update
-        $stmt = $mysqli->prepare(" UPDATE distribution_choices SET name = ?, description = ? WHERE id = ?");
-        $stmt->bind_param("ssi", $name, $description, $id);
+        $stmt = $mysqli->prepare(" UPDATE distribution_choices SET name = ?, description = ?, min = ?, max = ?, min_max_editble = ? WHERE id = ?");
+        $stmt->bind_param("ssiiii", $name, $description, $min, $max, $min_max_editble, $id);
         $stmt->execute();
         $rows = $stmt->affected_rows;
         $stmt->close();
