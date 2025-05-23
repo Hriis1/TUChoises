@@ -43,13 +43,14 @@ for ($i = 0; $i < sizeof($distChoices); $i++) { //check if ids match
 
 //Validation complete
 $userID = $user->getId();
+$start_year = $user->getStartYear();
 $distID = $dist->getId();
 
 $stmt = $mysqli->prepare("
-    INSERT INTO s_d_scores (user_id, distribution_id, choice_id, score)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO s_d_scores (user_id, distribution_id, choice_id, score, user_start_year)
+    VALUES (?, ?, ?, ?, ?)
 ");
-$stmt->bind_param("iiii", $userID, $distID, $id, $rating);
+$stmt->bind_param("iiiii", $userID, $distID, $id, $rating, $start_year);
 
 $successCount = 0;
 foreach ($submitedRatings as $id => $rating) {
