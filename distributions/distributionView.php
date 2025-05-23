@@ -59,6 +59,9 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                         <th>Instructor</th>
                         <th>Distribution</th>
                         <th>Description</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                        <th>Min/Max editable</th>
                         <th>Major</th>
                         <th>Faculty</th>
                         <th>#</th>
@@ -90,6 +93,9 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
                             <td><?= $currTeacher->getNames(); ?></td>
                             <td><?= $dist->getName(); ?></td>
                             <td><?= $dc["description"]; ?></td>
+                            <td><?= $dc["min"]; ?></td>
+                            <td><?= $dc["max"]; ?></td>
+                            <td><?= $dc["min_max_editble"] ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-danger">No</span>'; ?></td>
                             <td><?= $majorName; ?></td>
                             <td><?= $facultyName; ?></td>
                             <td>
@@ -115,7 +121,7 @@ $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = 
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 7, width: "100px" }, //Actions
+                { targets: 10, width: "100px" }, //Actions
             ]
         });
     });
