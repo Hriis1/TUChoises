@@ -504,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Validate arrays length
         if (
             count($names) !== $count || count($instructors) !== $count || count($descs) !== $count
-            || count($mins) !== $count || count($maxs) !== $count
+            || count($mins) !== $count || count($maxs) !== $count || count($editable) !== $count
         ) {
             echo json_encode([0, 'count', 'Mismatch between count and submitted fields']);
             exit;
@@ -527,7 +527,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $d = trim($descs[$i]);
             $min = (int) trim($mins[$i]);
             $max = (int) trim($maxs[$i]);
-            $edit = isset($editable[$i]) ? 1 : 0;
+            $edit = (int) $editable[$i] != 0 ? 1 : 0;
 
             if ($n === '') {
                 echo json_encode([0, "name[$i]", "Name required for choice " . ($i + 1)]);

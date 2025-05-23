@@ -84,15 +84,18 @@ if ($distType == 1 || $distType == 2) { //if type is valid
                     </div>
                     <div class="mb-3">
                         <label for="min_${i}" class="form-label">Min</label>
-                        <input type="number" id="min_${i}" name="min[]" class="form-control" required>
+                        <input type="number" id="min_${i}" name="min[]" class="form-control" value="0" required>
                     </div>
                     <div class="mb-3">
                         <label for="max_${i}" class="form-label">Max</label>
                         <input type="number" id="max_${i}" name="max[]" class="form-control" required>
                     </div>
                     <div class="form-check mb-3">
-                        <input type="checkbox" id="min_max_editble_${i}" name="min_max_editble[]" class="form-check-input" checked>
-                        <label for="min_max_editble_${i}" class="form-check-label">Min/Max editable by instructors</label>
+                        <input type="hidden" name="min_max_editble[${i - 1}]" value="0">
+                        <input type="checkbox" id="min_max_editble_${i}" name="min_max_editble[${i - 1}]" class="form-check-input" value="1" checked>
+                        <label for="min_max_editble_${i}" class="form-check-label">
+                            Min/Max editable by instructors
+                        </label>
                     </div>
                 </div>
                 `);
