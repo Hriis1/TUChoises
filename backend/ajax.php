@@ -571,11 +571,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //Edit choice
     if ($_POST['action'] == 'editChoice') {
         $id = (int) $_POST['id'];
+        $dc = new DistributionChoice($id, $mysqli);
         $name = trim($_POST['name']);
         $description = trim($_POST['description']);
-        $min = (int) $_POST["min"];
-        $max = (int) $_POST["max"];
-        $min_max_editble = (int) $_POST["min_max_editble"];
+
+        //Min max and editable
+        if (isset($_POST["min"]) && isset($_POST["max"])) { //if user had permisions to change min/max
+            $min = (int) $_POST["min"];
+            $max = (int) $_POST["max"];
+        } else { //user didnt have permision to change min/max
+            $min = $dc->getMin();
+            $max = $dc->getMax();
+        }
+        if (isset($_POST["min_max_editble"])) { //if user had permisions to change min_max_editble
+            $min_max_editble = (int) $_POST["min_max_editble"];
+        } else { //user didnt have permision to change min_max_editble
+            $min_max_editble = $dc->getMinMaxEditable();
+        }
+
 
         $choiceObj = null;
         try {
@@ -599,10 +612,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if (!$max) {
             echo json_encode([0, 'max', 'Max required']);
-            exit;
-        }
-        if (!isset($_POST["min_max_editble"])) {
-            echo json_encode([0, 'min_max_editble', 'Min/Max editable required']);
             exit;
         }
 

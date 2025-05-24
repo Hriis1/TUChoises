@@ -50,24 +50,28 @@ if ($user->getRole() != 3) { //if user is not an admin
                     <textarea id="description" name="description" class="form-control" required><?= $dc->getDescription(); ?>
                     </textarea>
                 </div>
-                <div class="mb-3">
-                    <label for="min" class="form-label">Min</label>
-                    <input type="number" id="min" name="min" class="form-control" value="<?= $dc->getMin(); ?>"
-                        required>
-                </div>
-                <div class="mb-3">
-                    <label for="max" class="form-label">Max</label>
-                    <input type="number" id="max" name="max" class="form-control" value="<?= $dc->getMax(); ?>"
-                        required>
-                </div>
-                <div class="form-check mb-3">
-                    <input type="hidden" name="min_max_editble" value="0">
-                    <input type="checkbox" id="min_max_editble" name="min_max_editble" class="form-check-input"
-                        value="1" <?= $dc->getMinMaxEditable() ? 'checked' : '' ?>>
-                    <label for="min_max_editble" class="form-check-label">
-                        Min/Max editable by instructors
-                    </label>
-                </div>
+                <?php if ($user->getRole() == 3 || $dc->getMinMaxEditable()): //if user is admin or min/max are editable by instructors ?>
+                    <div class="mb-3">
+                        <label for="min" class="form-label">Min</label>
+                        <input type="number" id="min" name="min" class="form-control" value="<?= $dc->getMin(); ?>"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="max" class="form-label">Max</label>
+                        <input type="number" id="max" name="max" class="form-control" value="<?= $dc->getMax(); ?>"
+                            required>
+                    </div>
+                <?php endif ?>
+                <?php if ($user->getRole() == 3): //if user is admin ?>
+                    <div class="form-check mb-3">
+                        <input type="hidden" name="min_max_editble" value="0">
+                        <input type="checkbox" id="min_max_editble" name="min_max_editble" class="form-check-input"
+                            value="1" <?= $dc->getMinMaxEditable() ? 'checked' : '' ?>>
+                        <label for="min_max_editble" class="form-check-label">
+                            Min/Max editable by instructors
+                        </label>
+                    </div>
+                <?php endif ?>
                 <button type="submit" class="btn btn-primary">Edit Distribution</button>
             </form>
         </div>
