@@ -29,6 +29,18 @@ if ($user->getRole() != 3) {//if user is not admin
                 <div class="col-sm-6 col-lg-3">
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
+                            <h5 class="card-title">Student Grades</h5>
+                            <div class="d-grid gap-2">
+                                <a href="../users/studentGradesList.php" class="btn btn-outline-primary">View Student Grades</a>
+                                <a href="../users/studentGradesAdd.php" class="btn btn-outline-primary">Add Student Grades</a>
+                                <button class="btn btn-success">Import User Grades</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
                             <h5 class="card-title">Distributions</h5>
                             <div class="d-grid gap-2">
                                 <a href="../distributions/distributionList.php" class="btn btn-outline-primary">View
