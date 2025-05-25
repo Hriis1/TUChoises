@@ -889,4 +889,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] === 'addStudentGrades') {
+        $count = (int) $_POST["count"];
+        $student_id = (int) $_POST["student"];
+        $grades = $_POST["grades"];
+        $semesters = $_POST["semesters"];
+
+        if (!$count) {
+            echo json_encode([0, 'count', 'Error with number of grades']);
+            exit;
+        }
+        if ($count != count($grades)) { //check if count matches grades
+            echo json_encode([0, 'count', "Number of grades doesn't match grades"]);
+            exit;
+        }
+        if ($count != count(array_unique($semesters))) { //check if count amtches unique semesters
+            echo json_encode([0, 'count', "Number of grades doesn't match unique semesters"]);
+            exit;
+        }
+
+        $studentCheck = getFromDBCondition("users", "WHERE id = $student_id AND deleted = 0", $mysqli);
+        if (!$student_id) {
+            echo json_encode([0, 'student', 'Error with student']);
+            exit;
+        }
+        if (count($studentCheck) != 1) {
+            echo json_encode([0, 'student', "Student doesn't exist"]);
+            exit;
+        }
+
+        $mysqli->begin_transaction();
+        try {
+            $stmt = $mysqli->prepare("INSERT INTO student_grades (user_id, grade, semester) VALUES (?, ?, ?)");
+
+            for ($i = 0; $i < $count; $i++) {
+                $grade = round((double) $grades[$i], 2);
+                $semester = (int) $semesters[$i];
+
+                if ($grade < 2 || $grade > 6) {
+                    $mysqli->rollback();
+                    echo json_encode([0, 'grades[' . $i . ']', 'Grade must be between 2 and 6']);
+                    exit;
+                }
+
+                if ($semester < 1 || $semester > 10) {
+                    $mysqli->rollback();
+                    echo json_encode([0, 'semesters[' . $i . ']', 'Semester not valid']);
+                    exit;
+                }
+
+                $stmt->bind_param("idi", $student_id, $grade, $semester);
+                $stmt->execute();
+            }
+
+            $stmt->close();
+            $mysqli->commit();
+
+            if ($mysqli->affected_rows >= 0) {
+                $_SESSION['alert'] = ["type" => "success", "text" => "Grades added successfully"];
+                echo json_encode([1, '', '']);
+                exit;
+            }
+
+            $_SESSION['alert'] = ["type" => "danger", "text" => "Error adding grades!"];
+            echo json_encode([0, '', '']);
+            exit;
+
+        } catch (Exception $e) {
+            //Mysql error
+            $mysqli->rollback();
+            $_SESSION['alert'] = ["type" => "danger", "text" => "Error adding grades!"];
+            echo json_encode([0, '', '']);
+        }
+        exit;
+    }
+
+
 }

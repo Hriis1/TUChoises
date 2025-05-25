@@ -50,11 +50,11 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0", $mysql
                         <div class="row mb-3">
                             <div class="col">
                                 <label class="form-label">Grade ${i}</label>
-                                <input type="number" name="grade[]" class="form-control" min="2" max="6" required>
+                                <input type="number" name="grades[]" class="form-control" min="2" max="6" required>
                             </div>
                             <div class="col">
                                 <label class="form-label">Semester ${i}</label>
-                                <input type="number" name="semester[]" class="form-control" min="1" max="10" required>
+                                <input type="number" name="semesters[]" class="form-control" min="1" max="10" required>
                             </div>
                         </div>
                     `);
