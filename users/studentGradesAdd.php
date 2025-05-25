@@ -17,7 +17,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0", $mysql
                 <input type="hidden" name="action" value="addStudentGrades">
                 <div class="mb-3">
                     <label for="student" class="form-label">Student</label>
-                    <select class="form-select" name="student" required>
+                    <select class="form-select" id="student" name="student" required>
                         <?php foreach ($students as $student): ?>
                             <option value="<?= $student["id"]; ?>"><?= $student["names"]; ?></option>
                         <?php endforeach ?>
@@ -45,16 +45,16 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0", $mysql
             container.empty();
 
             if (count > 0 && count <= 10) {
-                for (let i = 1; i <= count; i++) {
+                for (let i = 0; i < count; i++) {
                     container.append(`
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">Grade ${i}</label>
-                                <input type="number" name="grades[]" class="form-control" min="2" max="6" required>
+                                <label class="form-label">Grade ${i + 1}</label>
+                                <input type="number" id="grade-${i}" name="grades[]" class="form-control" min="2" max="6" step="0.01" required>
                             </div>
                             <div class="col">
-                                <label class="form-label">Semester ${i}</label>
-                                <input type="number" name="semesters[]" class="form-control" min="1" max="10" required>
+                                <label class="form-label">Semester ${i + 1}</label>
+                                <input type="number" id="semester-${i}" name="semesters[]" class="form-control" min="1" max="10" required>
                             </div>
                         </div>
                     `);
@@ -77,8 +77,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0", $mysql
                     if (res[0] == 1) {
                         window.location = 'studentGradesList.php?id=' + studentID;
                     } else if (res[1]) {
-                        $('[name="' + res[1] + '"]')
-                            .after('<div class="text-danger">' + res[2] + '</div>');
+                        $('#' + res[1]).after('<div class="text-danger">' + res[2] + '</div>');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

@@ -926,15 +926,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $grade = round((double) $grades[$i], 2);
                 $semester = (int) $semesters[$i];
 
+                //check if grade already included for this semester
+                $gradeExists = getFromDBCondition("student_grades", "WHERE user_id = $student_id AND semester = $semester AND deleted = 0", $mysqli);
+                if ($gradeExists) {
+                    $mysqli->rollback();
+                    echo json_encode([0, 'grade-' . $i, 'Grade already added for semester ' . $semester]);
+                    exit;
+                }
+
                 if ($grade < 2 || $grade > 6) {
                     $mysqli->rollback();
-                    echo json_encode([0, 'grades[' . $i . ']', 'Grade must be between 2 and 6']);
+                    echo json_encode([0, 'grade-' . $i, 'Grade must be between 2 and 6']);
                     exit;
                 }
 
                 if ($semester < 1 || $semester > 10) {
                     $mysqli->rollback();
-                    echo json_encode([0, 'semesters[' . $i . ']', 'Semester not valid']);
+                    echo json_encode([0, 'semester-' . $i, 'Semester not valid']);
                     exit;
                 }
 
