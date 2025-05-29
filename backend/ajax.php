@@ -972,5 +972,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST["action"] === 'editStudentGrade') {
+        $grade_id = isset($_POST["id"]) ? $_POST["id"] : 0;
+        $grade = isset($_POST["grade"]) ? (float) $_POST["grade"] : null;
+
+        $gradeDB = getFromDBByID("student_grades", $grade_id, $mysqli);
+
+        //Error check
+        if (!$gradeDB) {
+            echo json_encode([0, '', 'Invalid grade row']);
+            exit;
+        }
+
+        if (!$grade || $grade < 2 || $grade > 6) {
+            echo json_encode([0, 'grade', 'Invalid grade value']);
+            exit;
+        }
+
+        //Edit grade in db
+        $stmt = $mysqli->prepare("UPDATE student_grades SET grade = ? WHERE id = ?");
+        $stmt->bind_param("di", $grade, $grade_id);
+        $stmt->execute();
+
+        if ($stmt->affected_rows >= 0) {
+            $_SESSION['alert'] = ["type" => "success", "text" => "Grade edited successfully"];
+            echo json_encode([1, '', '']);
+            exit;
+        }
+
+        $_SESSION['alert'] = ["type" => "danger", "text" => "Error editing grade!"];
+        echo json_encode([0, '', '']);
+        exit;
+    }
+
 
 }

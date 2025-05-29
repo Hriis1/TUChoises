@@ -33,7 +33,7 @@ if (!$user) { //if grade is not of a valid user
             <h2 class="mb-3">Edit Grade</h2>
             <hr>
             <form method="post" class="w-100">
-                <input type="hidden" name="action" value="editGrade">
+                <input type="hidden" name="action" value="editStudentGrade">
                 <input type="hidden" name="id" value="<?= $grade["id"]; ?>">
                 <div class="mb-3">
                     <label for="user_names" class="form-label">Student</label>
@@ -42,8 +42,8 @@ if (!$user) { //if grade is not of a valid user
                 </div>
                 <div class="mb-3">
                     <label for="grade" class="form-label">Grade</label>
-                    <input type="text" class="form-control" id="grade" name="grade" value="<?= $grade["grade"]; ?>"
-                        required>
+                    <input type="number" class="form-control" id="grade" name="grade" value="<?= $grade["grade"]; ?>"
+                        step="0.01" required>
                 </div>
                 <div class="mb-3">
                     <label for="user_names" class="form-label">Semester</label>
