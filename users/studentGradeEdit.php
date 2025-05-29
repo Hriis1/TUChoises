@@ -17,8 +17,8 @@ if (!$grade) { //if grade was not found
     require_once "../footer.php";
     exit;
 }
-$userID = $grade["user_id"];
-$user = getFromDBCondition("users", "WHERE id = $userID AND role = 1 AND deleted = 0", $mysqli);
+$student_fn = $grade["student_fn"];
+$user = getFromDBCondition("users", "WHERE fn = $student_fn AND role = 1 AND deleted = 0", $mysqli);
 if (!$user) { //if grade is not of a valid user
     echo "Invalid grade";
     require_once "../footer.php";

@@ -891,7 +891,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($_POST['action'] === 'addStudentGrades') {
         $count = (int) $_POST["count"];
-        $student_id = (int) $_POST["student"];
+        $student_fn = $_POST["student"];
         $grades = $_POST["grades"];
         $semesters = $_POST["semesters"];
 
@@ -908,11 +908,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $studentCheck = getFromDBCondition("users", "WHERE id = $student_id AND deleted = 0", $mysqli);
-        if (!$student_id) {
+        if (!$student_fn) {
             echo json_encode([0, 'student', 'Error with student']);
             exit;
         }
+        $studentCheck = getFromDBCondition("users", "WHERE fn = $student_fn AND deleted = 0", $mysqli);
         if (count($studentCheck) != 1) {
             echo json_encode([0, 'student', "Student doesn't exist"]);
             exit;
@@ -920,14 +920,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mysqli->begin_transaction();
         try {
-            $stmt = $mysqli->prepare("INSERT INTO student_grades (user_id, grade, semester) VALUES (?, ?, ?)");
+            $stmt = $mysqli->prepare("INSERT INTO student_grades (student_fn, grade, semester) VALUES (?, ?, ?)");
 
             for ($i = 0; $i < $count; $i++) {
                 $grade = round((double) $grades[$i], 2);
                 $semester = (int) $semesters[$i];
 
                 //check if grade already included for this semester
-                $gradeExists = getFromDBCondition("student_grades", "WHERE user_id = $student_id AND semester = $semester AND deleted = 0", $mysqli);
+                $gradeExists = getFromDBCondition("student_grades", "WHERE student_fn = $student_fn AND semester = $semester AND deleted = 0", $mysqli);
                 if ($gradeExists) {
                     $mysqli->rollback();
                     echo json_encode([0, 'grade-' . $i, 'Grade already added for semester ' . $semester]);
@@ -945,8 +945,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode([0, 'semester-' . $i, 'Semester not valid']);
                     exit;
                 }
-
-                $stmt->bind_param("idi", $student_id, $grade, $semester);
+                
+                $stmt->bind_param("sdi", $student_fn, $grade, $semester);
                 $stmt->execute();
             }
 

@@ -19,7 +19,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0 ORDER BY
                     <label for="student" class="form-label">Student</label>
                     <select class="form-select" id="student" name="student" required>
                         <?php foreach ($students as $student): ?>
-                            <option value="<?= $student["id"]; ?>"><?= $student["names"]; ?></option>
+                            <option value="<?= $student["fn"]; ?>"><?= $student["names"]; ?></option>
                         <?php endforeach ?>
                     </select>
                 </div>

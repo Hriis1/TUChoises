@@ -29,7 +29,8 @@ if (isset($_GET["id"])) {
     $studentID = $_GET["id"];
     $student = getFromDBCondition("users", "WHERE id = $studentID AND role = 1 AND deleted = 0", $mysqli);
     if ($student) {
-        $condition .= " AND user_id = $studentID";
+        $fn = trim($student[0]["fn"]);
+        $condition .= " AND student_fn = $fn";
     }
 }
 $grades = getFromDBCondition("student_grades", $condition, $mysqli);
@@ -61,14 +62,13 @@ $grades = getFromDBCondition("student_grades", $condition, $mysqli);
                 </thead>
                 <tbody>
                     <?php foreach ($grades as $curr) {
-                        try {
-                            $student = new User($curr["user_id"], $mysqli);
-                            $names = $student->getNames();
-                            $fn = $student->getFn();
-                        } catch (\Exception $e) {
-                            $names = "";
-                            $fn = "";
+                        $fn = $curr["student_fn"];
+                        $names = "";
+                        $student = getFromDBCondition("users", "WHERE fn = $fn AND role = 1 AND deleted = 0", $mysqli);
+                        if ($student) {
+                            $names = $student[0]["names"];
                         }
+
                         ?>
                         <tr>
                             <td><?= $curr["id"]; ?></td>
@@ -99,7 +99,7 @@ require_once "../footer.php";
         let table = new DataTable("#table", {
             order: [
                 [2, 'asc'],
-                [4, 'asc']  
+                [4, 'asc']
             ]
         });
     });
