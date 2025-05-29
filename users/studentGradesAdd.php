@@ -5,7 +5,7 @@ if ($user->getRole() != 3) {
     exit;
 }
 
-$students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0", $mysqli);
+$students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0 ORDER BY names", $mysqli);
 
 ?>
 <main>
