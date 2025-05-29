@@ -73,7 +73,7 @@ require_once "../footer.php";
                 dataType: 'json',
                 success: function (res) {
                     if (res[0] == 1) {
-                        window.location = 'facultyList.php';
+                        window.location = 'studentGradesList.php';
                     } else if (res[1]) {
                         $('[name="' + res[1] + '"]')
                             .after('<div class="text-danger">' + res[2] + '</div>');
