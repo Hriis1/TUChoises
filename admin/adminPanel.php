@@ -31,9 +31,13 @@ if ($user->getRole() != 3) {//if user is not admin
                         <div class="card-body text-center">
                             <h5 class="card-title">Student Grades</h5>
                             <div class="d-grid gap-2">
-                                <a href="../users/studentGradesList.php" class="btn btn-outline-primary">View Student Grades</a>
-                                <a href="../users/studentGradesAdd.php" class="btn btn-outline-primary">Add Student Grades</a>
-                                <button class="btn btn-success">Import User Grades</button>
+                                <a href="../users/studentGradesList.php" class="btn btn-outline-primary">View Student
+                                    Grades</a>
+                                <a href="../users/studentGradesAdd.php" class="btn btn-outline-primary">Add Student
+                                    Grades</a>
+                                <button class="btn btn-success"
+                                    onclick="importData('../backend/utils/importData.php', 'importGrades')">Import
+                                    User Grades</button>
                             </div>
                         </div>
                     </div>

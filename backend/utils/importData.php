@@ -34,12 +34,23 @@ function importExcel(
 
         // prepare unique-check statements
         $uniqueStmts = [];
-        foreach ($uniqueIndices as $idx) {
-            $field = $fields[$idx];
-            $stmt = $mysqli->prepare("SELECT COUNT(*) FROM `{$table}` WHERE `$field` = ? AND `$deletedFlagCol` = 0");
-            if (!$stmt)
-                return [0, "MySQL Error 1"];
-            $uniqueStmts[$idx] = $stmt;
+        foreach ($uniqueIndices as $key => $idx) {
+            if (is_array($idx)) {
+                $cols = array_map(fn($i) => "`{$fields[$i]}` = ?", $idx);
+                $sql = "SELECT COUNT(*) FROM `{$table}` WHERE " . implode(' AND ', $cols) . " AND `{$deletedFlagCol}` = 0";
+                $stmt = $mysqli->prepare($sql);
+                if (!$stmt)
+                    return [0, "MySQL Error 1"];
+                $uniqueStmts[$key] = ['stmt' => $stmt, 'indices' => $idx];
+            } else {
+                $field = $fields[$idx];
+                $stmt = $mysqli->prepare(
+                    "SELECT COUNT(*) FROM `{$table}` WHERE `{$field}` = ? AND `{$deletedFlagCol}` = 0"
+                );
+                if (!$stmt)
+                    return [0, "MySQL Error 1"];
+                $uniqueStmts[$key] = ['stmt' => $stmt, 'indices' => [$idx]];
+            }
         }
 
         // prepare insert
@@ -68,9 +79,9 @@ function importExcel(
             $attempted++;
 
             // uniqueness
-            foreach ($uniqueIndices as $idx) {
-                $stmt = $uniqueStmts[$idx];
-                $stmt->bind_param('s', $values[$idx]);
+            foreach ($uniqueStmts as ['stmt' => $stmt, 'indices' => $inds]) {
+                $params = array_map(fn($i) => $values[$i], $inds);
+                $stmt->bind_param(str_repeat('s', count($params)), ...$params);
                 $stmt->execute();
                 $stmt->bind_result($count);
                 $stmt->fetch();
@@ -110,8 +121,9 @@ function importExcel(
         }
 
         $mysqli->commit();
-        foreach ($uniqueStmts as $st)
-            $st->close();
+        foreach ($uniqueStmts as $u) {
+            $u['stmt']->close();
+        }
         $insertStmt->close();
 
         return [1, "Inserted {$inserted} out of {$attempted} {$table}."];
@@ -119,6 +131,7 @@ function importExcel(
         return [0, $e->getMessage()];
     }
 }
+
 
 // ---- Handler ----
 
@@ -172,6 +185,15 @@ if ($_POST["action"] == "importFaculties") {
         ['name', 'ident', 'semester_applicable', 'major', 'faculty', 'type'],
         [1],
         'sssssi'
+    );
+} else if ($_POST["action"] == "importGrades") {
+    $res = importExcel(
+        $mysqli,
+        $_FILES['fileUpload']['tmp_name'],
+        'student_grades',
+        ['student_fn', 'grade', 'semester'],
+        [[0, 2]],
+        'sdi'
     );
 }
 
