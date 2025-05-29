@@ -54,6 +54,7 @@ $grades = getFromDBCondition("student_grades", $condition, $mysqli);
                     <tr>
                         <th>ID</th>
                         <th>Student</th>
+                        <th>FN</th>
                         <th>Grade</th>
                         <th>Semester</th>
                         <th>#</th>
@@ -64,13 +65,16 @@ $grades = getFromDBCondition("student_grades", $condition, $mysqli);
                         try {
                             $student = new User($curr["user_id"], $mysqli);
                             $names = $student->getNames();
+                            $fn = $student->getFn();
                         } catch (\Exception $e) {
                             $names = "";
+                            $fn = "";
                         }
                         ?>
                         <tr>
                             <td><?= $curr["id"]; ?></td>
                             <td><?= $names ?></td>
+                            <td><?= $fn ?></td>
                             <td><?= $curr["grade"]; ?></td>
                             <td><?= $curr["semester"]; ?></td>
                             <td>
