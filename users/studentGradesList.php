@@ -28,11 +28,10 @@ $condition = "WHERE deleted = 0";
 if (isset($_GET["id"])) {
     $studentID = $_GET["id"];
     $student = getFromDBCondition("users", "WHERE id = $studentID AND role = 1 AND deleted = 0", $mysqli);
-    if ($student) { //if student exists
+    if ($student) {
         $condition .= " AND user_id = $studentID";
     }
 }
-$condition .= " ORDER BY user_id, semester";
 $grades = getFromDBCondition("student_grades", $condition, $mysqli);
 ?>
 
@@ -97,6 +96,12 @@ require_once "../footer.php";
 
 <script>
     $(document).ready(function () {
-        let table = new DataTable("#table");
+        let table = new DataTable("#table", {
+            order: [
+                [2, 'asc'],
+                [4, 'asc']  
+            ]
+        });
     });
+
 </script>
