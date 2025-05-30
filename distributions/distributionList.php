@@ -123,35 +123,68 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 <script>
     //Activate a distribution
     function switchDistribution(id, active) {
-
-        //Prompt the user
         const confirmText = active != 0 ? "activate" : "deactivate";
         if (!confirm(`Are you sure you want to ${confirmText} this distribution?`))
             return;
 
-        //Activate/deactivate
-        $.ajax({
-            type: 'POST',
-            url: '../backend/ajax.php',
-            data: {
-                action: 'toggleDistribution',
-                id: id,
-                active: active
-            },
-            success: function (response) {
-
-                if (active == 0) { //if distribution is being deactivated
-                    //TODO: Calculate which students are distriuted where here
+        if (active == 0) {
+            $.ajax({
+                type: 'POST',
+                url: '../backend/ajax.php',
+                data: {
+                    action: 'canBeDistributed',
+                    id: id
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response[0] == 1) {
+                        proceedToggle(0);
+                    } else {
+                        let msg = response[1].map(x => `${x} has not yet made a choice`).join('\n');
+                        if (confirm(msg + '\nAre you sure you want to deactivate this distribution?')) {
+                            proceedToggle(0);
+                        }
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
+                    console.error("Raw response:", jqXHR.responseText);
                 }
+            });
+        } else {
+            proceedToggle(1);
+        }
 
-                location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("AJAX error:", textStatus, errorThrown);
-                console.error("Raw response:", jqXHR.responseText);
-            }
-        });
+        function proceedToggle(active) {
+            $.ajax({
+                type: 'POST',
+                url: '../backend/ajax.php',
+                data: {
+                    action: 'toggleDistribution',
+                    id: id,
+                    active: active
+                },
+                success: function (response) {
+                    if (response == 1) {
+                        if (active == 0) {
+                            //TODO: Calculate which students are distributed where here
+                        }
+                        location.reload();
+                    } else {
+                        alert('Error activating/deactivating distribution!');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);
+                    console.error("Raw response:", jqXHR.responseText);
+                    alert('AJAX error!');
+                }
+            });
+        }
+
     }
+
+
 
 
     $(document).ready(function () {

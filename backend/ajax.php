@@ -435,6 +435,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+
+
     if ($_POST['action'] == 'toggleDistribution') {
         $dist_id = isset($_POST['id']) ? trim($_POST['id']) : '';
         $active = $_POST["active"] != 0 ? 1 : 0;
@@ -945,7 +947,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode([0, 'semester-' . $i, 'Semester not valid']);
                     exit;
                 }
-                
+
                 $stmt->bind_param("sdi", $student_fn, $grade, $semester);
                 $stmt->execute();
             }
