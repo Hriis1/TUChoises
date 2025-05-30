@@ -435,7 +435,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] == 'canBeDistributed') {
+        $id = isset($_POST["id"]) ? (int) $_POST["id"] : 0;
 
+        $distribution = getFromDBCondition("distributions", "WHERE id = $id AND active = 1 AND deleted = 0", $mysqli);
+
+        if (!$distribution) {
+            // Error
+            $_SESSION['alert'] = [
+                "type" => "danger",
+                "text" => "Error Finding Distribution!"
+            ];
+            echo json_encode([0, "", ""]);
+            exit;
+        }
+
+        //Check if every student that has to choose has chosen
+        $distribution = new Distribution($id, $mysqli);
+        $start_year_applicable = $distribution->getStartYearApplicable();
+        $semester_applicable = $distribution->getSemesterApplicable();
+        $errorResponse = [];
+
+        //Select the students needed
+        $studentsCondition = "WHERE role = 1 AND start_year = $start_year_applicable AND deleted = 0";
+        if ($distribution->getType() == 1) {
+            $major = $mysqli->real_escape_string($distribution->getMajorShort());
+            $studentsCondition .= " AND major = '$major'";
+        } else {
+            $faculty = $mysqli->real_escape_string($distribution->getFacultyShort());
+            $studentsCondition .= " AND faculty = '$faculty'";
+        }
+
+        $users = getFromDBCondition(
+            "users",
+            $studentsCondition,
+            $mysqli
+        );
+
+        //check if every student has needed grade
+        foreach ($users as $user) {
+            $fn = $user['fn'];
+            $name = $user['names'];
+            $grades = getFromDBCondition(
+                "student_grades",
+                "WHERE student_fn = '$fn' AND semester = $semester_applicable AND deleted = 0",
+                $mysqli
+            );
+            if (count($grades) == 0) {
+                $errorResponse[] = "$name ($fn) doesn't have a grade for semester $semester_applicable";
+            } else if (count($grades) > 1) {
+                $errorResponse[] = "$name ($fn) has more then 1 grade for $semester_applicable";
+            }
+        }
+
+        //if there was error with grades return
+        if ($errorResponse) {
+            echo json_encode([-1, $errorResponse]);
+            exit;
+        }
+
+        //check if every student has chosen in s_d_scores
+        foreach ($users as $user) {
+            $user_id = $user['id'];
+            $fn = $user['fn'];
+            $name = $user['names'];
+            $scores = getFromDBCondition(
+                "s_d_scores",
+                "WHERE user_id = $user_id AND distribution_id = $id AND deleted = 0",
+                $mysqli
+            );
+            if (count($scores) == 0) {
+                $errorResponse[] = "$name ($fn) has not yet made a choice";
+            }
+        }
+
+        if ($errorResponse) {
+            echo json_encode([-2, $errorResponse]);
+            exit;
+        }
+
+        echo json_encode([1, []]);
+        exit;
+    }
 
     if ($_POST['action'] == 'toggleDistribution') {
         $dist_id = isset($_POST['id']) ? trim($_POST['id']) : '';

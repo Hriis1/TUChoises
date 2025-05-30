@@ -137,13 +137,18 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 },
                 dataType: 'json',
                 success: function (response) {
-                    if (response[0] == 1) {
+                    if (response[0] == 1) { //if everything is ok
                         proceedToggle(0);
-                    } else {
-                        let msg = response[1].map(x => `${x} has not yet made a choice`).join('\n');
+                    } else if (response[0] == -1) { //if there are students with no grades for the semester
+                        let msg = response[1].map(x => `${x}`).join('\n');
+                        alert(msg);
+                    } else if (response[0] == -2) { //if there are students that have not made a choice
+                        let msg = response[1].map(x => `${x}`).join('\n');
                         if (confirm(msg + '\nAre you sure you want to deactivate this distribution?')) {
                             proceedToggle(0);
                         }
+                    } else { //error
+                        location.reload();
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
