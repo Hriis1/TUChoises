@@ -182,4 +182,21 @@ class User
         return $semester;
     }
 
+    public static function getStartYearBySemester(int $semester): int
+    {
+        $year = (int) date('Y');
+        $month = (int) date('n');
+
+        // 1. When did the *current* academic year start?
+        $currentAcademicStart = ($month >= 9) ? $year : $year - 1;
+
+        // 2. How many *full* academic years back is $semester?
+        //    Semesters 1–2 → 0 years back, 3–4 → 1 year back, etc.
+        $yearsBack = (int) floor(($semester - 1) / 2);
+
+        // 3. Compute the start year
+        return $currentAcademicStart - $yearsBack;
+    }
+
+
 }
