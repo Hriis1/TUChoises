@@ -162,7 +162,7 @@ class User
     //Static
     public static function getSemesterByYear($startYear)
     {
-        $userSemester = 1;
+        $semester = 1;
         $year = (int) date('Y');
         $month = (int) date('n');
 
@@ -174,12 +174,12 @@ class User
             return 0;
         }
 
-        $userSemester += ($year - $startYear) * 2;
+        $semester += ($year - $startYear) * 2;
         if ($month >= 2 && $month < 9) {
-            $userSemester--;
+            $semester--;
         }
 
-        return $userSemester;
+        return $semester;
     }
 
 }
