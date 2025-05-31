@@ -453,7 +453,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //Check if every student that has to choose has chosen
         $distribution = new Distribution($id, $mysqli);
         $start_year_applicable = $distribution->getStartYearApplicable();
-        $semester_applicable = $distribution->getSemesterApplicable();
+        $semester_applicable = $distribution->getSemesterApplicable() - 1; //we need the grade of the previous semester
         $errorResponse = [];
 
         //Select the students needed
