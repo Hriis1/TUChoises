@@ -174,9 +174,35 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                 success: function (response) {
                     if (response == 1) {
                         if (active == 0) {
-                            //TODO: Calculate which students are distributed where here
+                            // Call “distributeStudents” endpoint
+                            $.ajax({
+                                type: 'POST',
+                                url: '../backend/distributions/distributeStudents.php',
+                                data: {
+                                    action: 'distributeStudents',
+                                    distID: id
+                                },
+                                dataType: 'text',
+                                success: function (response) {
+                                    if (response.trim() === '1') {
+                                        alert('Distribution successful');
+                                        location.reload();
+                                    } else {
+                                        alert('Error distributing students: ' + response);
+                                        proceedToggle(1, id);
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error('AJAX error (distributeStudents):', textStatus, errorThrown);
+                                    console.error('Raw response:', jqXHR.responseText);
+                                    alert('AJAX error while distributing students!');
+                                }
+                            });
+                        } else {
+                            location.reload();
                         }
-                        location.reload();
+
+                        //location.reload();
                     } else {
                         alert('Error activating/deactivating distribution!');
                     }

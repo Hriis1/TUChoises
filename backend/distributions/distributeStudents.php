@@ -1,23 +1,26 @@
 <?php
 require_once "../config/dbConfig.php";
-require_once "../config/sessionConfig.php";
 
 require_once "Distribution.php";
 require_once "../users/User.php";
 
 if ($_SERVER['REQUEST_METHOD'] != 'POST') //check request method
+{
+    echo "only POST";
     exit;
+}
 
 if (!isset($_POST["action"]) || $_POST["action"] != "distributeStudents") //check action var
+{
+    echo "unauthorized access";
     exit;
-
-if ($user->getRole() != 3) //user is not an admin
-    exit;
+}
 
 //Try getting dist
 try {
     $distribution = new Distribution($_POST["distID"], $mysqli);
 } catch (Exception $e) {
+    echo "Error getting distribution";
     exit;
 }
 
@@ -43,8 +46,9 @@ $users = getFromDBCondition(
     $mysqli
 );
 
-$distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = $id and deleted = 0", $mysqli);
 $dist_id = $distribution->getId();
+$distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = $dist_id and deleted = 0", $mysqli);
+
 
 //if some student hasnt chosen - add scores of 1 for them
 foreach ($users as $currUser) {
@@ -53,10 +57,66 @@ foreach ($users as $currUser) {
     if (count($studentScores) != count($distChoices)) { //if student hasnt chosen for something (most likely all)
         foreach ($distChoices as $currChoice) {
             $choice_id = $currChoice["id"];
+            $currStartYear = $currUser["start_year"];
             $score = getFromDBCondition("s_d_scores", "WHERE user_id = $user_id AND distribution_id = $dist_id AND choice_id = $choice_id AND deleted = 0", $mysqli);
             if (!$score) { //if student doesnt have a score for this choice
-                $mysqli->query("INSERT INTO s_d_scores (user_id, distribution_id, choice_id, score) VALUES ($user_id, $dist_id, $choice_id, 1)");
+                $mysqli->query("INSERT INTO s_d_scores (user_id, distribution_id, choice_id, score, user_start_year) VALUES ($user_id, $dist_id, $choice_id, 1, $currStartYear)");
             }
         }
     }
 }
+
+// 1) Build the “disciplines” array
+$disciplines = [];
+foreach ($distChoices as $disc) {
+    $disciplines[] = [
+        "id" => (int) $disc["id"],
+        "min" => (int) $disc["min"],
+        "max" => (int) $disc["max"]
+    ];
+}
+
+// 2) Build the “students” array
+$students = [];
+foreach ($users as $stu) {
+    $stu_id = (int) $stu["id"];
+    $stu_fn = $stu["fn"];
+
+    //grades
+    $grade = getFromDBCondition("student_grades", "WHERE student_fn = '$stu_fn' AND semester = $semester_applicable AND deleted = 0", $mysqli);
+    if (!$grade) { //stop if failed to take grade
+        echo "failed to take grade for student with id: " . $stu_id;
+        exit;
+    }
+
+    $grade = (float) $grade[0]["grade"];
+
+    //scores
+    $desires = [];
+    $studentScores = getFromDBCondition("s_d_scores", "WHERE user_id = $stu_id AND distribution_id = $dist_id AND deleted = 0", $mysqli);
+    foreach ($studentScores as $score) {
+        $desires[$score["choice_id"]] = $score["score"];
+    }
+
+    $students[] = [
+        "id" => $stu_id,
+        "grade" => $grade,
+        "desires" => $desires
+    ];
+}
+
+// 3) Combine into one PHP array and echo as JSON
+$inputData = [
+    "disciplines" => $disciplines,
+    "students" => $students
+];
+
+// If you want to write it to a file:
+file_put_contents(
+    __DIR__ . "/../../pythonSolver/tmp/input.json",
+    json_encode($inputData, JSON_PRETTY_PRINT)
+);
+
+echo 1;
+exit;
+
