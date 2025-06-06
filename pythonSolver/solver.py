@@ -1,96 +1,139 @@
 #!/usr/bin/env python3
 """
-assign_students.py
+solver.py
 
-Reads input JSON from sys.argv[1], solves assignment,
-writes output JSON to sys.argv[2].
+Reads an input JSON of the form:
 
-Input JSON format (all arrays are 0-indexed):
 {
-  "N": 10,
-  "N_min": [5, 3, 4, ..., up to length N],
-  "N_max": [15, 12, 8, ..., length N],
-
-  "S": 100,
-  "grades": [5, 6, 4, 6, 2, ...],          # length = S, each in {2..6}
-  "desires": [                            # array of length S, each inner list length = N
-      [3,5,2,1,4,4,3,2,5,1],
-      [4,4,3,2,5,1,2,3,4,2],
-      ...
+  "disciplines": [
+    { "id": "d1", "min": 5, "max": 12 },
+    { "id": "d2", "min": 3, "max": 10 },
+    { "id": "d3", "min": 4, "max": 8 }
+  ],
+  "students": [
+    {
+      "id": "s1",
+      "grade": 5.23,
+      "desires": { "d1": 5, "d2": 3, "d3": 4 }
+    },
+    {
+      "id": "s2",
+      "grade": 4.75,
+      "desires": { "d1": 2, "d2": 5, "d3": 1 }
+    },
+    ...
   ]
 }
 
-Output JSON format:
+and writes out:
+
 {
-  "assignments": { "0": 3, "1": 5, "2": 0, ... },
-  "objective_value": 12345
+  "assignments": {
+    "s1": "d1",
+    "s2": "d2",
+    ...
+  },
+  "objective_value": 9876.0
 }
-where “k”: i means student k is assigned to discipline i.
+
+Usage:
+   python solver.py input.json output.json
 """
 
-import json
-import sys
+import json, sys
 import pulp
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: assign_students.py input.json output.json", file=sys.stderr)
+        print("Usage: solver.py input.json output.json", file=sys.stderr)
         sys.exit(1)
 
+    # 1) Load input JSON
     with open(sys.argv[1], "r") as f:
         data = json.load(f)
 
-    N = data["N"]
-    N_min = data["N_min"]
-    N_max = data["N_max"]
+    # 2) Extract discipline IDs and their bounds
+    disciplines_data = data["disciplines"]
+    # Keep the order stable to build index ↔ ID mappings
+    discipline_ids = [d["id"] for d in disciplines_data]
+    N = len(discipline_ids)
 
-    S = data["S"]
-    grades = data["grades"]
-    desires = data["desires"]
+    # Build maps: disc_id → index (0..N-1), and arrays of min/max
+    disc_to_idx = {disc_id: idx for idx, disc_id in enumerate(discipline_ids)}
+    N_min = [None] * N
+    N_max = [None] * N
+    for d in disciplines_data:
+        i = disc_to_idx[d["id"]]
+        N_min[i] = d["min"]
+        N_max[i] = d["max"]
 
-    # 1) Build scores:
-    #    We choose weights: alpha = 100 (grade), beta = 1 (desire).
-    score = [[100 * grades[k] + desires[k][i] for i in range(N)] for k in range(S)]
+    # 3) Extract student IDs, grades, and desire‐maps
+    students_data = data["students"]
+    student_ids = [s["id"] for s in students_data]
+    S = len(student_ids)
+    stud_to_idx = {stu_id: k for k, stu_id in enumerate(student_ids)}
 
-    # 2) Define the problem
-    prob = pulp.LpProblem("StudentAssignment", pulp.LpMaximize)
+    grades = [None] * S
+    # desires[k][i] will hold the rating of student k for discipline i
+    desires = [[0]*N for _ in range(S)]
 
-    # 3) Variables x[k,i] ∈ {0,1}
+    for s in students_data:
+        k = stud_to_idx[s["id"]]
+        grades[k] = float(s["grade"])
+        # Expect a dict mapping each discipline_id → integer 1..5
+        for disc_id, rating in s["desires"].items():
+            disc_id = int(disc_id) 
+            i = disc_to_idx[disc_id]
+            desires[k][i] = int(rating)
+
+    # 4) Build a “score” matrix: score[k][i] = α·grade_k + β·desires[k][i]
+    #    You can tweak α and β as needed. Here we use α = 1000, β = 1.
+    alpha, beta = 100, 1
+    score = [[alpha * grades[k] + beta * desires[k][i] for i in range(N)] for k in range(S)]
+
+    # 5) Create PuLP problem
+    prob = pulp.LpProblem("StudentToDiscipline", pulp.LpMaximize)
+
+    # 6) Create binary variables x[k,i]
     x = {}
     for k in range(S):
         for i in range(N):
             x[(k, i)] = pulp.LpVariable(f"x_{k}_{i}", cat="Binary")
 
-    # 4) One discipline per student
+    # 7) Each student must be in exactly one discipline
     for k in range(S):
-        prob += (pulp.lpSum(x[(k, i)] for i in range(N)) == 1, f"OneDiscipline_Student_{k}")
+        prob += (pulp.lpSum(x[(k, i)] for i in range(N)) == 1,
+                 f"OneDisciplinePerStudent_{k}")
 
-    # 5) Capacity constraints per discipline
+    # 8) Capacity constraints for each discipline
     for i in range(N):
-        prob += (pulp.lpSum(x[(k, i)] for k in range(S)) >= N_min[i], f"MinCap_Disc_{i}")
-        prob += (pulp.lpSum(x[(k, i)] for k in range(S)) <= N_max[i], f"MaxCap_Disc_{i}")
+        prob += (pulp.lpSum(x[(k, i)] for k in range(S)) >= N_min[i],
+                 f"MinCapacity_{discipline_ids[i]}")
+        prob += (pulp.lpSum(x[(k, i)] for k in range(S)) <= N_max[i],
+                 f"MaxCapacity_{discipline_ids[i]}")
 
-    # 6) Objective: maximize total score
-    prob += pulp.lpSum(score[k][i] * x[(k, i)] for k in range(S) for i in range(N)), "TotalScore"
+    # 9) Objective: maximize total score
+    obj = pulp.lpSum(score[k][i] * x[(k, i)] for k in range(S) for i in range(N))
+    prob += obj, "TotalScore"
 
-    # 7) Solve (silence solver output)
-    prob.solve(pulp.PULP_CBC_CMD(msg=False, timeLimit=10))
+    # 10) Solve (silent)
+    prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    # 8) Extract assignments
+    # 11) Extract assignments, mapping student IDs → discipline IDs
     assignments = {}
-    for k in range(S):
-        for i in range(N):
+    for k, stu_id in enumerate(student_ids):
+        for i, disc_id in enumerate(discipline_ids):
             if x[(k, i)].value() > 0.5:
-                assignments[str(k)] = i
+                assignments[stu_id] = disc_id
                 break
 
-    out = {
+    # 12) Write output JSON
+    output = {
         "assignments": assignments,
-        "objective_value": pulp.value(prob.objective),
+        "objective_value": pulp.value(prob.objective)
     }
-
     with open(sys.argv[2], "w") as f:
-        json.dump(out, f)
+        json.dump(output, f, indent=2)
 
 if __name__ == "__main__":
     main()
