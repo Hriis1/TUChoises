@@ -450,12 +450,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        //Check if every student that has to choose has chosen
+        //Error checks
         $distribution = new Distribution($id, $mysqli);
         $start_year_applicable = $distribution->getStartYearApplicable();
         $semester_applicable = $distribution->getSemesterApplicable() - 1; //need the grade of the previous semester
         $errorResponse = [];
 
+        //Check if every student that has to choose has chosen
         //Select the students needed
         $studentsCondition = "WHERE role = 1 AND start_year = $start_year_applicable AND deleted = 0";
         if ($distribution->getType() == 1) {
@@ -471,6 +472,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $studentsCondition,
             $mysqli
         );
+        $userCount = count($users);
+
+        $distChoices = getFromDBCondition("distribution_choices", "WHERE distribution = $id and deleted = 0", $mysqli);
+
+        //Check if there are enough students to fulfill the min and not too many to exceed the max
+        $minSum = 0;
+        $maxSum = 0;
+        foreach ($distChoices as $currChoice) {
+            $minSum += (int) $currChoice["min"];
+            $maxSum += (int) $currChoice["max"];
+        }
+        if (count($users) < $minSum) {
+            echo json_encode([-3, "Minimum of $minSum users needed for this distribution, $userCount students eligible"]);
+            exit;
+        } else if (count($users) > $maxSum) {
+            echo json_encode([-3, "Maximum of $maxSum users needed for this distribution, $userCount students eligible"]);
+            exit;
+        }
 
         //check if every student has needed grade
         foreach ($users as $user) {

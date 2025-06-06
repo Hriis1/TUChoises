@@ -147,6 +147,8 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                         if (confirm(msg + '\nAre you sure you want to deactivate this distribution?')) {
                             proceedToggle(0);
                         }
+                    } else if (response[0] == -3) { //min/max error
+                        alert(response[1]);
                     } else { //error
                         location.reload();
                     }
