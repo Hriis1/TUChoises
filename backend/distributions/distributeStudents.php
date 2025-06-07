@@ -178,6 +178,10 @@ try {
     exit;
 }
 
+//Delete tmp files
+@unlink($input);
+@unlink($output);
+
 
 //Success
 echo 1;
