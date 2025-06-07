@@ -68,7 +68,7 @@ if ($user->getRole() != 3) {//if user is not admin
                                     class="btn btn-outline-primary">View
                                     Distributed Students</a>
                                 <a href="../distributions/ditributedStudentsAdd.php"
-                                    class="btn btn-outline-primary">Distribute manualy</a>
+                                    class="btn btn-outline-primary">Distribute manually</a>
                                 <button class="btn btn-success invisible">Placeholder</button>
                             </div>
                         </div>

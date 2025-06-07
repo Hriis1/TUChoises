@@ -49,7 +49,7 @@ $teachersBuffer = [];
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0"><?= $title; ?></h2>
                 <div>
-                    <a href="ditributedStudentsAdd.php" class="btn btn-primary px-4 me-2">Distribute manualy</a>
+                    <a href="ditributedStudentsAdd.php" class="btn btn-primary px-4 me-2">Distribute manually</a>
                 </div>
             </div>
 
@@ -114,7 +114,6 @@ $teachersBuffer = [];
                         $out_choice_name = isset($choicesBuffer[$curr["dist_choice_id"]]) ? $choicesBuffer[$curr["dist_choice_id"]]->getName() : "";
                         $out_teacher_name = isset($teachersBuffer[$teacher_id]) ? $teachersBuffer[$teacher_id]->getNames() : "";
                         $out_semester = isset($distributionsBuffer[$curr["dist_id"]]) ? $distributionsBuffer[$curr["dist_id"]]->getSemesterApplicable() : "";
-
                         ?>
                         <tr>
                             <td><?= $out_id; ?></td>

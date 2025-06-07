@@ -131,7 +131,11 @@ class Distribution
         $choices = [];
         $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0 ORDER BY id", $mysqli);
         foreach ($choicesDB as $curr) {
-            $choices[] = new DistributionChoice($curr["id"], $mysqli);
+            try {
+                $ch = new DistributionChoice($curr["id"], $mysqli);
+                $choices[] = $ch;
+            } catch (\Exception $th) {
+            }
         }
 
         return $choices;

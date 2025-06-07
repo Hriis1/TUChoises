@@ -1107,5 +1107,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] == 'getPossibleDistributions') {
+        $data = [];
+        $student_id = (int) $_POST['student'];
+        try {
+            $student = new User($student_id, $mysqli);
+        } catch (\Throwable $th) {
+            echo json_encode($data);
+            exit;
+        }
+
+        $st_major = $student->getMajorShort();
+        $st_faculty = $student->getFacultyShort();
+
+        $condition = "WHERE deleted = 0 AND ((type = 1 AND major = '$st_major') OR (type = 2 AND faculty = '$st_faculty'))";
+        $dists = getFromDBCondition('distributions', $condition, $mysqli);
+        foreach ($dists as $dist) {
+            $data[] = [
+                'id' => $dist['id'],
+                'name' => $dist['name']
+            ];
+        }
+        echo json_encode($data);
+        exit;
+    }
+
+    if ($_POST['action'] == 'getChoicesForDistribution') {
+        $data = [];
+        $dist_id = (int) $_POST['distribution'];
+        try {
+            $distribution = new Distribution($dist_id, $mysqli);
+        } catch (\Throwable $th) {
+            echo json_encode($data);
+            exit;
+        }
+
+        $choices = $distribution->getChoices($mysqli);
+        foreach ($choices as $choice) {
+            $data[] = [
+                'id' => $choice->getId(),
+                'name' => $choice->getName()
+            ];
+        }
+        echo json_encode($data);
+        exit;
+    }
+
+
+
 
 }
