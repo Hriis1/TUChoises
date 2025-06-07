@@ -131,6 +131,55 @@ if (!file_exists($output)) {
     exit;
 }
 
+//Write the output for distributed students in db
+// Read the output file
+$outputData = json_decode(file_get_contents($output), true);
+
+if (!isset($outputData['assignments']) || !is_array($outputData['assignments'])) {
+    echo 'Invalid output file';
+    exit;
+}
+
+
+//Insert to db
+$mysqli->begin_transaction();
+$stmt = $mysqli->prepare("INSERT INTO distributed_students (student_id, dist_id, dist_choice_id) VALUES (?, ?, ?)");
+if (!$stmt) {
+    echo 'Prepare failed: ' . $mysqli->error;
+    exit;
+}
+try {
+    foreach ($outputData['assignments'] as $student_id => $dist_choice_id) {
+        // 1. Check for non-deleted entry
+        $existing = getFromDBCondition(
+            "distributed_students",
+            "WHERE student_id = $student_id AND dist_id = $dist_id AND deleted = 0",
+            $mysqli
+        );
+
+        // 2. If rows exist delete them
+        if (is_array($existing)) {
+            foreach ($existing as $currExisting) {
+                deleteFromDB("distributed_students", $currExisting['id'], $mysqli, 'id');
+            }
+        }
+
+        // 3. Insert the new row
+        $stmt->bind_param('iii', $student_id, $dist_id, $dist_choice_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Insert failed for student $student_id: " . $stmt->error);
+        }
+    }
+    $stmt->close();
+    $mysqli->commit();
+} catch (Exception $e) {
+    $mysqli->rollback();
+    echo "Transaction failed: " . $e->getMessage();
+    exit;
+}
+
+
+//Success
 echo 1;
 exit;
 
