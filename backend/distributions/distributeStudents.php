@@ -111,11 +111,25 @@ $inputData = [
     "students" => $students
 ];
 
-// If you want to write it to a file:
+//write it to a file for the solver
 file_put_contents(
     __DIR__ . "/../../pythonSolver/tmp/input.json",
     json_encode($inputData, JSON_PRETTY_PRINT)
 );
+
+//Run the solver
+$venv_python = __DIR__ . '/../../pythonSolver/venv/Scripts/python.exe';
+$solver = __DIR__ . '/../../pythonSolver/solver.py';
+$input = __DIR__ . '/../../pythonSolver/tmp/input.json';
+$output = __DIR__ . '/../../pythonSolver/tmp/output.json';
+
+$cmd = escapeshellcmd("$venv_python $solver $input $output") . " 2>&1";
+$result = shell_exec($cmd);
+
+if (!file_exists($output)) {
+    echo "Error: Output file not created.";
+    exit;
+}
 
 echo 1;
 exit;
