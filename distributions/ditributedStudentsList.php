@@ -71,6 +71,7 @@ $teachersBuffer = [];
                 <tbody>
                     <?php foreach ($distributed_students as $curr) {
                         $teacher_id = 0;
+                        $grade = "";
                         try {
                             if (!isset($studentsBuffer[$curr["student_id"]])) {
                                 $studentsBuffer[$curr["student_id"]] = new User($curr["student_id"], $mysqli);
@@ -83,7 +84,6 @@ $teachersBuffer = [];
                             $distribution = $distributionsBuffer[$curr["dist_id"]];
 
                             //Get grade
-                            $grade = "";
                             if ($student && $distribution) {
                                 $fn = $student->getFn();
                                 $semester_grade = $distribution->getSemesterApplicable() - 1;
@@ -104,18 +104,27 @@ $teachersBuffer = [];
                             }
                             $teacher = $teachersBuffer[$teacher_id];
                         } catch (\Exception $e) {
-                            echo $e->getMessage();
+                            //echo $e->getMessage();
                         }
+
+                        $out_id = $curr["id"] ?? "";
+                        $out_student_name = isset($studentsBuffer[$curr["student_id"]]) ? $studentsBuffer[$curr["student_id"]]->getNames() : "";
+                        $out_fn = isset($studentsBuffer[$curr["student_id"]]) ? $studentsBuffer[$curr["student_id"]]->getFn() : "";
+                        $out_dist_name = isset($distributionsBuffer[$curr["dist_id"]]) ? $distributionsBuffer[$curr["dist_id"]]->getName() : "";
+                        $out_choice_name = isset($choicesBuffer[$curr["dist_choice_id"]]) ? $choicesBuffer[$curr["dist_choice_id"]]->getName() : "";
+                        $out_teacher_name = isset($teachersBuffer[$teacher_id]) ? $teachersBuffer[$teacher_id]->getNames() : "";
+                        $out_semester = isset($distributionsBuffer[$curr["dist_id"]]) ? $distributionsBuffer[$curr["dist_id"]]->getSemesterApplicable() : "";
+
                         ?>
                         <tr>
-                            <td><?= $curr["id"]; ?></td>
-                            <td><?= $studentsBuffer[$curr["student_id"]]->getNames(); ?></td>
-                            <td><?= $studentsBuffer[$curr["student_id"]]->getFn(); ?></td>
+                            <td><?= $out_id; ?></td>
+                            <td><?= $out_student_name; ?></td>
+                            <td><?= $out_fn; ?></td>
                             <td><?= $grade ?></td>
-                            <td><?= $distributionsBuffer[$curr["dist_id"]]->getName(); ?></td>
-                            <td><?= $choicesBuffer[$curr["dist_choice_id"]]->getName(); ?></td>
-                            <td><?= $teachersBuffer[$teacher_id]->getNames(); ?></td>
-                            <td><?= $distributionsBuffer[$curr["dist_id"]]->getSemesterApplicable(); ?></td>
+                            <td><?= $out_dist_name; ?></td>
+                            <td><?= $out_choice_name; ?></td>
+                            <td><?= $out_teacher_name; ?></td>
+                            <td><?= $out_semester; ?></td>
                             <td>
                                 <a href="ditributedStudentEdit.php?id=<?= $curr["id"]; ?>"><i
                                         class="fa-solid fa-pen"></i></a>
