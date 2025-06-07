@@ -60,6 +60,21 @@ if ($user->getRole() != 3) {//if user is not admin
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-3">
+                    <div class="card shadow-sm h-60">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Distributed Students</h5>
+                            <div class="d-grid gap-2">
+                                <a href="../distributions/ditributedStudentsList.php"
+                                    class="btn btn-outline-primary">View
+                                    Distributed Students</a>
+                                <a href="../distributions/ditributedStudentsAdd.php"
+                                    class="btn btn-outline-primary">Distribute manualy</a>
+                                <button class="btn btn-success invisible">Placeholder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
                             <h5 class="card-title">Majors</h5>
