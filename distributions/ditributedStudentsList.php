@@ -147,8 +147,8 @@ require_once "../footer.php";
     $(document).ready(function () {
         let table = new DataTable("#table", {
             order: [
+                [4, 'desc'],
                 [2, 'asc'],
-                [4, 'asc'],
                 [5, 'asc']
             ],
             columnDefs: [

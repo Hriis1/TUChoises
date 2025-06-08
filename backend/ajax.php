@@ -1199,7 +1199,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] == 'editDistributedStudent') {
+        $id = isset($_POST["id"]) ? (int) $_POST["id"] : 0;
+        $choice_id = isset($_POST["choice"]) ? (int) $_POST["choice"] : 0;
 
+        if ($id == 0) {
+            echo json_encode([0, 'id', 'Invalid student distribution row']);
+            exit;
+        }
 
+        if ($choice_id == 0) {
+            echo json_encode([0, 'choice', 'Invalid choice']);
+            exit;
+        }
+
+        $row = getFromDBByID("distributed_students", $id, $mysqli);
+        if (!$row) {
+            echo json_encode([0, 'id', 'Distributed row not found']);
+            exit;
+        }
+
+        $stmt = $mysqli->prepare("UPDATE distributed_students SET dist_choice_id = ? WHERE id = ?");
+        $stmt->bind_param('ii', $choice_id, $id);
+        if (!$stmt->execute()) {
+            $_SESSION['alert'] = ["type" => "danger", "text" => "Failed to update row"];
+            echo json_encode([-1, '', '']);
+            exit;
+        }
+
+        $_SESSION['alert'] = ["type" => "success", "text" => "Student distribution updated successfully"];
+        echo json_encode([1, '', '']);
+        exit;
+    }
 
 }
