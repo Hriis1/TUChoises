@@ -110,6 +110,9 @@ $users = getNonDeletedFromDB("users", $mysqli);
                                         <a href="studentGradesList.php?id=<?= $u["id"]; ?>"><i class="fa-solid fa-xmark"></i></a>
                                         <a href="../distributions/ditributedStudentsList.php?student_id=<?= $u["id"]; ?>"><i
                                                 class="fa-solid fa-landmark"></i></a>
+                                        <a id="downloadDistBtn" href="#" title="Download data" data-user-id="<?= $u["id"]; ?>">
+                                            <i class="fa-solid fa-file-arrow-down"></i>
+                                        </a>
                                     <?php endif ?>
                                     <a href="userEdit.php?id=<?= $u["id"] ?>"><i class="fa-solid fa-pen"></i></a>
                                     <a href="userList.php?action=delete&id=<?= $u["id"] ?>"><i
@@ -130,8 +133,28 @@ $users = getNonDeletedFromDB("users", $mysqli);
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 10, width: "100px" }, //Actions
+                { targets: 10, width: "120px" }, //Actions
             ]
         });
+
+        //Create and submit a form for download
+        $(document).on('click', '#downloadDistBtn', function (e) {
+            e.preventDefault();
+            const userId = $(this).data('user-id');
+            // Create form
+            const $form = $('<form>', {
+                method: 'POST',
+                action: '../backend/ajax.php',
+                target: '_blank'
+            });
+            $form.append($('<input>', { type: 'hidden', name: 'action', value: 'downloadUserDistributions' }));
+            $form.append($('<input>', { type: 'hidden', name: 'user_id', value: userId }));
+
+            // Append, submit, and remove
+            $('body').append($form);
+            $form[0].submit();
+            $form.remove();
+        });
+
     });
 </script>

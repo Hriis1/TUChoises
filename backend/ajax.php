@@ -1298,4 +1298,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
+
+    if ($_POST['action'] == 'downloadUserDistributions') {
+        $user_id = isset($_POST['user_id']) ? (int) $_POST['user_id'] : 0;
+
+        $user = getFromDBByID('users', $user_id, $mysqli);
+        if (!$user) {
+            echo "<h3>User with id: $user_id not found</h3>";
+            exit;
+        }
+
+        $user_name = $user['names'];
+        $user_fn = $user['fn'];
+
+        $query = "
+            SELECT
+            ds.dist_choice_id AS distributed_in_id,
+            dc.name AS distributed_in_name,
+            dc.instructor AS teacher_id
+            FROM distributed_students ds
+            LEFT JOIN distribution_choices dc ON ds.dist_choice_id = dc.id
+            WHERE ds.deleted = 0
+            AND ds.student_id = $user_id";
+        $result = $mysqli->query($query);
+
+        $distributed_at = [];
+        while ($row = $result->fetch_assoc()) {
+            // get teacher name
+            $teacherName = '';
+            if ($row['teacher_id']) {
+                $teacherRes = getFromDBByID('users', (int) $row['teacher_id'], $mysqli);
+                $teacherName = $teacherRes ? $teacherRes['names'] : '';
+            }
+            $distributed_at[] = [
+                'distributed_in_id' => $row['distributed_in_id'],
+                'distributed_in_name' => $row['distributed_in_name'],
+                'teacher_name' => $teacherName
+            ];
+        }
+
+        $data = [
+            'user_id' => $user_id,
+            'user_name' => $user_name,
+            'user_fn' => $user_fn,
+            'downloaded_at' => date('Y-m-d H:i:s'),
+            'distributed_at' => $distributed_at
+        ];
+
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="user_' . $user_id . '_distributions.json"');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+
 }
