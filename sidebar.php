@@ -35,6 +35,10 @@
             <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen"
               class="nav-link link-dark">Choice made</a>
           </li>
+          <li class="nav-item">
+            <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=distributed"
+              class="nav-link link-dark">Distributed</a>
+          </li>
         <?php } else { ?>
           <li class="nav-item">
             <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=active"
@@ -83,6 +87,10 @@
         <li class="nav-item">
           <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=chosen" class="nav-link link-dark">Choice
             made</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= $projectRoot ?>/distributions/myDistributions.php?condition=distributed"
+            class="nav-link link-dark">Distributed</a>
         </li>
       <?php } else { //teacher ?>
         <li class="nav-item">

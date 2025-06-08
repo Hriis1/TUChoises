@@ -49,6 +49,13 @@ if ($_GET["condition"] == "active") {
         $headerText = "Choice made";
         $condition .= " AND EXISTS (SELECT 1 FROM s_d_scores  WHERE user_id = $userID  AND distribution_id = distributions.id)";
     }
+} else if ($_GET["condition"] == "distributed") {
+    $headerText = "All distributions";
+    if ($role == 1) {
+        $headerText = "Distributted";
+        $condition .= " AND EXISTS (SELECT 1 FROM s_d_scores  WHERE user_id = $userID  AND distribution_id = distributions.id) ";
+        $condition .= " AND EXISTS (SELECT 1 FROM distributed_students  WHERE student_id = $userID  AND dist_id = distributions.id) ";
+    }
 } else {
     $headerText = "All distributions";
 }
