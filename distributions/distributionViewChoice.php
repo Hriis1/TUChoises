@@ -6,6 +6,7 @@ if (!isset($_GET["id"])) {
 }
 try {
     $dist = new Distribution($_GET["id"], $mysqli);
+    $distID = $dist->getId();
     $faculty = new Faculty($dist->getFacultyID($mysqli), $mysqli);
     $major = $dist->getType() == 1 ? new Major($dist->getMajorID($mysqli), $mysqli) : null;
     $userGET = new User($_GET["userID"], $mysqli);
@@ -32,6 +33,18 @@ if ($user->getRole() == 1) { //if user is a student
     exit;
 } //if user is admin they can view
 
+//if user is student and is student and has been distributed
+$distributed = false;
+if ($user->getRole() == 1) {
+    $user_id = $userGET->getId();
+    $distributed_check = getFromDBCondition("distributed_students", "WHERE student_id = $user_id AND dist_id = $distID AND deleted = 0", $mysqli);
+    if ($distributed_check) {
+        $distributed = true;
+        $distributed_in = $distributed_check[0]["dist_choice_id"];
+    }
+
+}
+
 
 $ratings = $dist->getStudentRatings($_GET["userID"], $mysqli);
 
@@ -47,13 +60,18 @@ require_once "../sidebar.php";
                 <?= htmlspecialchars($faculty->getName()) ?>
                 <?php if ($major) { ?>&bull; <?= htmlspecialchars($major->getName()) ?><?php } ?>
                 &bull; <?= htmlspecialchars($dist->getTypeText()) ?>
+                <?php if ($distributed) { ?>
+                    <span style="height: 25px; position:relative; top:-2px;"
+                        class="badge bg-info text-dark ms-2 public-badge">Distributed</span>
+                <?php } ?>
             </p>
             <hr>
             <?php foreach ($ratings as $curRating):
                 $choice = new DistributionChoice($curRating["choice_id"], $mysqli);
                 $r = (int) $curRating["score"];
+                $distributed_choice = ($distributed && $curRating["choice_id"] == $distributed_in);
                 ?>
-                <div class="card mb-4">
+                <div class="card mb-4 <?= $distributed_choice ? 'border-success bg-success bg-opacity-10' : '' ?>">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-9 col-md-8 info">

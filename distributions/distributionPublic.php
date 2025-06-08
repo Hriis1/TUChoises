@@ -13,6 +13,7 @@ $faculty = null;
 $major = null;
 try {
     $dist = new Distribution($_GET["id"], $mysqli);
+    $distID = $dist->getId();
     $faculty = new Faculty($dist->getFacultyID($mysqli), $mysqli);
     if ($dist->getType() == 1) { //if dist is izbiraema disciplina
         $major = new Major($dist->getMajorID($mysqli), $mysqli);
@@ -28,6 +29,17 @@ if (!$dist->canView($user, $mysqli)) { //if user cannot view the distribution
 }
 
 $choices = $dist->getChoices($mysqli);
+
+//if user is student and is student and has been distributed
+$distributed = false;
+if ($user->getRole() == 1) {
+    $user_id = $user->getId();
+    $distributed_check = getFromDBCondition("distributed_students", "WHERE student_id = $user_id AND dist_id = $distID AND deleted = 0", $mysqli);
+    if ($distributed_check)
+        $distributed = true;
+
+}
+
 ?>
 
 <style>
@@ -62,6 +74,10 @@ require_once "../sidebar.php";
                 <?php } else { ?>
                     <span style="height: 25px;" class="badge bg-danger mt-2 public-badge">Inactive</span>
                 <?php } ?>
+
+                <?php if ($distributed) { ?>
+                    <span style="height: 25px;" class="badge bg-info text-dark mt-2 ms-2 public-badge">Distributed</span>
+                <?php } ?>
             </div>
             <p class="mb-4 text-secondary">
                 <?= htmlspecialchars($faculty->getName()) ?>
@@ -90,7 +106,6 @@ require_once "../sidebar.php";
             <div class="position-absolute bottom-0 start-0 w-100 p-4 text-end">
                 <?php
                 $studentPermisions = $dist->getStudentPermisions($user, $mysqli);
-                $distID = $dist->getId();
                 if ($studentPermisions == 1) { //can choose ?>
                     <a href="distributionMakeChoice.php?id=<?= $distID ?>" class="btn btn-success">Make Choice</a>
                 <?php } else if ($studentPermisions == 2) { //can view choice made ?>
