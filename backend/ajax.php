@@ -618,7 +618,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
-            echo json_encode([0, '', 'DB prepare failed']);
+            echo json_encode([0, '', 'Failed to submit to db']);
             exit;
         }
 
@@ -1150,6 +1150,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
         }
         echo json_encode($data);
+        exit;
+    }
+
+    if ($_POST['action'] == 'distributeManually') {
+        $student_id = isset($_POST["student"]) ? (int) $_POST["student"] : 0;
+        $dist_id = isset($_POST["distribution"]) ? (int) $_POST["distribution"] : 0;
+        $choice_id = isset($_POST["choice"]) ? (int) $_POST["choice"] : 0;
+
+        if ($student_id == 0) {
+            echo json_encode([0, 'student', 'Invalid student']);
+            exit;
+        }
+
+        if ($dist_id == 0) {
+            echo json_encode([0, 'distribution', 'Invalid distribution']);
+            exit;
+        }
+
+        if ($choice_id == 0) {
+            echo json_encode([0, 'choice', 'Invalid choice']);
+            exit;
+        }
+
+        //Check if student already was distributed for this dist
+        $distributed_check = getFromDBCondition("distributed_students", "WHERE student_id = $student_id AND dist_id = $dist_id AND deleted = 0", $mysqli);
+        if ($distributed_check) {
+            echo json_encode([0, 'student', 'Student already distributed for this distribution']);
+            exit;
+        }
+
+        // Prepare insert
+        $stmt = $mysqli->prepare("INSERT INTO distributed_students
+          (`student_id`, `dist_id`, `dist_choice_id`)
+          VALUES (?, ?, ?)");
+
+        $stmt->bind_param('iii', $student_id, $dist_id, $choice_id);
+        if (!$stmt->execute()) {
+            // Error
+            $_SESSION['alert'] = ["type" => "danger", "text" => "Failed to submit to db"];
+            echo json_encode([-1, '', '']);
+            exit;
+        }
+
+        //Success
+        $_SESSION['alert'] = ["type" => "success", "text" => "Student distributed successfully"];
+        echo json_encode([1, '', '']);
         exit;
     }
 

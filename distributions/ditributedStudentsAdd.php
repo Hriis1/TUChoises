@@ -114,7 +114,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0 ORDER BY
                 data: $(this).serialize(),
                 dataType: 'json',
                 success: function (res) {
-                    if (res[0] == 1) {
+                    if (res[0] == 1 || res[0] == -1) { //-1 error but not with input
                         window.location = 'ditributedStudentsList.php?id=' + studentID;
                     } else if (res[1]) {
                         $('#' + res[1]).after('<div class="text-danger">' + res[2] + '</div>');
