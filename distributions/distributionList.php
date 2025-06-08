@@ -103,6 +103,10 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                                 <a href="distributionChoiseAdd.php?dist_id=<?= $d["id"]; ?>">
                                     <i class="fa-solid fa-plus"></i>
                                 </a>
+                                <a href="#" title="Only toggle, don't distribute"
+                                    onclick="proceedToggle(<?= $currDist->isActive() ? 0 : 1; ?>, <?= $d['id'] ?>, false)">
+                                    <i class="fa-solid fa-power-off"></i>
+                                </a>
                                 <a href="distributionEdit.php?id=<?= $d["id"]; ?>">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
@@ -122,6 +126,59 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
 
 <script>
     //Activate a distribution
+    function proceedToggle(active, id, distribute = true) {
+        $.ajax({
+            type: 'POST',
+            url: '../backend/ajax.php',
+            data: {
+                action: 'toggleDistribution',
+                id: id,
+                active: active
+            },
+            success: function (response) {
+                if (response == 1) {
+                    if (active == 0 && distribute) {
+                        // Call “distributeStudents” endpoint
+                        $.ajax({
+                            type: 'POST',
+                            url: '../backend/distributions/distributeStudents.php',
+                            data: {
+                                action: 'distributeStudents',
+                                distID: id
+                            },
+                            dataType: 'text',
+                            success: function (response) {
+                                if (response.trim() === '1') {
+                                    alert('Distribution successful');
+                                    location.reload();
+                                } else {
+                                    alert('Error distributing students: ' + response);
+                                    proceedToggle(1, id);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error('AJAX error (distributeStudents):', textStatus, errorThrown);
+                                console.error('Raw response:', jqXHR.responseText);
+                                alert('AJAX error while distributing students!');
+                            }
+                        });
+                    } else {
+                        location.reload();
+                    }
+
+                    //location.reload();
+                } else {
+                    alert('Error activating/deactivating distribution!');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX error:", textStatus, errorThrown);
+                console.error("Raw response:", jqXHR.responseText);
+                alert('AJAX error!');
+            }
+        });
+    }
+    
     function switchDistribution(id, active) {
         const confirmText = active != 0 ? "activate" : "deactivate";
         if (!confirm(`Are you sure you want to ${confirmText} this distribution?`))
@@ -161,60 +218,6 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
         } else {
             proceedToggle(1, id);
         }
-
-        function proceedToggle(active, id) {
-            $.ajax({
-                type: 'POST',
-                url: '../backend/ajax.php',
-                data: {
-                    action: 'toggleDistribution',
-                    id: id,
-                    active: active
-                },
-                success: function (response) {
-                    if (response == 1) {
-                        if (active == 0) {
-                            // Call “distributeStudents” endpoint
-                            $.ajax({
-                                type: 'POST',
-                                url: '../backend/distributions/distributeStudents.php',
-                                data: {
-                                    action: 'distributeStudents',
-                                    distID: id
-                                },
-                                dataType: 'text',
-                                success: function (response) {
-                                    if (response.trim() === '1') {
-                                        alert('Distribution successful');
-                                        location.reload();
-                                    } else {
-                                        alert('Error distributing students: ' + response);
-                                        proceedToggle(1, id);
-                                    }
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.error('AJAX error (distributeStudents):', textStatus, errorThrown);
-                                    console.error('Raw response:', jqXHR.responseText);
-                                    alert('AJAX error while distributing students!');
-                                }
-                            });
-                        } else {
-                            location.reload();
-                        }
-
-                        //location.reload();
-                    } else {
-                        alert('Error activating/deactivating distribution!');
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX error:", textStatus, errorThrown);
-                    console.error("Raw response:", jqXHR.responseText);
-                    alert('AJAX error!');
-                }
-            });
-        }
-
     }
 
 
@@ -223,7 +226,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 8, width: "100px" }, //Actions
+                { targets: 8, width: "120px" }, //Actions
             ]
         });
     });
