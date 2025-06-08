@@ -1288,8 +1288,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'distribution_id' => $id,
             'distribution_ident' => $ident,
             'year' => ($year == 0 ? 'All' : $year),
+            'data_date' => date('Y-m-d H:i:s'),
             'distributed_students' => $studentsData
         ];
+
 
         header('Content-Type: application/json');
         header('Content-Disposition: attachment; filename="distribution_' . $id . '.json"');
