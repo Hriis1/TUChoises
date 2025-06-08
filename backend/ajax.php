@@ -1232,4 +1232,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($_POST['action'] == 'downloadDistribution') {
+        $id = isset($_POST['dist_id']) ? (int) $_POST['dist_id'] : 0;
+        $year = isset($_POST['year']) ? (int) $_POST['year'] : 0;
+
+        $dist = getFromDBByID('distributions', $id, $mysqli);
+        if (!$dist) {
+            // Just print an error page
+            echo "<h3>Distribution with id: $id not found</h3>";
+            exit;
+        }
+
+        $ident = $dist['ident'];
+        $studentsData = [];
+
+        // Build condition for year if needed (assuming student_fn or start_year in users table)
+        $userYearCondition = '';
+        if ($year > 0) {
+            $userYearCondition = "AND u.start_year = $year";
+        }
+
+        $query = "
+            SELECT 
+            ds.student_id,
+            u.names AS student_name,
+            u.fn AS student_fn,
+            ds.dist_choice_id AS distributed_in_id,
+            dc.name AS distributed_in_name,
+            dc.instructor AS teacher_id
+            FROM distributed_students ds
+            LEFT JOIN users u ON ds.student_id = u.id
+            LEFT JOIN distribution_choices dc ON ds.dist_choice_id = dc.id
+            WHERE ds.deleted = 0 
+            AND ds.dist_id = $id
+            $userYearCondition";
+        $result = $mysqli->query($query);
+
+        while ($row = $result->fetch_assoc()) {
+            // get teacher name
+            $teacherName = '';
+            if ($row['teacher_id']) {
+                $teacherRes = getFromDBByID('users', (int) $row['teacher_id'], $mysqli);
+                $teacherName = $teacherRes ? $teacherRes['names'] : '';
+            }
+            $studentsData[] = [
+                'student_name' => $row['student_name'],
+                'student_fn' => $row['student_fn'],
+                'distributed_in_id' => $row['distributed_in_id'],
+                'distributed_in_name' => $row['distributed_in_name'],
+                'teacher_name' => $teacherName
+            ];
+        }
+
+        $data = [
+            'distribution_id' => $id,
+            'distribution_ident' => $ident,
+            'year' => ($year == 0 ? 'All' : $year),
+            'distributed_students' => $studentsData
+        ];
+
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="distribution_' . $id . '.json"');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
 }

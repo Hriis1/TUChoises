@@ -107,6 +107,9 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
                                     onclick="proceedToggle(<?= $currDist->isActive() ? 0 : 1; ?>, <?= $d['id'] ?>, false)">
                                     <i class="fa-solid fa-power-off"></i>
                                 </a>
+                                <a id="downloadDistBtn" href="#" title="Download data" data-dist-id="<?= $d["id"]; ?>">
+                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                </a>
                                 <a href="distributionEdit.php?id=<?= $d["id"]; ?>">
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
@@ -121,6 +124,33 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
         </div>
     </div>
 </main>
+
+<!-- Modals Start -->
+<!-- Download dist data modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="downloadForm" class="modal-content" method="POST" action="../backend/ajax.php" target="_blank">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadModalLabel">Download Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="action" value="downloadDistribution">
+                <input type="hidden" name="dist_id" id="downloadDistId">
+                <div class="mb-3">
+                    <label for="downloadYear" class="form-label">Start Year Of Studends (0 - All)</label>
+                    <input type="number" class="form-control" name="year" id="downloadYear" value="0" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Download</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Modals End -->
 
 <?php require_once "../footer.php"; ?>
 
@@ -178,7 +208,7 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
             }
         });
     }
-    
+
     function switchDistribution(id, active) {
         const confirmText = active != 0 ? "activate" : "deactivate";
         if (!confirm(`Are you sure you want to ${confirmText} this distribution?`))
@@ -226,8 +256,18 @@ $distributions = getNonDeletedFromDB("distributions", $mysqli);
     $(document).ready(function () {
         let table = new DataTable("#table", {
             columnDefs: [
-                { targets: 8, width: "120px" }, //Actions
+                { targets: 8, width: "130px" }, //Actions
             ]
+        });
+
+
+        //Download distribution data
+        $(document).on('click', '#downloadDistBtn', function (e) {
+            e.preventDefault();
+            let distId = $(this).data('dist-id');
+            $('#downloadDistId').val(distId);
+            $('#downloadYear').val(0);
+            $('#downloadModal').modal('show');
         });
     });
 
