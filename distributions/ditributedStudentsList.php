@@ -60,6 +60,7 @@ $teachersBuffer = [];
                         <th>ID</th>
                         <th>Student</th>
                         <th>FN</th>
+                        <th>Student Start Year</th>
                         <th>Grade</th>
                         <th>Distribution</th>
                         <th>Choice</th>
@@ -110,6 +111,7 @@ $teachersBuffer = [];
                         $out_id = $curr["id"] ?? "";
                         $out_student_name = isset($studentsBuffer[$curr["student_id"]]) ? $studentsBuffer[$curr["student_id"]]->getNames() : "";
                         $out_fn = isset($studentsBuffer[$curr["student_id"]]) ? $studentsBuffer[$curr["student_id"]]->getFn() : "";
+                        $out_start_year = isset($studentsBuffer[$curr["student_id"]]) ? $studentsBuffer[$curr["student_id"]]->getStartYear() : "";
                         $out_dist_name = isset($distributionsBuffer[$curr["dist_id"]]) ? $distributionsBuffer[$curr["dist_id"]]->getName() : "";
                         $out_choice_name = isset($choicesBuffer[$curr["dist_choice_id"]]) ? $choicesBuffer[$curr["dist_choice_id"]]->getName() : "";
                         $out_teacher_name = isset($teachersBuffer[$teacher_id]) ? $teachersBuffer[$teacher_id]->getNames() : "";
@@ -119,6 +121,7 @@ $teachersBuffer = [];
                             <td><?= $out_id; ?></td>
                             <td><?= $out_student_name; ?></td>
                             <td><?= $out_fn; ?></td>
+                            <td><?= $out_start_year; ?></td>
                             <td><?= $grade ?></td>
                             <td><?= $out_dist_name; ?></td>
                             <td><?= $out_choice_name; ?></td>
@@ -147,9 +150,9 @@ require_once "../footer.php";
     $(document).ready(function () {
         let table = new DataTable("#table", {
             order: [
-                [4, 'desc'],
-                [2, 'asc'],
-                [5, 'asc']
+                [5, 'desc'],
+                [3, 'asc'],
+                [1, 'asc']
             ],
             columnDefs: [
                 { targets: 8, width: "100px" }, //Actions
