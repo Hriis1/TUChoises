@@ -1255,6 +1255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "
             SELECT 
             ds.student_id,
+            u.id AS st_id,
             u.names AS student_name,
             u.fn AS student_fn,
             ds.dist_choice_id AS distributed_in_id,
@@ -1276,6 +1277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $teacherName = $teacherRes ? $teacherRes['names'] : '';
             }
             $studentsData[] = [
+                'student_id' => $row['st_id'],
                 'student_name' => $row['student_name'],
                 'student_fn' => $row['student_fn'],
                 'distributed_in_id' => $row['distributed_in_id'],
@@ -1310,6 +1312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $user_name = $user['names'];
         $user_fn = $user['fn'];
+        $user_start_year = $user['start_year'];
 
         $query = "
             SELECT
@@ -1338,9 +1341,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $data = [
-            'user_id' => $user_id,
-            'user_name' => $user_name,
-            'user_fn' => $user_fn,
+            'student_id' => $user_id,
+            'student_name' => $user_name,
+            'student_fn' => $user_fn,
+            'start_year' => $user_start_year,
             'downloaded_at' => date('Y-m-d H:i:s'),
             'distributed_at' => $distributed_at
         ];
