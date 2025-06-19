@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # —————————————————————————————————————————————————————————————
-#  Helpers
+# Helpers
 # —————————————————————————————————————————————————————————————
 check_cmd() {
     command -v "$1" >/dev/null 2>&1 ||
@@ -13,7 +13,7 @@ check_cmd() {
 }
 
 # —————————————————————————————————————————————————————————————
-#  1. Check prerequisites
+# 1. Check prerequisites
 # —————————————————————————————————————————————————————————————
 echo "⏳ Checking prerequisites…"
 check_cmd php
@@ -48,7 +48,7 @@ if [[ -d "$PY_DIR" ]]; then
     # activate and install PuLP if needed
     echo "⏳ Activating venv and ensuring PuLP is installed…"
     # shellcheck disable=SC1090
-    source "$VENV_DIR/bin/activate"
+    source "$VENV_DIR/Scripts/activate"
 
     if ! pip show pulp >/dev/null 2>&1; then
         pip install --upgrade pip
@@ -61,7 +61,9 @@ if [[ -d "$PY_DIR" ]]; then
     deactivate
 else
     echo "✗ ERROR: Directory '$PY_DIR' not found; please check your project layout."
+    read -p "Press [Enter] to exit…"
     exit 1
 fi
 
 echo "✅ install.sh completed successfully!"
+read -p "Press [Enter] to exit…"
