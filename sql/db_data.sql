@@ -271,8 +271,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `names`, `email`, `pass`, `role`, `fn`, `major`, `faculty`, `start_year`, `active`, `deleted`, `created_at`, `updated_at`) VALUES
-(1, 'admin1', 'Християн Кушев', 'hkushev@tu-soifa.bg', '$2a$12$WKi7lFGlhDRrnW5nwuEVcOv.ao0F4GVwekDz6kjUvKkVyjoxhl/o2', 3, '', '0', '0', NULL, 1, 0, '2025-05-04 22:36:51', '2025-05-08 00:25:19'),
-(2, 'hris', 'Християн Кушев', 'hristiyan.kushev@abv.bg', '$2y$10$k2ud9yGXujrGn05TnV//jufoprAm18KCgD2CRWpcaFbJOQ5lEwoYa', 1, '471221051', 'isn', 'fpmi', 2021, 1, 0, '2025-05-04 22:49:20', '2025-05-16 17:10:00'),
+(1, 'admin1', 'Админ Админов', 'admin@tu-soifa.bg', '$2a$12$WKi7lFGlhDRrnW5nwuEVcOv.ao0F4GVwekDz6kjUvKkVyjoxhl/o2', 3, '', '0', '0', NULL, 1, 0, '2025-05-04 22:36:51', '2025-05-08 00:25:19'),
 (3, 'gogo', 'Гого Гогов', 'gogo@abv.bg', '$2y$10$k2ud9yGXujrGn05TnV//jufoprAm18KCgD2CRWpcaFbJOQ5lEwoYa', 2, '', '0', 'fpmi', NULL, 1, 0, '2025-05-04 22:50:09', '2025-05-15 22:42:27'),
 (4, 'siso', 'Сисо Сисов', 'siso@gmail.com', '$2y$10$LiiyWCpxOJCkNaIB/49fr.TnGWEy3k2Q0eSftwaXQk3Su5BER63ju', 2, '', '0', 'fpmi', NULL, 1, 0, '2025-05-04 22:50:46', '2025-05-15 22:42:30'),
 (5, 'pipi', 'Пипи Пипов', 'pipi@gmail.com', '$2y$10$H6h3F62sUN8drrxLLCup0OTd/BtOExWvDujJW50imsAwbiAM3JzKK', 2, '', '0', 'fa', NULL, 1, 0, '2025-05-04 22:51:11', '2025-05-15 22:42:43'),

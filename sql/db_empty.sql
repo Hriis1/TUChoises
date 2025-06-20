@@ -171,7 +171,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `names`, `email`, `pass`, `role`, `fn`, `major`, `faculty`, `start_year`, `active`, `deleted`, `created_at`, `updated_at`) VALUES
-(1, 'admin1', 'Християн Кушев', 'hkushev@tu-soifa.bg', '$2a$12$WKi7lFGlhDRrnW5nwuEVcOv.ao0F4GVwekDz6kjUvKkVyjoxhl/o2', 3, '', '0', '0', NULL, 1, 0, '2025-05-04 22:36:51', '2025-05-08 00:25:19');
+(1, 'admin1', 'Админ Админов', 'admin@tu-soifa.bg', '$2a$12$WKi7lFGlhDRrnW5nwuEVcOv.ao0F4GVwekDz6kjUvKkVyjoxhl/o2', 3, '', '0', '0', NULL, 1, 0, '2025-05-04 22:36:51', '2025-05-08 00:25:19');
 
 --
 -- Indexes for dumped tables
