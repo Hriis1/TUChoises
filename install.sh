@@ -45,10 +45,20 @@ if [[ -d "$PY_DIR" ]]; then
         echo "✔️  Python venv already exists; skipping creation."
     fi
 
-    # activate and install PuLP if needed
-    echo "⏳ Activating venv and ensuring PuLP is installed…"
+    # figure out where activate lives
+    if [[ -f "$VENV_DIR/bin/activate" ]]; then
+        ACTIVATE="$VENV_DIR/bin/activate"
+    elif [[ -f "$VENV_DIR/Scripts/activate" ]]; then
+        ACTIVATE="$VENV_DIR/Scripts/activate"
+    else
+        echo "✗ ERROR: Could not find activate script under '$VENV_DIR/bin' or '$VENV_DIR/Scripts'."
+        read -p "Press [Enter] to exit…"
+        exit 1
+    fi
+
+    echo "⏳ Activating venv ($ACTIVATE) and ensuring PuLP is installed…"
     # shellcheck disable=SC1090
-    source "$VENV_DIR/Scripts/activate"
+    source "$ACTIVATE"
 
     if ! pip show pulp >/dev/null 2>&1; then
         pip install --upgrade pip
