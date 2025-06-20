@@ -19,6 +19,13 @@ Before you begin, ensure you have the following installed and available in your 
 
    Empty schema + single admin user: sql/db_empty.sql
 
+   Admin user credentials: username: admin1, password: 1234
+
+   Credentials of the admin account can be changed from a mysql client
+
+   For other users in the db_data.sql password is 1234
+   
+
 3. **Run the installer script**
 
    The `install.sh` script will:
