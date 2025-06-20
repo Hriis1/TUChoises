@@ -62,7 +62,6 @@ Before you begin, ensure you have the following installed and available in your 
 
    ```php
    <?php
-   // config.php
    $host     = "localhost";
    $dbname   = "tu_choices";
    $dbuser   = "root";
