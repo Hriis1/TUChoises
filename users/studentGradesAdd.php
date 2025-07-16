@@ -66,7 +66,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0 ORDER BY
         $('form').on('submit', function (e) {
             e.preventDefault();
             $('.text-danger').remove();
-            const studentID = $('select[name="student"]').val();
+            const studentFN = $('select[name="student"]').val();
 
             $.ajax({
                 url: '../backend/ajax.php',
@@ -75,7 +75,7 @@ $students = getFromDBCondition("users", "WHERE role = 1 AND deleted = 0 ORDER BY
                 dataType: 'json',
                 success: function (res) {
                     if (res[0] == 1) {
-                        window.location = 'studentGradesList.php?id=' + studentID;
+                        window.location = 'studentGradesList.php?fn=' + studentFN;
                     } else if (res[1]) {
                         $('#' + res[1]).after('<div class="text-danger">' + res[2] + '</div>');
                     }
