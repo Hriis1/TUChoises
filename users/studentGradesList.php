@@ -40,7 +40,11 @@ $grades = getFromDBCondition("student_grades", $condition, $mysqli);
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
         <div class="bg-white bg-opacity-50 p-5 rounded-5 shadow" style="width: 70%;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0">Grades List</h2>
+                <h2 class="mb-0">Grades List
+                    <?php if (isset($student)) {
+                        echo "for " . $student[0]["names"];
+                    } ?>
+                </h2>
                 <div>
                     <a href="studentGradesAdd.php" class="btn btn-primary px-4 me-2">Add Grade</a>
                     <button onclick="importData('../backend/utils/importData.php', 'importGrades')"

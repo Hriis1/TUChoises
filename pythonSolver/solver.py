@@ -1,44 +1,4 @@
 #!/usr/bin/env python3
-"""
-solver.py
-
-Reads an input JSON of the form:
-
-{
-  "disciplines": [
-    { "id": "d1", "min": 5, "max": 12 },
-    { "id": "d2", "min": 3, "max": 10 },
-    { "id": "d3", "min": 4, "max": 8 }
-  ],
-  "students": [
-    {
-      "id": "s1",
-      "grade": 5.23,
-      "desires": { "d1": 5, "d2": 3, "d3": 4 }
-    },
-    {
-      "id": "s2",
-      "grade": 4.75,
-      "desires": { "d1": 2, "d2": 5, "d3": 1 }
-    },
-    ...
-  ]
-}
-
-and writes out:
-
-{
-  "assignments": {
-    "s1": "d1",
-    "s2": "d2",
-    ...
-  },
-  "objective_value": 9876.0
-}
-
-Usage:
-   python solver.py input.json output.json
-"""
 
 import json, sys
 import pulp
