@@ -129,7 +129,7 @@ class Distribution
     {
         $id = $this->id;
         $choices = [];
-        $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0 ORDER BY id", $mysqli);
+        $choicesDB = getFromDBCondition("distribution_choices", "WHERE distribution = $id AND deleted = 0 ORDER BY name", $mysqli);
         foreach ($choicesDB as $curr) {
             try {
                 $ch = new DistributionChoice($curr["id"], $mysqli);

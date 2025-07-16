@@ -17,10 +17,10 @@ function getFromDBByID($table_name, $id, $mysqli, $idRowName = 'id')
 }
 
 
-function getNonDeletedFromDB($table_name, $mysqli, $hasDeleted = true, $searchableByID = false)
+function getNonDeletedFromDB($table_name, $mysqli, $hasDeleted = true, $searchableByID = false, $order = "")
 {
     $check = $hasDeleted ? " WHERE deleted = 0" : "";
-    $stmt = $mysqli->prepare("SELECT * FROM " . $table_name . $check);
+    $stmt = $mysqli->prepare("SELECT * FROM " . $table_name . $check . " " . $order);
     $stmt->execute();
 
     $result = $stmt->get_result();

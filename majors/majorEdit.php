@@ -21,7 +21,7 @@ try {
     exit;
 }
 
-$faculties = getNonDeletedFromDB("faculties", $mysqli);
+$faculties = getNonDeletedFromDB("faculties", $mysqli, true, false, "ORDER BY name");
 ?>
 
 <main>

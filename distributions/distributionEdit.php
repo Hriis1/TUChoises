@@ -22,8 +22,8 @@ try {
 }
 
 $facultyID = $dist->getFacultyId($mysqli);
-$majors = getFromDBCondition("majors", "WHERE faculty = $facultyID AND deleted = 0", $mysqli);
-$faculties = getNonDeletedFromDB("faculties", $mysqli);
+$majors = getFromDBCondition("majors", "WHERE faculty = $facultyID AND deleted = 0 ORDER BY name", $mysqli);
+$faculties = getNonDeletedFromDB("faculties", $mysqli, true, false, 'ORDER BY name');
 ?>
 
 <main>

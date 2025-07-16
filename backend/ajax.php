@@ -279,6 +279,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'facultyId' => $major->getFacultyId($mysqli),
             ];
         }
+
+        //Order by name
+        usort($response, fn($a, $b) => strcmp($a['name'], $b['name']));
+
         echo json_encode($response);
         exit;
 
@@ -1120,7 +1124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $st_major = $student->getMajorShort();
         $st_faculty = $student->getFacultyShort();
 
-        $condition = "WHERE deleted = 0 AND ((type = 1 AND major = '$st_major') OR (type = 2 AND faculty = '$st_faculty'))";
+        $condition = "WHERE deleted = 0 AND ((type = 1 AND major = '$st_major') OR (type = 2 AND faculty = '$st_faculty')) ORDER BY name";
         $dists = getFromDBCondition('distributions', $condition, $mysqli);
         foreach ($dists as $dist) {
             $data[] = [

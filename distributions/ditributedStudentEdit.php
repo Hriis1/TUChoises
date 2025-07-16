@@ -12,7 +12,7 @@ if (!$dist_row) {
 }
 $student = getFromDBByID('users', $dist_row['student_id'], $mysqli);
 $distribution = getFromDBByID('distributions', $dist_row['dist_id'], $mysqli);
-$choices = getFromDBCondition('distribution_choices', 'WHERE deleted = 0 AND distribution = ' . $dist_row['dist_id'], $mysqli);
+$choices = getFromDBCondition('distribution_choices', 'WHERE deleted = 0 AND distribution = ' . $dist_row['dist_id'] . ' ORDER BY name', $mysqli);
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center py-5" style="min-height:90vh">

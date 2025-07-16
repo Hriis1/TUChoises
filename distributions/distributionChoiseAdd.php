@@ -25,7 +25,7 @@ $teachers = null;
 $distType = $distribution->getType();
 if ($distType == 1 || $distType == 2) { //if type is valid
     $distFac = $distribution->getFacultyShort();
-    $teachers = getFromDBCondition("users", "WHERE role = 2 AND faculty = '$distFac' AND active = 1 AND deleted = 0", $mysqli);
+    $teachers = getFromDBCondition("users", "WHERE role = 2 AND faculty = '$distFac' AND active = 1 AND deleted = 0 ORDER BY names", $mysqli);
 } else {
     echo "Error: Invalid distribution type";
     require_once "../footer.php";

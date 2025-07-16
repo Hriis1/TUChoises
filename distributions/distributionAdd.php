@@ -5,7 +5,7 @@ if ($user->getRole() != 3) {
     exit;
 }
 
-$faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0");
+$faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0 ORDER BY name");
 ?>
 <main>
     <div class="container-fluid d-flex flex-column align-items-center pb-5 pt-5" style="min-height: 90vh;">
