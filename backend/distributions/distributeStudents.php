@@ -179,8 +179,8 @@ try {
 }
 
 //Delete tmp files
-/* @unlink($input);
-@unlink($output); */
+@unlink($input);
+@unlink($output);
 
 
 //Success
