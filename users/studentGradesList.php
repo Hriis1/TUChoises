@@ -25,9 +25,9 @@ if (isset($_GET["action"]) && $_GET["action"] == "delete") {
 
 //Build condition and take grades
 $condition = "WHERE deleted = 0";
-if (isset($_GET["id"])) {
-    $studentID = $_GET["id"];
-    $student = getFromDBCondition("users", "WHERE id = $studentID AND role = 1 AND deleted = 0", $mysqli);
+if (isset($_GET["fn"])) {
+    $studentFN = $_GET["fn"];
+    $student = getFromDBCondition("users", "WHERE fn = $studentFN AND role = 1 AND deleted = 0", $mysqli);
     if ($student) {
         $fn = trim($student[0]["fn"]);
         $condition .= " AND student_fn = $fn";
@@ -41,7 +41,7 @@ $grades = getFromDBCondition("student_grades", $condition, $mysqli);
         <div class="bg-white bg-opacity-50 p-5 rounded-5 shadow" style="width: 70%;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="mb-0">Grades List
-                    <?php if (isset($student)) {
+                    <?php if (isset($student) && $student) {
                         echo "for " . $student[0]["names"];
                     } ?>
                 </h2>

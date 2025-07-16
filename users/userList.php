@@ -107,7 +107,7 @@ $users = getNonDeletedFromDB("users", $mysqli);
                             <td>
                                 <?php if ($u["role"] != 3) { //Admins should not be able to change/delete other admin acc ?>
                                     <?php if ($u["role"] == 1): //if its student - can view grade ?>
-                                        <a href="studentGradesList.php?id=<?= $u["id"]; ?>"><i class="fa-solid fa-xmark"></i></a>
+                                        <a href="studentGradesList.php?fn=<?= $u["fn"]; ?>"><i class="fa-solid fa-xmark"></i></a>
                                         <a href="../distributions/ditributedStudentsList.php?student_id=<?= $u["id"]; ?>"><i
                                                 class="fa-solid fa-landmark"></i></a>
                                         <a id="downloadDistBtn" href="#" title="Download data" data-user-id="<?= $u["id"]; ?>">
