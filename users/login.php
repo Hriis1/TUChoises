@@ -75,7 +75,7 @@ require_once "../backend/config/sessionConfig.php";
 
 					<div class="text-center w-full p-t-42 p-b-22">
 						<span class="txt1">
-							Students need active moodle accounts
+							Users need active moodle accounts
 						</span>
 					</div>
 

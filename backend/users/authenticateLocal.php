@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 require_once "../config/dbConfig.php";
 require_once "../config/sessionConfig.php";
+require_once "moodleAuthRequest.php";
 
 function authenticate($userID)
 {
@@ -27,18 +28,26 @@ if (!$user) { //check if user exists
     exit;
 }
 
-if ($user['role'] == 1) { //check if user is student
-    if ($user['active'] != 1) { //if users acc is not activated
-        // TODO: handle student with not active acc
+if ($user['active'] != 1) { //if users acc is not activated
+    $moodleAuthRes = moodleAuthRequest($username, $pass);
+    if ($moodleAuthRes[0] == 0) { //Error authenticating with moodle
+        echo json_encode([0, 'pass', 'Log in using your moodle credentials']);
+        exit;
+    } else { //Moodle log in success
+        //Activate the account - set active = 1 and set the password
+        $uId = $user["id"];
+        $hashedPass = password_hash($pass, PASSWORD_BCRYPT);
+        $stmt = $mysqli->prepare("UPDATE users SET active = 1, pass = ? WHERE id = ? AND username = ?");
+        $stmt->bind_param("sis", $hashedPass, $uId, $username);
+        $stmt->execute();
+    }
+} else {
+
+    //Check the password
+    if (!password_verify($pass, $user['pass'])) {
+        echo json_encode([0, 'pass', 'Incorrect password']);
         exit;
     }
 }
-
-//Check the password
-if (!password_verify($pass, $user['pass'])) {
-    echo json_encode([0, 'pass', 'Incorrect password']);
-    exit;
-}
-
 //Authenticate
 authenticate($user["id"]);

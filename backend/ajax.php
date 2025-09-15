@@ -746,7 +746,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username']);
         $names = trim($_POST['names']);
         $email = trim($_POST['email']);
-        $pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
+        //$pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
         $fn = isset($_POST['fn']) ? trim($_POST['fn']) : '';
         $major = isset($_POST['major']) ? trim($_POST['major']) : '';
         $faculty = isset($_POST['faculty']) ? trim($_POST['faculty']) : '';
@@ -816,15 +816,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode([0, 'faculty', 'Faculty required']);
                 exit;
             }
-            if ($pass === '') {
+            /* if ($pass === '') {
                 echo json_encode([0, 'pass', 'Password required']);
                 exit;
-            }
+            } */
             $major = 0;
-            $password = password_hash($pass, PASSWORD_BCRYPT);
+            $password = '';
             $fn = '';
             $start_year = 'NULL';
-            $active = 1;
+            $active = 0;
         }
 
         $uEsc = $mysqli->real_escape_string($username);

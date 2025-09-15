@@ -26,10 +26,10 @@ $faculties = $mysqli->query("SELECT * FROM faculties WHERE deleted = 0 ORDER BY 
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
-                <div class="mb-3 teacher-field" style="display: none;">
+                <!-- <div class="mb-3 teacher-field" style="display: none;">
                     <label for="pass" class="form-label">Password</label>
                     <input type="password" class="form-control" id="pass" name="pass">
-                </div>
+                </div> -->
                 <div class="mb-3 student-field">
                     <label for="fn" class="form-label">Faculty Number</label>
                     <input type="text" class="form-control" id="fn" name="fn" required>
