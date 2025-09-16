@@ -24,7 +24,7 @@ function authenticateUser($userRole, array $targetRoles)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Get the user
-    $userAuthenticate = getFromDBByID("users", $_SESSION["userID"], $mysqli);
+    $userAuthenticate = getFromDBByID("users", $_SESSION["userID"] ?? 0, $mysqli);
     $userRole = "";
     if ($userAuthenticate) {
         $userRole = $userAuthenticate["role"];
