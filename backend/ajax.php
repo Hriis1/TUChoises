@@ -12,10 +12,30 @@ require_once "distributions/DistributionChoise.php";
 
 require_once "users/User.php";
 
+function authenticateUser($userRole, array $targetRoles)
+{
+    //If user doesnt have the allowed roles
+    if (!in_array($userRole, $targetRoles)) {
+        echo json_encode([0, '', 'Unauthorized access']);
+        exit;
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    //Get the user
+    $userAuthenticate = getFromDBByID("users", $_SESSION["userID"], $mysqli);
+    $userRole = "";
+    if ($userAuthenticate) {
+        $userRole = $userAuthenticate["role"];
+    }
 
     //Add faculty
     if ($_POST['action'] === 'addFaculty') {
+
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         //Get the submitted data
         $name = trim($_POST['name']);
         $short = trim($_POST['short']);
@@ -75,6 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Edit faculty
     if ($_POST['action'] === 'editFaculty') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         //Get the submitted data
         $id = trim($_POST["id"]);
         $name = trim($_POST['name']);
@@ -144,6 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Add major
     if ($_POST['action'] === 'addMajor') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $name = trim($_POST['name']);
         $short = trim($_POST['short']);
         $faculty = trim($_POST['faculty']);
@@ -202,6 +228,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Edit major
     if ($_POST['action'] === 'editMajor') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         // Get submitted data
         $id = trim($_POST['id']);
         $name = trim($_POST['name']);
@@ -290,6 +319,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Add distribution
     if ($_POST['action'] === 'addDistribution') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $name = trim($_POST['name']);
         $ident = trim($_POST['ident']);
         $semester_applicable = trim($_POST['semester_applicable']);
@@ -366,6 +398,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Edit distribution
     if ($_POST['action'] === 'editDistribution') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         // Get submitted data
         $id = trim($_POST['id']);
         $name = trim($_POST['name']);
@@ -542,6 +577,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] == 'toggleDistribution') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $dist_id = isset($_POST['id']) ? trim($_POST['id']) : '';
         $active = $_POST["active"] != 0 ? 1 : 0;
 
@@ -582,6 +620,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Add distribution choices
     if ($_POST['action'] === 'addChoices') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $distId = isset($_POST['distribution']) ? trim($_POST['distribution']) : '';
         $distType = isset($_POST['distType']) ? trim($_POST['distType']) : '';
         $count = isset($_POST['count']) ? trim($_POST['count']) : '';
@@ -676,6 +717,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Edit choice
     if ($_POST['action'] == 'editChoice') {
+        //Check if access is legit
+        authenticateUser($userRole, [3, 2]);
+
         $id = (int) $_POST['id'];
         $dc = new DistributionChoice($id, $mysqli);
         $name = trim($_POST['name']);
@@ -742,6 +786,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //Add user
     if ($_POST['action'] === 'addUser') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $role = trim($_POST['role']);
         $username = trim($_POST['username']);
         $names = trim($_POST['names']);
@@ -863,6 +910,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Edit user
     if ($_POST['action'] === 'editUser') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         // get submitted
         $id = trim($_POST['id']);
         $username = trim($_POST['username']);
@@ -996,6 +1046,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] === 'addStudentGrades') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $count = (int) $_POST["count"];
         $student_fn = $_POST["student"];
         $grades = $_POST["grades"];
@@ -1079,6 +1132,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST["action"] === 'editStudentGrade') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $grade_id = isset($_POST["id"]) ? $_POST["id"] : 0;
         $grade = isset($_POST["grade"]) ? (float) $_POST["grade"] : null;
 
@@ -1158,6 +1214,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] == 'distributeManually') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $student_id = isset($_POST["student"]) ? (int) $_POST["student"] : 0;
         $dist_id = isset($_POST["distribution"]) ? (int) $_POST["distribution"] : 0;
         $choice_id = isset($_POST["choice"]) ? (int) $_POST["choice"] : 0;
@@ -1204,6 +1263,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] == 'editDistributedStudent') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $id = isset($_POST["id"]) ? (int) $_POST["id"] : 0;
         $choice_id = isset($_POST["choice"]) ? (int) $_POST["choice"] : 0;
 
@@ -1237,6 +1299,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] == 'downloadDistribution') {
+        //Check if access is legit
+        authenticateUser($userRole, [3, 2]);
+
         $id = isset($_POST['dist_id']) ? (int) $_POST['dist_id'] : 0;
         $year = isset($_POST['year']) ? (int) $_POST['year'] : 0;
 
@@ -1306,6 +1371,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($_POST['action'] == 'downloadUserDistributions') {
+        //Check if access is legit
+        authenticateUser($userRole, [3]);
+
         $user_id = isset($_POST['user_id']) ? (int) $_POST['user_id'] : 0;
 
         $user = getFromDBByID('users', $user_id, $mysqli);
