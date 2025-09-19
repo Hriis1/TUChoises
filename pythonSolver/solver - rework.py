@@ -48,8 +48,13 @@ def main():
 
     # 4) Build a “score” matrix: score[k][i] = α·grade_k + β·desires[k][i]
     #    You can tweak α and β as needed. Here we use α = 1000, β = 1.
-    alpha, beta = 100, 1
-    score = [[alpha * grades[k] * desires[k][i] + beta * desires[k][i] for i in range(N)] for k in range(S)]
+    # Grade-first with desire as a small modulator + tiny tiebreak
+    W1 = 10**6       # primary weight
+    eps = 0.02       # desire modulates grade by up to ~10% if desire ∈ [0..5]
+    W2 = 1           # tiny secondary tiebreak on raw desire
+    score = [[W1 * grades[k] * (1 + eps * desires[k][i]) + W2 * desires[k][i] for i in range(N)] for k in range(S)]
+
+
 
     # 5) Create PuLP problem
     prob = pulp.LpProblem("StudentToDiscipline", pulp.LpMaximize)
